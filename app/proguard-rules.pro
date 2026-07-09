@@ -1,0 +1,3 @@
+-keep class one.secureai.app.** { *; }
+-keep class com.google.firebase.** { *; }
+-dontwarn com.google.firebase.**
