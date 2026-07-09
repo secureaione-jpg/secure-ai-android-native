@@ -1,3 +1,5 @@
 -keep class one.secureai.app.** { *; }
 -keep class com.google.firebase.** { *; }
+-keep class com.google.android.play.** { *; }
 -dontwarn com.google.firebase.**
+-dontwarn com.google.android.play.**

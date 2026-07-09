@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".SecureAIApplication"
@@ -18,6 +19,7 @@
         android:theme="@style/Theme.SecureAI"
         android:networkSecurityConfig="@xml/network_security_config">
 
+        <!-- Main chat activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -27,7 +29,7 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Deep links: secureai.one/chat, /tasks, etc. -->
+            <!-- Deep links -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -35,8 +37,43 @@
                 <data android:scheme="https" android:host="secureai.one" />
                 <data android:scheme="https" android:host="www.secureai.one" />
             </intent-filter>
+            <!-- Long-press shortcuts -->
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
+        <!-- Share target: receives text from other apps -->
+        <activity
+            android:name=".ui.screens.ShareTargetActivity"
+            android:exported="true"
+            android:label="Share to Secure AI"
+            android:theme="@style/Theme.SecureAI">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </activity>
+
+        <!-- Home screen widget -->
+        <receiver
+            android:name=".widget.SecureAIWidget"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info" />
+        </receiver>
+
+        <!-- Firebase push -->
         <service
             android:name=".service.PushNotificationService"
             android:exported="false">

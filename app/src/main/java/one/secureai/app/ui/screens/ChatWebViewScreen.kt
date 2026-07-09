@@ -1,11 +1,14 @@
 package one.secureai.app.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.webkit.PermissionRequest
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -23,10 +26,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.viewinterop.AndroidView
 
 private const val BASE_URL = "https://secureai.one"
 private const val CHAT_URL = "$BASE_URL/chat"
+
+fun isOnline(context: Context): Boolean {
+    val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    return cm.activeNetworkInfo?.isConnected == true
+}
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -34,6 +43,7 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
     var webView by remember { mutableStateOf<WebView?>(null) }
     var loadingProgress by remember { mutableFloatStateOf(0f) }
     var isLoading by remember { mutableStateOf(true) }
+    var isOffline by remember { mutableStateOf(false) }
     var fileUploadCallback by remember { mutableStateOf<ValueCallback<Array<Uri>>?>(null) }
 
     val filePickerLauncher = rememberLauncherForActivityResult(
@@ -45,6 +55,14 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
 
     BackHandler(enabled = webView?.canGoBack() == true) {
         webView?.goBack()
+    }
+
+    if (isOffline) {
+        OfflineScreen(onRetry = {
+            isOffline = false
+            webView?.reload()
+        })
+        return
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -69,20 +87,28 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
                         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                             val url = request.url.toString()
                             return if (url.startsWith(BASE_URL)) {
-                                false // load inside the app
+                                false
                             } else {
-                                // open external URLs in the system browser
-                                context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW, request.url))
+                                context.startActivity(
+                                    android.content.Intent(android.content.Intent.ACTION_VIEW, request.url)
+                                )
                                 true
                             }
                         }
 
                         override fun onPageStarted(view: WebView, url: String, favicon: Bitmap?) {
                             isLoading = true
+                            isOffline = false
                         }
 
                         override fun onPageFinished(view: WebView, url: String) {
                             isLoading = false
+                        }
+
+                        override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                            if (request.isForMainFrame) {
+                                isOffline = !isOnline(context)
+                            }
                         }
                     }
 
@@ -115,7 +141,9 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
         if (isLoading && loadingProgress < 1f) {
             LinearProgressIndicator(
                 progress = { loadingProgress },
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier.align(Alignment.TopCenter),
+                color = Color(0xFF2563EB),
+                trackColor = Color.Transparent
             )
         }
     }

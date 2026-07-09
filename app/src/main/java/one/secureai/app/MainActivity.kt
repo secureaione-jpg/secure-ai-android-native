@@ -7,12 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import one.secureai.app.navigation.AppNavGraph
 import one.secureai.app.ui.theme.SecureAITheme
+import one.secureai.app.update.InAppUpdateManager
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        InAppUpdateManager.checkAndUpdate(this)
         val deepLinkUrl = intent?.data?.toString()
         setContent {
             SecureAITheme {

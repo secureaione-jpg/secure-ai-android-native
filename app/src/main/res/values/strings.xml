@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">New Chat</string>
+    <string name="shortcut_new_chat_long">Start a new chat</string>
+    <string name="shortcut_tasks">Tasks</string>
+    <string name="shortcut_tasks_long">Open Tasks</string>
+    <string name="shortcut_memories">Memories</string>
+    <string name="shortcut_memories_long">Open Memories</string>
+    <string name="widget_title">Secure AI</string>
 </resources>
