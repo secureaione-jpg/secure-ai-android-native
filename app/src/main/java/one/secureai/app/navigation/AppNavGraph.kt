@@ -9,11 +9,13 @@ import androidx.navigation.compose.rememberNavController
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.screens.BiometricLockScreen
 import one.secureai.app.ui.screens.ChatWebViewScreen
+import one.secureai.app.ui.screens.NotificationPermissionScreen
 import one.secureai.app.ui.screens.SettingsScreen
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
 
 sealed class Screen(val route: String) {
     object Onboarding : Screen("onboarding")
+    object NotificationPermission : Screen("notification_permission")
     object Lock : Screen("lock")
     object Chat : Screen("chat")
     object Settings : Screen("settings")
@@ -30,6 +32,8 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
             BiometricManager.BIOMETRIC_SUCCESS
 
+    val notificationsPrompted = Prefs.isNotificationsPrompted(context)
+
     val start = when {
         !isOnboarded -> Screen.Onboarding.route
         biometricEnabled && biometricAvailable -> Screen.Lock.route
@@ -41,8 +45,18 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         composable(Screen.Onboarding.route) {
             OnboardingScreen(onFinish = {
                 Prefs.setOnboarded(context)
-                val next = if (biometricEnabled && biometricAvailable) Screen.Lock.route else Screen.Chat.route
+                val next = if (!notificationsPrompted) Screen.NotificationPermission.route
+                           else if (biometricEnabled && biometricAvailable) Screen.Lock.route
+                           else Screen.Chat.route
                 navController.navigate(next) { popUpTo(Screen.Onboarding.route) { inclusive = true } }
+            })
+        }
+
+        composable(Screen.NotificationPermission.route) {
+            NotificationPermissionScreen(onResult = {
+                Prefs.setNotificationsPrompted(context)
+                val next = if (biometricEnabled && biometricAvailable) Screen.Lock.route else Screen.Chat.route
+                navController.navigate(next) { popUpTo(Screen.NotificationPermission.route) { inclusive = true } }
             })
         }
 
