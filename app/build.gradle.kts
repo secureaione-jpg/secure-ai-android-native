@@ -42,6 +42,7 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 
     compileOptions {
@@ -72,5 +73,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.firebase.crashlytics)
     implementation(libs.play.app.update)
+    implementation(libs.play.review)
     debugImplementation(libs.androidx.ui.tooling)
 }

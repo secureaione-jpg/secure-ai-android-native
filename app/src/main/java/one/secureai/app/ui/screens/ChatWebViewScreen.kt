@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.net.Uri
+import android.webkit.JavascriptInterface
 import android.webkit.PermissionRequest
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -37,9 +38,20 @@ fun isOnline(context: Context): Boolean {
     return cm.activeNetworkInfo?.isConnected == true
 }
 
+// Bridge so the web app can call native Android functions
+class NativeBridge(
+    private val onOpenSettings: () -> Unit
+) {
+    @JavascriptInterface
+    fun openSettings() = onOpenSettings()
+
+    @JavascriptInterface
+    fun getAppVersion() = "android"
+}
+
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
-fun ChatWebViewScreen(deepLinkUrl: String? = null) {
+fun ChatWebViewScreen(deepLinkUrl: String? = null, onOpenSettings: () -> Unit = {}) {
     var webView by remember { mutableStateOf<WebView?>(null) }
     var loadingProgress by remember { mutableFloatStateOf(0f) }
     var isLoading by remember { mutableStateOf(true) }
@@ -83,6 +95,9 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
                         userAgentString = "$userAgentString SecureAI-Android/1.0"
                     }
 
+                    // Native bridge — web app can call window.SecureAI.openSettings()
+                    addJavascriptInterface(NativeBridge(onOpenSettings), "SecureAI")
+
                     webViewClient = object : WebViewClient() {
                         override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                             val url = request.url.toString()
@@ -106,9 +121,7 @@ fun ChatWebViewScreen(deepLinkUrl: String? = null) {
                         }
 
                         override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                            if (request.isForMainFrame) {
-                                isOffline = !isOnline(context)
-                            }
+                            if (request.isForMainFrame) isOffline = !isOnline(context)
                         }
                     }
 
