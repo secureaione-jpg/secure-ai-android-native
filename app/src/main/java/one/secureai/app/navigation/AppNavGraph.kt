@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.screens.BiometricLockScreen
-import one.secureai.app.ui.screens.ChatWebViewScreen
+import one.secureai.app.ui.screens.ChatScreen
 import one.secureai.app.ui.screens.NotificationPermissionScreen
 import one.secureai.app.ui.screens.SettingsScreen
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
@@ -76,8 +76,7 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         }
 
         composable(Screen.Chat.route) {
-            ChatWebViewScreen(
-                deepLinkUrl = deepLinkUrl,
+            ChatScreen(
                 onOpenSettings = { navController.navigate(Screen.Settings.route) }
             )
         }

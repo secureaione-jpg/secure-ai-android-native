@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -5,6 +7,15 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
 }
+
+// Shared X-App-Secret (same value as secure-ai-iOS/Secure AI/App/AppSecrets.swift),
+// read from local.properties so it's never committed. Empty string if unset —
+// only chat networking needs it; every other screen still works.
+val localProperties = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+val appSecret: String = localProperties.getProperty("app.secret", "")
 
 android {
     namespace = "one.secureai.app"
@@ -16,6 +27,8 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0.0"
+        buildConfigField("String", "APP_SECRET", "\"$appSecret\"")
+        buildConfigField("String", "WORKER_URL", "\"https://secure-ai-worker.secureai-one.workers.dev\"")
     }
 
     signingConfigs {
@@ -74,5 +87,7 @@ dependencies {
     implementation(libs.firebase.crashlytics)
     implementation(libs.play.app.update)
     implementation(libs.play.review)
+    implementation(libs.okhttp)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     debugImplementation(libs.androidx.ui.tooling)
 }
