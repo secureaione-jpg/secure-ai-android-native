@@ -8,6 +8,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import one.secureai.app.BuildConfig
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.coroutines.tasks.await
 import one.secureai.app.chat.ChatMessage
 import one.secureai.app.chat.ChatRole
 import one.secureai.app.data.Prefs
@@ -72,13 +74,24 @@ class RemoteAIService(context: Context) {
             put("anonToken", Prefs.getAnonToken(appContext))
         }
 
-        val request = Request.Builder()
+        val requestBuilder = Request.Builder()
             .url(BuildConfig.WORKER_URL)
             .header("X-App-Secret", BuildConfig.APP_SECRET)
             .header("X-App-Source", "secure-ai-android")
             .header("Content-Type", "application/json")
             .post(payload.toString().toRequestBody(jsonMedia))
-            .build()
+
+        val firebaseUser = FirebaseAuth.getInstance().currentUser
+        if (firebaseUser != null) {
+            try {
+                val idToken = firebaseUser.getIdToken(false).await().token
+                if (!idToken.isNullOrEmpty()) {
+                    requestBuilder.header("Authorization", "Bearer $idToken")
+                }
+            } catch (_: Exception) {}
+        }
+
+        val request = requestBuilder.build()
 
         client.newCall(request).execute().use { response ->
             when (response.code) {

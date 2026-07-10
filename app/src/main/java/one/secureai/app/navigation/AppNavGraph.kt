@@ -9,8 +9,11 @@ import androidx.navigation.compose.rememberNavController
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.screens.BiometricLockScreen
 import one.secureai.app.ui.screens.ChatScreen
+import one.secureai.app.ui.screens.MemoryScreen
 import one.secureai.app.ui.screens.NotificationPermissionScreen
+import one.secureai.app.ui.screens.SavedChatsScreen
 import one.secureai.app.ui.screens.SettingsScreen
+import one.secureai.app.ui.screens.TasksScreen
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
 
 sealed class Screen(val route: String) {
@@ -19,6 +22,9 @@ sealed class Screen(val route: String) {
     object Lock : Screen("lock")
     object Chat : Screen("chat")
     object Settings : Screen("settings")
+    object Tasks : Screen("tasks")
+    object Memory : Screen("memory")
+    object SavedChats : Screen("saved_chats")
 }
 
 @Composable
@@ -77,12 +83,33 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
 
         composable(Screen.Chat.route) {
             ChatScreen(
-                onOpenSettings = { navController.navigate(Screen.Settings.route) }
+                onOpenSettings = { navController.navigate(Screen.Settings.route) },
+                onOpenTasks = { navController.navigate(Screen.Tasks.route) },
+                onOpenMemory = { navController.navigate(Screen.Memory.route) },
+                onOpenSavedChats = { navController.navigate(Screen.SavedChats.route) }
             )
         }
 
         composable(Screen.Settings.route) {
             SettingsScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Tasks.route) {
+            TasksScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Memory.route) {
+            MemoryScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.SavedChats.route) {
+            SavedChatsScreen(
+                onBack = { navController.popBackStack() },
+                onSelectConversation = { id ->
+                    // TODO: load conversation by ID into ChatViewModel
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

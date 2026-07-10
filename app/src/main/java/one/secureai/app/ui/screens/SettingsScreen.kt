@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import one.secureai.app.BuildConfig
 import one.secureai.app.R
+import one.secureai.app.auth.AuthManager
 import one.secureai.app.data.Prefs
 
 @Composable
@@ -131,6 +132,25 @@ fun SettingsScreen(onBack: () -> Unit) {
                         context.startActivity(intent)
                     }
                 )
+            }
+
+            SettingsSection("Account") {
+                if (AuthManager.isAnonymous) {
+                    SettingsInfo(label = "Status", value = "Guest")
+                } else {
+                    SettingsInfo(
+                        label = "Email",
+                        value = AuthManager.user.value?.email ?: "Signed in"
+                    )
+                    SettingsLink(
+                        icon = R.drawable.ic_back,
+                        label = "Sign out",
+                        onClick = {
+                            AuthManager.signOut()
+                            onBack()
+                        }
+                    )
+                }
             }
 
             SettingsSection("About") {

@@ -94,6 +94,13 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _isStreaming.value = false
     }
 
+    fun clearHistory() {
+        currentJob?.cancel()
+        _isStreaming.value = false
+        _messages.value = emptyList()
+        _errorMessage.value = null
+    }
+
     companion object {
         // Kotlin port of iOS's ChatViewModel.looksLikeImageRequest.
         private const val IMAGE_VERBS = "(draw|sketch|paint|generate|create|make|design|render|imagine|illustrate|produce)"
