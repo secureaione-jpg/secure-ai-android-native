@@ -13,6 +13,20 @@ object Prefs {
     private const val KEY_REVIEW_REQUESTED = "review_requested"
     private const val KEY_NOTIFICATIONS_PROMPTED = "notifications_prompted"
     private const val KEY_ANON_TOKEN = "anon_token"
+    private const val KEY_HAPTICS_ENABLED = "haptics_enabled"
+    private const val KEY_TEXT_SIZE = "text_size"
+    private const val KEY_INCOGNITO = "incognito_mode"
+    private const val KEY_LAST_CHAT_TIMESTAMP = "last_chat_timestamp"
+    private const val KEY_DAILY_MESSAGE_COUNT = "daily_message_count"
+    private const val KEY_DAILY_IMAGE_COUNT = "daily_image_count"
+    private const val KEY_DAILY_COUNT_DATE = "daily_count_date"
+    private const val KEY_LIFETIME_MESSAGES = "lifetime_messages"
+    private const val KEY_SHOW_CHATS = "sidebar_chats"
+    private const val KEY_SHOW_HISTORY = "sidebar_history"
+    private const val KEY_SHOW_PROJECTS = "sidebar_projects"
+    private const val KEY_SHOW_PHOTOS = "sidebar_photos"
+    private const val KEY_SHOW_DOCUMENTS = "sidebar_documents"
+    private const val KEY_SHOW_MEMORIES = "sidebar_memories"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
@@ -31,13 +45,85 @@ object Prefs {
     fun isNotificationsPrompted(ctx: Context) = prefs(ctx).getBoolean(KEY_NOTIFICATIONS_PROMPTED, false)
     fun setNotificationsPrompted(ctx: Context) = prefs(ctx).edit { putBoolean(KEY_NOTIFICATIONS_PROMPTED, true) }
 
-    /** Stable per-install id for guest (unauthenticated) chat requests — lets
-     *  the Worker's free-tier daily quota bind to something other than just
-     *  IP. Mirrors iOS's anonToken (there, Auth.auth().currentUser?.uid). */
     fun getAnonToken(ctx: Context): String {
         val p = prefs(ctx)
         return p.getString(KEY_ANON_TOKEN, null) ?: UUID.randomUUID().toString().also {
             p.edit { putString(KEY_ANON_TOKEN, it) }
         }
     }
+
+    fun isHapticsEnabled(ctx: Context) = prefs(ctx).getBoolean(KEY_HAPTICS_ENABLED, true)
+    fun setHapticsEnabled(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_HAPTICS_ENABLED, v) }
+
+    // 0 = small (14sp), 1 = medium (16sp, default), 2 = large (19sp)
+    fun getTextSize(ctx: Context) = prefs(ctx).getInt(KEY_TEXT_SIZE, 1)
+    fun setTextSize(ctx: Context, v: Int) = prefs(ctx).edit { putInt(KEY_TEXT_SIZE, v) }
+    fun textSizeSp(ctx: Context): Int = when (getTextSize(ctx)) { 0 -> 14; 2 -> 19; else -> 16 }
+
+    fun isIncognito(ctx: Context) = prefs(ctx).getBoolean(KEY_INCOGNITO, false)
+    fun setIncognito(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_INCOGNITO, v) }
+
+    fun getLastChatTimestamp(ctx: Context) = prefs(ctx).getLong(KEY_LAST_CHAT_TIMESTAMP, 0L)
+    fun setLastChatTimestamp(ctx: Context, v: Long) = prefs(ctx).edit { putLong(KEY_LAST_CHAT_TIMESTAMP, v) }
+
+    private fun todayString(): String {
+        val cal = java.util.Calendar.getInstance()
+        return "${cal.get(java.util.Calendar.YEAR)}-${cal.get(java.util.Calendar.DAY_OF_YEAR)}"
+    }
+
+    fun incrementDailyMessages(ctx: Context) {
+        val p = prefs(ctx)
+        val today = todayString()
+        val savedDate = p.getString(KEY_DAILY_COUNT_DATE, "") ?: ""
+        if (savedDate != today) {
+            p.edit {
+                putString(KEY_DAILY_COUNT_DATE, today)
+                putInt(KEY_DAILY_MESSAGE_COUNT, 1)
+                putInt(KEY_DAILY_IMAGE_COUNT, 0)
+            }
+        } else {
+            p.edit { putInt(KEY_DAILY_MESSAGE_COUNT, p.getInt(KEY_DAILY_MESSAGE_COUNT, 0) + 1) }
+        }
+        p.edit { putInt(KEY_LIFETIME_MESSAGES, p.getInt(KEY_LIFETIME_MESSAGES, 0) + 1) }
+    }
+
+    fun getDailyMessageCount(ctx: Context): Int {
+        val p = prefs(ctx)
+        return if (p.getString(KEY_DAILY_COUNT_DATE, "") == todayString()) p.getInt(KEY_DAILY_MESSAGE_COUNT, 0) else 0
+    }
+
+    fun incrementDailyImages(ctx: Context) {
+        val p = prefs(ctx)
+        val today = todayString()
+        if ((p.getString(KEY_DAILY_COUNT_DATE, "") ?: "") != today) {
+            p.edit {
+                putString(KEY_DAILY_COUNT_DATE, today)
+                putInt(KEY_DAILY_MESSAGE_COUNT, 0)
+                putInt(KEY_DAILY_IMAGE_COUNT, 1)
+            }
+        } else {
+            p.edit { putInt(KEY_DAILY_IMAGE_COUNT, p.getInt(KEY_DAILY_IMAGE_COUNT, 0) + 1) }
+        }
+    }
+
+    fun getDailyImageCount(ctx: Context): Int {
+        val p = prefs(ctx)
+        return if (p.getString(KEY_DAILY_COUNT_DATE, "") == todayString()) p.getInt(KEY_DAILY_IMAGE_COUNT, 0) else 0
+    }
+
+    fun getLifetimeMessages(ctx: Context) = prefs(ctx).getInt(KEY_LIFETIME_MESSAGES, 0)
+
+    // Sidebar item visibility
+    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, true)
+    fun setShowChats(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_CHATS, v) }
+    fun showHistory(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_HISTORY, false)
+    fun setShowHistory(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_HISTORY, v) }
+    fun showProjects(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS, true)
+    fun setShowProjects(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS, v) }
+    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, true)
+    fun setShowPhotos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PHOTOS, v) }
+    fun showDocuments(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_DOCUMENTS, true)
+    fun setShowDocuments(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_DOCUMENTS, v) }
+    fun showMemories(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_MEMORIES, true)
+    fun setShowMemories(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_MEMORIES, v) }
 }
