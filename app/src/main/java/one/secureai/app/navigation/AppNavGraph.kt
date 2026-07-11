@@ -20,7 +20,9 @@ import one.secureai.app.ui.screens.SidebarCustomizeScreen
 import one.secureai.app.ui.screens.TeamScreen
 import one.secureai.app.ui.screens.ProjectsScreen
 import one.secureai.app.data.store.ProjectStore
+import one.secureai.app.chat.ChatViewModel
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 sealed class Screen(val route: String) {
     object Onboarding : Screen("onboarding")
@@ -60,6 +62,8 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         else -> Screen.Chat.route
     }
 
+    val chatViewModel: ChatViewModel = viewModel()
+
     NavHost(navController = navController, startDestination = start) {
 
         composable(Screen.Onboarding.route) {
@@ -97,6 +101,7 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
 
         composable(Screen.Chat.route) {
             ChatScreen(
+                viewModel = chatViewModel,
                 onOpenSettings = { navController.navigate(Screen.Settings.route) },
                 onOpenTasks = { navController.navigate(Screen.Tasks.route) },
                 onOpenMemory = { navController.navigate(Screen.Memory.route) },
@@ -107,6 +112,8 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onOpenPaywall = { navController.navigate(Screen.Paywall.route) },
                 onOpenProfile = { navController.navigate(Screen.Profile.route) },
                 onOpenApps = { navController.navigate(Screen.Apps.route) },
+                onOpenProjects = { navController.navigate(Screen.Projects.route) },
+                onOpenTeam = { navController.navigate(Screen.Team.route) },
             )
         }
 
@@ -156,7 +163,7 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
             SavedChatsScreen(
                 onBack = { navController.popBackStack() },
                 onSelectConversation = { id ->
-                    // TODO: load conversation by ID into ChatViewModel
+                    chatViewModel.loadConversation(id)
                     navController.popBackStack()
                 }
             )

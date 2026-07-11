@@ -75,7 +75,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import dev.jeziellago.compose.markdowntext.MarkdownText
 import one.secureai.app.R
 import one.secureai.app.auth.AuthManager
@@ -100,6 +99,7 @@ private val TextSecondary = Color(0xFF8E8E93)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
+    viewModel: ChatViewModel,
     onOpenSettings: () -> Unit,
     onOpenTasks: () -> Unit = {},
     onOpenMemory: () -> Unit = {},
@@ -110,9 +110,10 @@ fun ChatScreen(
     onOpenPaywall: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
     onOpenApps: () -> Unit = {},
+    onOpenProjects: () -> Unit = {},
+    onOpenTeam: () -> Unit = {},
 ) {
     val context = LocalContext.current
-    val viewModel: ChatViewModel = viewModel()
     val messages by viewModel.messages.collectAsState()
     val isStreaming by viewModel.isStreaming.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
@@ -173,6 +174,13 @@ fun ChatScreen(
         }
     }
 
+    // Camera permission
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) cameraLauncher.launch(null)
+    }
+
     DisposableEffect(Unit) {
         onDispose { speechRecognizer?.destroy() }
     }
@@ -226,6 +234,8 @@ fun ChatScreen(
         onPhotos = onOpenPhotos,
         onDocuments = onOpenDocuments,
         onMemories = onOpenMemory,
+        onProjects = onOpenProjects,
+        onTeam = onOpenTeam,
         onProfile = onOpenProfile,
         onNewChat = { viewModel.clearHistory() },
         onUpgrade = onOpenPaywall,
@@ -450,7 +460,7 @@ fun ChatScreen(
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_camera), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
-                                    cameraLauncher.launch(null)
+                                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
                                 }
                             )
                             DropdownMenuItem(

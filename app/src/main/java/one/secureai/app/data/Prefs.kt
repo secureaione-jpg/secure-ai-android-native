@@ -27,6 +27,8 @@ object Prefs {
     private const val KEY_SHOW_PHOTOS = "sidebar_photos"
     private const val KEY_SHOW_DOCUMENTS = "sidebar_documents"
     private const val KEY_SHOW_MEMORIES = "sidebar_memories"
+    private const val KEY_SHOW_TEAM = "sidebar_team"
+    private const val KEY_SHOW_PROJECTS_NAV = "sidebar_projects_nav"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
@@ -126,4 +128,8 @@ object Prefs {
     fun setShowDocuments(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_DOCUMENTS, v) }
     fun showMemories(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_MEMORIES, true)
     fun setShowMemories(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_MEMORIES, v) }
+    fun showTeam(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_TEAM, true)
+    fun setShowTeam(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_TEAM, v) }
+    fun showProjectsNav(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS_NAV, true)
+    fun setShowProjectsNav(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS_NAV, v) }
 }

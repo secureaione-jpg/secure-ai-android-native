@@ -55,6 +55,8 @@ fun SidebarCustomizeScreen(onBack: () -> Unit) {
             SidebarItem(R.drawable.ic_photos, "Photos", Prefs::showPhotos, Prefs::setShowPhotos),
             SidebarItem(R.drawable.ic_document, "Documents", Prefs::showDocuments, Prefs::setShowDocuments),
             SidebarItem(R.drawable.ic_memories, "Memories", Prefs::showMemories, Prefs::setShowMemories),
+            SidebarItem(R.drawable.ic_briefcase, "Projects", Prefs::showProjectsNav, Prefs::setShowProjectsNav),
+            SidebarItem(R.drawable.ic_team, "Team", Prefs::showTeam, Prefs::setShowTeam),
         )
     }
 

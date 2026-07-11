@@ -65,6 +65,8 @@ data class SidebarCallbacks(
     val onPhotos: () -> Unit = {},
     val onDocuments: () -> Unit = {},
     val onMemories: () -> Unit = {},
+    val onProjects: () -> Unit = {},
+    val onTeam: () -> Unit = {},
     val onProfile: () -> Unit = {},
     val onNewChat: () -> Unit = {},
     val onUpgrade: () -> Unit = {},
@@ -262,6 +264,34 @@ private fun SidebarContent(
                     onClick = {
                         if (isAnonymous) callbacks.onSignIn("memories")
                         else callbacks.onMemories()
+                        onCollapse()
+                    }
+                )
+            }
+
+            // 8. Projects
+            if (Prefs.showProjectsNav(context)) {
+                NavRow(
+                    iconRes = R.drawable.ic_briefcase,
+                    label = "Projects",
+                    locked = isAnonymous,
+                    onClick = {
+                        if (isAnonymous) callbacks.onSignIn("projects")
+                        else callbacks.onProjects()
+                        onCollapse()
+                    }
+                )
+            }
+
+            // 9. Team
+            if (Prefs.showTeam(context)) {
+                NavRow(
+                    iconRes = R.drawable.ic_team,
+                    label = "Team",
+                    locked = isAnonymous,
+                    onClick = {
+                        if (isAnonymous) callbacks.onSignIn("team")
+                        else callbacks.onTeam()
                         onCollapse()
                     }
                 )
