@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 enum class ChatBackground(val key: String, val label: String) {
     SYSTEM("system", "Default"),
+    BLACK("black", "Black"),
     WHITE("white", "White"),
     OCEAN("ocean", "Ocean"),
     SUNSET("sunset", "Sunset"),
@@ -16,6 +17,7 @@ enum class ChatBackground(val key: String, val label: String) {
     val gradient: List<Color>
         get() = when (this) {
             SYSTEM -> emptyList()
+            BLACK -> listOf(Color.Black, Color.Black)
             WHITE -> listOf(Color.White, Color.White)
             OCEAN -> listOf(
                 Color(0xFF9EB8D1),

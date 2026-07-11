@@ -31,6 +31,8 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -319,20 +321,13 @@ fun ChatScreen(
                         }
                     } else {
                         IconButton(onClick = onOpenProfile) {
-                            Box(
-                                modifier = Modifier
-                                    .size(38.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text(
-                                    profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.onSurface
-                                )
-                            }
+                            Text(
+                                profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = contentColor,
+                                modifier = Modifier.size(38.dp).wrapContentSize(Alignment.Center)
+                            )
                         }
                     }
                 }
@@ -390,6 +385,7 @@ fun ChatScreen(
                     if (messages.isEmpty()) {
                         EmptyState(
                             modifier = Modifier.fillMaxSize(),
+                            usesLightText = activeBg.usesLightText,
                             onSuggestion = { prefill -> inputText = prefill }
                         )
                     } else {
@@ -514,7 +510,7 @@ fun ChatScreen(
                         value = inputText,
                         onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("hi", color = contentColor.copy(alpha = 0.5f), fontSize = 17.sp) },
+                        placeholder = { Text("Ask Secure AI", color = if (activeBg.usesLightText) Color.White else Color.Gray, fontSize = 17.sp) },
                         shape = RoundedCornerShape(25.dp),
                         maxLines = 6,
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
@@ -634,7 +630,7 @@ fun ChatScreen(
 private data class Suggestion(val icon: Int, val label: String, val prefill: String)
 
 @Composable
-private fun EmptyState(modifier: Modifier = Modifier, onSuggestion: (String) -> Unit) {
+private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = false, onSuggestion: (String) -> Unit) {
     val profile by UserProfileManager.profile.collectAsState()
     val greeting = remember {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
@@ -645,6 +641,7 @@ private fun EmptyState(modifier: Modifier = Modifier, onSuggestion: (String) -> 
         }
     }
     val firstName = profile?.userName?.split(" ")?.firstOrNull()?.ifEmpty { null }
+    val textColor = if (usesLightText) Color.White else MaterialTheme.colorScheme.onBackground
 
     val suggestions = remember {
         listOf(
@@ -662,18 +659,25 @@ private fun EmptyState(modifier: Modifier = Modifier, onSuggestion: (String) -> 
     ) {
         Spacer(Modifier.weight(1f))
 
-        Text(
-            text = if (firstName != null) "$greeting, $firstName" else greeting,
-            fontSize = 28.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Spacer(Modifier.height(6.dp))
-        Text(
-            text = "Your private AI assistant",
-            fontSize = 15.sp,
-            color = TextSecondary
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .aspectRatio(16f / 9f)
+                .clip(RoundedCornerShape(16.dp))
+                .background(textColor.copy(alpha = 0.08f))
+                .then(
+                    Modifier.padding(1.dp)
+                ),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (firstName != null) "$greeting, $firstName" else greeting,
+                fontSize = 28.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = textColor
+            )
+        }
 
         Spacer(Modifier.height(24.dp))
 
