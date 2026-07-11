@@ -300,15 +300,25 @@ fun ChatScreen(
                         )
                     }
 
-                    IconButton(onClick = onOpenProfile) {
-                        if (AuthManager.isAnonymous) {
-                            Icon(
-                                Icons.Default.Settings,
-                                contentDescription = "Settings",
-                                tint = contentColor,
-                                modifier = Modifier.size(22.dp)
+                    if (AuthManager.isAnonymous) {
+                        Surface(
+                            onClick = {
+                                signInFeature = "your account"
+                                showSignIn = true
+                            },
+                            shape = RoundedCornerShape(20.dp),
+                            color = BubbleUser
+                        ) {
+                            Text(
+                                "Sign In",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = Color.White,
+                                modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
                             )
-                        } else {
+                        }
+                    } else {
+                        IconButton(onClick = onOpenProfile) {
                             Box(
                                 modifier = Modifier
                                     .size(38.dp)
