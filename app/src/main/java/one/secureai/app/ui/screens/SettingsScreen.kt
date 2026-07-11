@@ -54,7 +54,6 @@ import one.secureai.app.auth.UserProfileManager
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.theme.Brand
 
-private val SectionBg = Color(0xFF1A1A1C)
 private val LabelSecondary = Color(0xFF8E8E93)
 
 @Composable
@@ -321,7 +320,7 @@ private fun SettingsSection(title: String, content: @Composable () -> Unit) {
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(SectionBg)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
     ) { content() }
     Spacer(Modifier.height(24.dp))
 }

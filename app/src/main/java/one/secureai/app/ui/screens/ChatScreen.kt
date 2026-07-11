@@ -93,7 +93,6 @@ import java.util.Calendar
 import java.util.Locale
 
 private val BubbleUser = Color(0xFF2563EB)
-private val BubbleAssistant = Color(0xFF1C1C1E)
 private val TextSecondary = Color(0xFF8E8E93)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -268,7 +267,7 @@ fun ChatScreen(
                             modifier = Modifier
                                 .size(20.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onBackground),
+                                .background(MaterialTheme.colorScheme.surfaceVariant),
                         )
                     }
 
@@ -668,7 +667,7 @@ private fun EmptyState(modifier: Modifier = Modifier, onSuggestion: (String) -> 
                 Surface(
                     onClick = { onSuggestion(s.prefill) },
                     shape = RoundedCornerShape(14.dp),
-                    color = BubbleAssistant,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     modifier = Modifier.height(42.dp)
                 ) {
                     Row(
