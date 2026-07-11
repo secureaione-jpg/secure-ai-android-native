@@ -1,5 +1,8 @@
 -keep class one.secureai.app.** { *; }
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.play.** { *; }
+-keep class androidx.credentials.** { *; }
+-keep class com.google.android.libraries.identity.googleid.** { *; }
 -dontwarn com.google.firebase.**
 -dontwarn com.google.android.play.**
+-dontwarn androidx.credentials.**
