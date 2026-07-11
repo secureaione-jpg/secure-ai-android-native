@@ -514,7 +514,7 @@ fun ChatScreen(
                         value = inputText,
                         onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("Chat with Secure AI", color = contentColor.copy(alpha = 0.5f), fontSize = 17.sp) },
+                        placeholder = { Text("hi", color = contentColor.copy(alpha = 0.5f), fontSize = 17.sp) },
                         shape = RoundedCornerShape(25.dp),
                         maxLines = 6,
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),

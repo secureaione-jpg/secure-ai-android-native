@@ -153,8 +153,8 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             Spacer(Modifier.height(8.dp))
 
-            // Chat section
-            SettingsSection("Chat") {
+            // Preferences section
+            SettingsSection("Preferences") {
                 SettingsToggle(
                     icon = R.drawable.ic_lock,
                     label = "Incognito mode",
