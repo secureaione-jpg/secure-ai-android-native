@@ -82,6 +82,7 @@ import one.secureai.app.auth.UserProfileManager
 import one.secureai.app.chat.ChatMessage
 import one.secureai.app.chat.ChatRole
 import one.secureai.app.chat.ChatViewModel
+import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.network.TTSPlayer
@@ -125,6 +126,8 @@ fun ChatScreen(
     val profile by UserProfileManager.profile.collectAsState()
     val isIncognito = Prefs.isIncognito(context)
     val activeProject by ProjectStore.activeProject.collectAsState()
+    val activeBg = ChatBackground.fromKey(Prefs.chatBackground(context))
+    val contentColor = if (activeBg.usesLightText) Color.White else MaterialTheme.colorScheme.onBackground
 
     // Voice input state
     var isRecording by remember { mutableStateOf(false) }
@@ -249,9 +252,13 @@ fun ChatScreen(
         onToggle = { showSidebar = it },
         callbacks = sidebarCallbacks
     ) {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (activeBg.gradient.isNotEmpty()) Modifier.background(Brush.verticalGradient(activeBg.gradient))
+                    else Modifier.background(MaterialTheme.colorScheme.background)
+                )
         ) {
             Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
                 // Header
@@ -280,7 +287,7 @@ fun ChatScreen(
                                 activeProject!!.name,
                                 fontSize = 20.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.onBackground,
+                                color = contentColor,
                                 maxLines = 1
                             )
                         }
@@ -289,7 +296,7 @@ fun ChatScreen(
                             "Secure AI",
                             fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = contentColor
                         )
                     }
 
@@ -298,7 +305,7 @@ fun ChatScreen(
                             Icon(
                                 Icons.Default.Settings,
                                 contentDescription = "Settings",
-                                tint = MaterialTheme.colorScheme.onBackground,
+                                tint = contentColor,
                                 modifier = Modifier.size(22.dp)
                             )
                         } else {
@@ -405,6 +412,7 @@ fun ChatScreen(
                     }
 
                     if (messages.isNotEmpty()) {
+                        val scrimColor = if (activeBg.gradient.isNotEmpty()) activeBg.gradient.last() else MaterialTheme.colorScheme.background
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -414,7 +422,7 @@ fun ChatScreen(
                                     Brush.verticalGradient(
                                         colors = listOf(
                                             Color.Transparent,
-                                            MaterialTheme.colorScheme.background
+                                            scrimColor
                                         )
                                     )
                                 )
@@ -437,14 +445,14 @@ fun ChatScreen(
                             modifier = Modifier
                                 .size(50.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)),
+                                .background(contentColor.copy(alpha = 0.08f)),
                             contentAlignment = Alignment.Center
                         ) {
                             IconButton(onClick = { showPlusMenu = true }) {
                                 Icon(
                                     painter = painterResource(R.drawable.ic_plus),
                                     contentDescription = "Attachments",
-                                    tint = MaterialTheme.colorScheme.onBackground,
+                                    tint = contentColor,
                                     modifier = Modifier.size(22.dp)
                                 )
                             }
@@ -496,17 +504,17 @@ fun ChatScreen(
                         value = inputText,
                         onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("Chat with Secure AI", color = TextSecondary, fontSize = 17.sp) },
+                        placeholder = { Text("Chat with Secure AI", color = contentColor.copy(alpha = 0.5f), fontSize = 17.sp) },
                         shape = RoundedCornerShape(25.dp),
                         maxLines = 6,
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = MaterialTheme.colorScheme.onBackground,
-                            unfocusedTextColor = MaterialTheme.colorScheme.onBackground,
-                            focusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
-                            unfocusedContainerColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
-                            focusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
-                            unfocusedBorderColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                            focusedTextColor = contentColor,
+                            unfocusedTextColor = contentColor,
+                            focusedContainerColor = contentColor.copy(alpha = 0.08f),
+                            unfocusedContainerColor = contentColor.copy(alpha = 0.08f),
+                            focusedBorderColor = contentColor.copy(alpha = 0.08f),
+                            unfocusedBorderColor = contentColor.copy(alpha = 0.08f),
                             cursorColor = BubbleUser
                         )
                     )
@@ -579,14 +587,14 @@ fun ChatScreen(
                                 modifier = Modifier
                                     .size(50.dp)
                                     .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f)),
+                                    .background(contentColor.copy(alpha = 0.08f)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 IconButton(onClick = { startVoiceInput() }) {
                                     Icon(
                                         painter = painterResource(R.drawable.ic_mic),
                                         contentDescription = "Voice input",
-                                        tint = MaterialTheme.colorScheme.onBackground,
+                                        tint = contentColor,
                                         modifier = Modifier.size(20.dp)
                                     )
                                 }

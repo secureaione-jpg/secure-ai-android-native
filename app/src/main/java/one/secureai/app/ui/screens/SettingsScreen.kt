@@ -4,7 +4,9 @@ import android.content.Intent
 import android.net.Uri
 import androidx.biometric.BiometricManager
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +23,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -51,6 +54,7 @@ import one.secureai.app.BuildConfig
 import one.secureai.app.R
 import one.secureai.app.auth.AuthManager
 import one.secureai.app.auth.UserProfileManager
+import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.theme.Brand
 
@@ -69,6 +73,7 @@ fun SettingsScreen(onBack: () -> Unit) {
     var hapticsEnabled by remember { mutableStateOf(Prefs.isHapticsEnabled(context)) }
     var incognito by remember { mutableStateOf(Prefs.isIncognito(context)) }
     var textSize by remember { mutableIntStateOf(Prefs.getTextSize(context)) }
+    var chatBackground by remember { mutableStateOf(ChatBackground.fromKey(Prefs.chatBackground(context))) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
 
     Box(
@@ -170,6 +175,48 @@ fun SettingsScreen(onBack: () -> Unit) {
                         Prefs.setTextSize(context, it)
                     }
                 )
+                Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                    Text(
+                        "Background",
+                        fontSize = 13.sp,
+                        color = LabelSecondary,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp)
+                    ) {
+                        ChatBackground.entries.forEach { bg ->
+                            val colors = if (bg == ChatBackground.SYSTEM) listOf(
+                                MaterialTheme.colorScheme.background,
+                                MaterialTheme.colorScheme.background
+                            ) else bg.gradient
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 52.dp, height = 72.dp)
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .background(Brush.verticalGradient(colors))
+                                    .then(
+                                        if (bg == chatBackground) Modifier.border(
+                                            2.dp, Brand, RoundedCornerShape(10.dp)
+                                        ) else Modifier
+                                    )
+                                    .clickable {
+                                        chatBackground = bg
+                                        Prefs.setChatBackground(context, bg.key)
+                                    },
+                                contentAlignment = Alignment.BottomCenter
+                            ) {
+                                Text(
+                                    bg.label,
+                                    fontSize = 9.sp,
+                                    color = if (bg.usesLightText) Color.White else MaterialTheme.colorScheme.onBackground,
+                                    modifier = Modifier.padding(bottom = 4.dp)
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // Privacy & Security
