@@ -32,7 +32,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     private val _selectedModel = MutableStateFlow(AIModel.AUTO)
     val selectedModel: StateFlow<AIModel> = _selectedModel.asStateFlow()
 
-    private var currentJob: Job? = null
+    private var streamJob: Job? = null
+    private var imageJob: Job? = null
     private var currentConversationId: String? = null
     private val savedMessageIds = mutableSetOf<String>()
 
@@ -56,7 +57,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _messages.update { it + userMessage + assistantMessage }
         _isStreaming.value = true
 
-        currentJob = viewModelScope.launch {
+        streamJob = viewModelScope.launch {
             try {
                 remote.sendMessageStreaming(
                     history = _messages.value.dropLast(1),
@@ -112,7 +113,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _messages.update { it + userMessage + assistantMessage }
         _isStreaming.value = true
 
-        currentJob = viewModelScope.launch {
+        imageJob = viewModelScope.launch {
             try {
                 val bytes = imageService.generate(prompt)
                 _messages.update { list ->
@@ -137,7 +138,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun stop() {
-        currentJob?.cancel()
+        streamJob?.cancel()
+        imageJob?.cancel()
         _isStreaming.value = false
         _messages.update { list ->
             list.map { m -> if (m.isStreaming) m.copy(isStreaming = false) else m }
@@ -145,7 +147,8 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun clearHistory() {
-        currentJob?.cancel()
+        streamJob?.cancel()
+        imageJob?.cancel()
         _isStreaming.value = false
         _messages.value = emptyList()
         _errorMessage.value = null
@@ -164,7 +167,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _messages.update { it + userMessage + assistantMessage }
         _isStreaming.value = true
 
-        currentJob = viewModelScope.launch {
+        streamJob = viewModelScope.launch {
             try {
                 remote.sendMessageStreaming(
                     history = _messages.value.filter { !it.isStreaming },

@@ -85,7 +85,10 @@ fun SignInPromptScreen(feature: String = "this", onDismiss: () -> Unit) {
 
         // Google sign-in
         Button(
-            onClick = { scope.launch { AuthManager.signInWithGoogle(context) } },
+            onClick = { scope.launch {
+                AuthManager.signInWithGoogle(context)
+                if (!AuthManager.isAnonymous) onDismiss()
+            } },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(54.dp),

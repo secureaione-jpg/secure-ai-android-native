@@ -35,7 +35,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -126,6 +125,8 @@ fun ChatScreen(
     var showSidebar by remember { mutableStateOf(false) }
     var showPlusMenu by remember { mutableStateOf(false) }
     val profile by UserProfileManager.profile.collectAsState()
+    val authUser by AuthManager.user.collectAsState()
+    val isAnon = authUser?.isAnonymous ?: true
     val isIncognito = Prefs.isIncognito(context)
     val activeProject by ProjectStore.activeProject.collectAsState()
     val activeBg = ChatBackground.fromKey(Prefs.chatBackground(context))
@@ -195,6 +196,7 @@ fun ChatScreen(
 
     LaunchedEffect(Unit) {
         AuthManager.signInAnonymouslyIfNeeded()
+        UserProfileManager.load()
     }
 
     fun startVoiceInput() {
@@ -234,10 +236,22 @@ fun ChatScreen(
         onApps = onOpenApps,
         onChats = onOpenSavedChats,
         onHistory = onOpenSavedChats,
-        onLibrary = onOpenLibrary,
-        onPhotos = onOpenPhotos,
-        onDocuments = onOpenDocuments,
-        onMemories = onOpenMemory,
+        onLibrary = {
+            if (AuthManager.isAnonymous) { signInFeature = "library"; showSignIn = true }
+            else onOpenLibrary()
+        },
+        onPhotos = {
+            if (AuthManager.isAnonymous) { signInFeature = "photos"; showSignIn = true }
+            else onOpenPhotos()
+        },
+        onDocuments = {
+            if (AuthManager.isAnonymous) { signInFeature = "documents"; showSignIn = true }
+            else onOpenDocuments()
+        },
+        onMemories = {
+            if (AuthManager.isAnonymous) { signInFeature = "memories"; showSignIn = true }
+            else onOpenMemory()
+        },
         onProjects = onOpenProjects,
         onTeam = onOpenTeam,
         onProfile = onOpenProfile,
@@ -302,20 +316,20 @@ fun ChatScreen(
                         )
                     }
 
-                    if (AuthManager.isAnonymous) {
+                    if (isAnon) {
                         Surface(
                             onClick = {
                                 signInFeature = "your account"
                                 showSignIn = true
                             },
                             shape = RoundedCornerShape(20.dp),
-                            color = BubbleUser
+                            color = Color.Transparent
                         ) {
                             Text(
                                 "Sign In",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = Color.White,
+                                color = contentColor,
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp)
                             )
                         }
@@ -473,7 +487,12 @@ fun ChatScreen(
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_camera), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
-                                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                                    if (AuthManager.isAnonymous) {
+                                        signInFeature = "camera"
+                                        showSignIn = true
+                                    } else {
+                                        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                                    }
                                 }
                             )
                             DropdownMenuItem(
@@ -481,7 +500,12 @@ fun ChatScreen(
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_photos), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
-                                    photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                    if (AuthManager.isAnonymous) {
+                                        signInFeature = "photos"
+                                        showSignIn = true
+                                    } else {
+                                        photoPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                                    }
                                 }
                             )
                             DropdownMenuItem(
@@ -489,7 +513,12 @@ fun ChatScreen(
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
-                                    filePickerLauncher.launch("*/*")
+                                    if (AuthManager.isAnonymous) {
+                                        signInFeature = "files"
+                                        showSignIn = true
+                                    } else {
+                                        filePickerLauncher.launch("*/*")
+                                    }
                                 }
                             )
                             HorizontalDivider()
@@ -627,8 +656,6 @@ fun ChatScreen(
 
 // Empty State
 
-private data class Suggestion(val icon: Int, val label: String, val prefill: String)
-
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = false, onSuggestion: (String) -> Unit) {
     val profile by UserProfileManager.profile.collectAsState()
@@ -642,15 +669,6 @@ private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = f
     }
     val firstName = profile?.userName?.split(" ")?.firstOrNull()?.ifEmpty { null }
     val textColor = if (usesLightText) Color.White else MaterialTheme.colorScheme.onBackground
-
-    val suggestions = remember {
-        listOf(
-            Suggestion(R.drawable.ic_new_chat, "Ask", "Ask: "),
-            Suggestion(R.drawable.ic_notification, "Remind", "Remind me to "),
-            Suggestion(R.drawable.ic_tasks, "Task", "Create a task: "),
-            Suggestion(R.drawable.ic_memories, "Note", "Create a note: "),
-        )
-    }
 
     Column(
         modifier = modifier,
@@ -677,41 +695,6 @@ private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = f
                 fontWeight = FontWeight.SemiBold,
                 color = textColor
             )
-        }
-
-        Spacer(Modifier.height(24.dp))
-
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            contentPadding = PaddingValues(horizontal = 24.dp)
-        ) {
-            items(suggestions) { s ->
-                Surface(
-                    onClick = { onSuggestion(s.prefill) },
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant,
-                    modifier = Modifier.height(42.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            painter = painterResource(s.icon),
-                            contentDescription = null,
-                            tint = BubbleUser,
-                            modifier = Modifier.size(16.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            s.label,
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                }
-            }
         }
 
         Spacer(Modifier.weight(2f))

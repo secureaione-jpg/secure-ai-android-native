@@ -37,19 +37,29 @@ object UserProfileManager {
         try {
             val doc = db.collection("shared_users").document(u).get().await()
             val data = doc.data
+            val authDisplayName = FirebaseAuth.getInstance().currentUser?.displayName ?: ""
+
             if (data != null) {
-                val name = data["userName"] as? String ?: ""
+                val storedName = data["userName"] as? String ?: ""
+                val name = storedName.ifEmpty { authDisplayName }
                 _profile.value = UserProfile(
                     userId = u,
                     userName = name,
                     username = data["username"] as? String ?: "",
-                    userInitials = name.take(1).uppercase(),
+                    userInitials = data["userInitials"] as? String ?: generateInitials(name),
                     profileImageURL = data["profileImageURL"] as? String
                 )
                 _isOnboarded.value = name.isNotBlank()
+                if (storedName.isEmpty() && name.isNotEmpty()) {
+                    saveName(name, data["username"] as? String ?: "")
+                }
             } else {
-                _profile.value = UserProfile(userId = u)
-                _isOnboarded.value = false
+                val name = authDisplayName
+                _profile.value = UserProfile(userId = u, userName = name, userInitials = generateInitials(name))
+                _isOnboarded.value = name.isNotBlank()
+                if (name.isNotEmpty()) {
+                    saveName(name, "")
+                }
             }
         } catch (_: Exception) {
             _profile.value = UserProfile(userId = u)
@@ -60,10 +70,11 @@ object UserProfileManager {
         val u = uid ?: return
         val trimmedName = name.trim()
         val trimmedUsername = username.trim().lowercase()
+        val initials = generateInitials(trimmedName)
         val data = hashMapOf<String, Any>(
             "userName" to trimmedName,
             "username" to trimmedUsername,
-            "userInitials" to trimmedName.take(1).uppercase(),
+            "userInitials" to initials,
             "updatedAt" to Timestamp.now()
         )
         try {
@@ -75,8 +86,8 @@ object UserProfileManager {
             _profile.value = _profile.value?.copy(
                 userName = trimmedName,
                 username = trimmedUsername,
-                userInitials = trimmedName.take(1).uppercase()
-            ) ?: UserProfile(u, trimmedName, trimmedUsername, trimmedName.take(1).uppercase())
+                userInitials = initials
+            ) ?: UserProfile(u, trimmedName, trimmedUsername, initials)
             _isOnboarded.value = true
         } catch (_: Exception) {}
     }
@@ -128,5 +139,17 @@ object UserProfileManager {
     fun reset() {
         _profile.value = null
         _isOnboarded.value = true
+    }
+
+    private fun generateInitials(fullName: String): String {
+        val parts = fullName.trim().split(" ").filter { it.isNotEmpty() }
+        val sb = StringBuilder()
+        parts.firstOrNull()?.firstOrNull()?.let { sb.append(it.uppercaseChar()) }
+        if (parts.size > 1) {
+            parts.lastOrNull()?.firstOrNull()?.let { sb.append(it.uppercaseChar()) }
+        } else if (sb.length == 1) {
+            parts.firstOrNull()?.drop(1)?.firstOrNull()?.let { sb.append(it.uppercaseChar()) }
+        }
+        return sb.toString()
     }
 }

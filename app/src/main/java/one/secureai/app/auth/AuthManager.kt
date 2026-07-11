@@ -90,6 +90,7 @@ object AuthManager {
 
             _user.value = authResult.user
             _authError.value = null
+            UserProfileManager.load()
         } catch (e: Exception) {
             if (e.message?.contains("canceled", ignoreCase = true) != true &&
                 e.message?.contains("cancelled", ignoreCase = true) != true) {
