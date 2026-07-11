@@ -14,22 +14,28 @@ private val DarkColorScheme = darkColorScheme(
     primary = Brand,
     background = Surface,
     surface = Surface,
+    surfaceVariant = SystemGray5,
     onBackground = OnSurface,
     onSurface = OnSurface,
+    secondaryContainer = SecondaryBg,
+    tertiaryContainer = TertiaryBg,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Brand,
     background = SurfaceLight,
     surface = SurfaceLight,
+    surfaceVariant = SecondaryBgLight,
     onBackground = OnSurfaceLight,
     onSurface = OnSurfaceLight,
+    secondaryContainer = SecondaryBgLight,
+    tertiaryContainer = TertiaryBgLight,
 )
 
 @Composable
 fun SecureAITheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

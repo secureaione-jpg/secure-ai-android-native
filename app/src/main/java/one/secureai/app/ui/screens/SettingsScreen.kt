@@ -16,17 +16,25 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,26 +43,39 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.launch
 import one.secureai.app.BuildConfig
 import one.secureai.app.R
 import one.secureai.app.auth.AuthManager
+import one.secureai.app.auth.UserProfileManager
 import one.secureai.app.data.Prefs
+import one.secureai.app.ui.theme.Brand
+
+private val SectionBg = Color(0xFF1A1A1C)
+private val LabelSecondary = Color(0xFF8E8E93)
 
 @Composable
 fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val profile by UserProfileManager.profile.collectAsState()
     val biometricAvailable = BiometricManager.from(context)
         .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
             BiometricManager.BIOMETRIC_SUCCESS
 
     var biometricEnabled by remember { mutableStateOf(Prefs.isBiometricEnabled(context)) }
+    var hapticsEnabled by remember { mutableStateOf(Prefs.isHapticsEnabled(context)) }
+    var incognito by remember { mutableStateOf(Prefs.isIncognito(context)) }
+    var textSize by remember { mutableIntStateOf(Prefs.getTextSize(context)) }
+    var showDeleteConfirm by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0B0B0C))
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -63,7 +84,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Header
+            // Header with back button
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -73,7 +94,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                 Icon(
                     painter = painterResource(R.drawable.ic_back),
                     contentDescription = "Back",
-                    tint = Color(0xFF2563EB),
+                    tint = Brand,
                     modifier = Modifier
                         .size(24.dp)
                         .clickable { onBack() }
@@ -83,14 +104,76 @@ fun SettingsScreen(onBack: () -> Unit) {
                     "Settings",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFFF5F5F7)
+                    color = MaterialTheme.colorScheme.onBackground
                 )
                 Spacer(Modifier.weight(1f))
                 Spacer(Modifier.size(24.dp))
             }
 
+            // Profile header
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(72.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = profile?.userName?.ifEmpty { "Guest" } ?: "Guest",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                if (!AuthManager.isAnonymous) {
+                    Text(
+                        text = AuthManager.user.value?.email ?: "",
+                        fontSize = 14.sp,
+                        color = LabelSecondary
+                    )
+                }
+            }
+
             Spacer(Modifier.height(8.dp))
 
+            // Chat section
+            SettingsSection("Chat") {
+                SettingsToggle(
+                    icon = R.drawable.ic_lock,
+                    label = "Incognito mode",
+                    sublabel = "Messages are not saved",
+                    checked = incognito,
+                    onChecked = {
+                        incognito = it
+                        Prefs.setIncognito(context, it)
+                    }
+                )
+                SettingsSegment(
+                    icon = R.drawable.ic_new_chat,
+                    label = "Text size",
+                    options = listOf("Small", "Medium", "Large"),
+                    selected = textSize,
+                    onSelected = {
+                        textSize = it
+                        Prefs.setTextSize(context, it)
+                    }
+                )
+            }
+
+            // Privacy & Security
             SettingsSection("Privacy & Security") {
                 if (biometricAvailable) {
                     SettingsToggle(
@@ -104,6 +187,16 @@ fun SettingsScreen(onBack: () -> Unit) {
                         }
                     )
                 }
+                SettingsToggle(
+                    icon = R.drawable.ic_notification,
+                    label = "Haptic feedback",
+                    sublabel = "Vibrate on interactions",
+                    checked = hapticsEnabled,
+                    onChecked = {
+                        hapticsEnabled = it
+                        Prefs.setHapticsEnabled(context, it)
+                    }
+                )
                 SettingsLink(
                     icon = R.drawable.ic_lock,
                     label = "Privacy policy",
@@ -111,8 +204,16 @@ fun SettingsScreen(onBack: () -> Unit) {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://secureai.one/privacy")))
                     }
                 )
+                SettingsLink(
+                    icon = R.drawable.ic_document,
+                    label = "Terms of service",
+                    onClick = {
+                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://secureai.one/terms")))
+                    }
+                )
             }
 
+            // Support
             SettingsSection("Support") {
                 SettingsLink(
                     icon = R.drawable.ic_offline,
@@ -134,6 +235,7 @@ fun SettingsScreen(onBack: () -> Unit) {
                 )
             }
 
+            // Account
             SettingsSection("Account") {
                 if (AuthManager.isAnonymous) {
                     SettingsInfo(label = "Status", value = "Guest")
@@ -150,9 +252,26 @@ fun SettingsScreen(onBack: () -> Unit) {
                             onBack()
                         }
                     )
+                    SettingsLink(
+                        icon = R.drawable.ic_back,
+                        label = "Delete app data",
+                        tint = Color(0xFFFF3B30),
+                        onClick = {
+                            scope.launch {
+                                UserProfileManager.deleteAppData()
+                            }
+                        }
+                    )
+                    SettingsLink(
+                        icon = R.drawable.ic_back,
+                        label = "Delete account",
+                        tint = Color(0xFFFF3B30),
+                        onClick = { showDeleteConfirm = true }
+                    )
                 }
             }
 
+            // About
             SettingsSection("About") {
                 SettingsInfo(label = "Version", value = BuildConfig.VERSION_NAME)
                 SettingsInfo(label = "Build", value = BuildConfig.VERSION_CODE.toString())
@@ -160,6 +279,31 @@ fun SettingsScreen(onBack: () -> Unit) {
 
             Spacer(Modifier.height(32.dp))
         }
+    }
+
+    if (showDeleteConfirm) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirm = false },
+            title = { Text("Delete Account") },
+            text = { Text("This will permanently delete your account and all data. This cannot be undone.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDeleteConfirm = false
+                    scope.launch {
+                        UserProfileManager.deleteAccount()
+                        AuthManager.signOut()
+                        onBack()
+                    }
+                }) {
+                    Text("Delete", color = Color(0xFFFF3B30))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirm = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
     }
 }
 
@@ -169,7 +313,7 @@ private fun SettingsSection(title: String, content: @Composable () -> Unit) {
         text = title.uppercase(),
         fontSize = 12.sp,
         fontWeight = FontWeight.SemiBold,
-        color = Color(0xFF8E8E93),
+        color = LabelSecondary,
         letterSpacing = 0.8.sp,
         modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
     )
@@ -177,7 +321,7 @@ private fun SettingsSection(title: String, content: @Composable () -> Unit) {
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF1A1A1C))
+            .background(SectionBg)
     ) { content() }
     Spacer(Modifier.height(24.dp))
 }
@@ -190,21 +334,21 @@ private fun SettingsToggle(icon: Int, label: String, sublabel: String, checked: 
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(painterResource(icon), null, tint = Color(0xFF2563EB), modifier = Modifier.size(20.dp))
+        Icon(painterResource(icon), null, tint = Brand, modifier = Modifier.size(20.dp))
         Column(modifier = Modifier.weight(1f).padding(horizontal = 14.dp)) {
-            Text(label, fontSize = 16.sp, color = Color(0xFFF5F5F7))
-            Text(sublabel, fontSize = 13.sp, color = Color(0xFF8E8E93))
+            Text(label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
+            Text(sublabel, fontSize = 13.sp, color = LabelSecondary)
         }
         Switch(
             checked = checked,
             onCheckedChange = onChecked,
-            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Color(0xFF2563EB))
+            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Brand)
         )
     }
 }
 
 @Composable
-private fun SettingsLink(icon: Int, label: String, onClick: () -> Unit) {
+private fun SettingsLink(icon: Int, label: String, tint: Color = Brand, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -212,9 +356,14 @@ private fun SettingsLink(icon: Int, label: String, onClick: () -> Unit) {
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(painterResource(icon), null, tint = Color(0xFF2563EB), modifier = Modifier.size(20.dp))
-        Text(label, fontSize = 16.sp, color = Color(0xFFF5F5F7), modifier = Modifier.weight(1f).padding(start = 14.dp))
-        Icon(painterResource(R.drawable.ic_chevron), null, tint = Color(0xFF3A3A3C), modifier = Modifier.size(16.dp))
+        Icon(painterResource(icon), null, tint = tint, modifier = Modifier.size(20.dp))
+        Text(
+            label,
+            fontSize = 16.sp,
+            color = if (tint == Brand) MaterialTheme.colorScheme.onBackground else tint,
+            modifier = Modifier.weight(1f).padding(start = 14.dp)
+        )
+        Icon(painterResource(R.drawable.ic_chevron), null, tint = LabelSecondary.copy(alpha = 0.5f), modifier = Modifier.size(16.dp))
     }
 }
 
@@ -226,7 +375,44 @@ private fun SettingsInfo(label: String, value: String) {
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(label, fontSize = 16.sp, color = Color(0xFFF5F5F7), modifier = Modifier.weight(1f))
-        Text(value, fontSize = 15.sp, color = Color(0xFF8E8E93))
+        Text(label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
+        Text(value, fontSize = 15.sp, color = LabelSecondary)
+    }
+}
+
+@Composable
+private fun SettingsSegment(icon: Int, label: String, options: List<String>, selected: Int, onSelected: (Int) -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(painterResource(icon), null, tint = Brand, modifier = Modifier.size(20.dp))
+        Text(
+            label,
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            modifier = Modifier.padding(start = 14.dp)
+        )
+        Spacer(Modifier.weight(1f))
+        Row {
+            options.forEachIndexed { idx, option ->
+                val isSelected = idx == selected
+                Text(
+                    text = option,
+                    fontSize = 13.sp,
+                    fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
+                    color = if (isSelected) Brand else LabelSecondary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(if (isSelected) Brand.copy(alpha = 0.15f) else Color.Transparent)
+                        .clickable { onSelected(idx) }
+                        .padding(horizontal = 10.dp, vertical = 6.dp)
+                )
+                if (idx < options.lastIndex) Spacer(Modifier.width(4.dp))
+            }
+        }
     }
 }

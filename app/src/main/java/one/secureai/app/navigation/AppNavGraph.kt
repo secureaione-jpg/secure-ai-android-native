@@ -14,6 +14,10 @@ import one.secureai.app.ui.screens.NotificationPermissionScreen
 import one.secureai.app.ui.screens.SavedChatsScreen
 import one.secureai.app.ui.screens.SettingsScreen
 import one.secureai.app.ui.screens.TasksScreen
+import one.secureai.app.ui.screens.LibraryScreen
+import one.secureai.app.ui.screens.PaywallScreen
+import one.secureai.app.ui.screens.SidebarCustomizeScreen
+import one.secureai.app.ui.screens.TeamScreen
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
 
 sealed class Screen(val route: String) {
@@ -25,6 +29,13 @@ sealed class Screen(val route: String) {
     object Tasks : Screen("tasks")
     object Memory : Screen("memory")
     object SavedChats : Screen("saved_chats")
+    object Library : Screen("library")
+    object Photos : Screen("photos")
+    object Documents : Screen("documents")
+    object Paywall : Screen("paywall")
+    object Profile : Screen("profile")
+    object Apps : Screen("apps")
+    object Team : Screen("team")
 }
 
 @Composable
@@ -86,8 +97,30 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onOpenSettings = { navController.navigate(Screen.Settings.route) },
                 onOpenTasks = { navController.navigate(Screen.Tasks.route) },
                 onOpenMemory = { navController.navigate(Screen.Memory.route) },
-                onOpenSavedChats = { navController.navigate(Screen.SavedChats.route) }
+                onOpenSavedChats = { navController.navigate(Screen.SavedChats.route) },
+                onOpenLibrary = { navController.navigate(Screen.Library.route) },
+                onOpenPhotos = { navController.navigate(Screen.Library.route) },
+                onOpenDocuments = { navController.navigate(Screen.Library.route) },
+                onOpenPaywall = { navController.navigate(Screen.Paywall.route) },
+                onOpenProfile = { navController.navigate(Screen.Profile.route) },
+                onOpenApps = { navController.navigate(Screen.Apps.route) },
             )
+        }
+
+        composable(Screen.Apps.route) {
+            SidebarCustomizeScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Library.route) {
+            LibraryScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Paywall.route) {
+            PaywallScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Profile.route) {
+            SettingsScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Screen.Settings.route) {
@@ -100,6 +133,10 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
 
         composable(Screen.Memory.route) {
             MemoryScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Team.route) {
+            TeamScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Screen.SavedChats.route) {
