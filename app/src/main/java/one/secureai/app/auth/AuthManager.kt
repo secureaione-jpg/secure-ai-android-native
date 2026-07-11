@@ -53,16 +53,6 @@ object AuthManager {
     }
 
     suspend fun signInWithGoogle(context: Context) {
-        val app = FirebaseApp.getInstance()
-        val clientId = app.options.getGcmSenderId()?.let {
-            // The web client ID follows a pattern — but we can read it from
-            // the google-services.json via the Firebase options. The actual
-            // OAuth web client ID for Credential Manager is different from
-            // the GCM sender ID, so we use the project's known web client ID.
-            // This is set in google-services.json under oauth_client type 3.
-            null
-        }
-
         val webClientId = getWebClientId(context) ?: run {
             _authError.value = "Google Sign-In not configured."
             return

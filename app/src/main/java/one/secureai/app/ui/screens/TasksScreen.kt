@@ -20,7 +20,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.outlined.Circle
+import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -194,7 +194,7 @@ private fun TaskRow(task: TaskItem, onToggle: () -> Unit, onDelete: () -> Unit) 
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = if (task.done) Icons.Default.CheckCircle else Icons.Outlined.Circle,
+                imageVector = if (task.done) Icons.Default.CheckCircle else Icons.Outlined.RadioButtonUnchecked,
                 contentDescription = null,
                 tint = if (task.done) BrandBlue else MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(24.dp)

@@ -19,7 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -150,7 +150,7 @@ fun MemoryScreen(onBack: () -> Unit) {
                     shape = CircleShape,
                     modifier = Modifier.size(36.dp)
                 ) {
-                    Icon(Icons.Default.ArrowUpward, contentDescription = "Add", modifier = Modifier.size(18.dp))
+                    Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Add", modifier = Modifier.size(18.dp))
                 }
             }
         }
