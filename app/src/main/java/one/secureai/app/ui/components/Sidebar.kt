@@ -296,6 +296,13 @@ private fun SidebarContent(
                     }
                 )
             }
+
+            // 10. Privacy
+            NavRow(
+                iconRes = R.drawable.ic_lock,
+                label = "Privacy",
+                onClick = { callbacks.onProfile(); onCollapse() }
+            )
         }
 
         // Bottom bar
