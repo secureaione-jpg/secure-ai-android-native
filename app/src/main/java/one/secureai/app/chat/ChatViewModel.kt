@@ -167,16 +167,15 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         currentJob = viewModelScope.launch {
             try {
                 remote.sendMessageStreaming(
-                    messages = _messages.value.filter { !it.isStreaming },
-                    model = _selectedModel.value.wireValue,
-                    onToken = { token ->
-                        _messages.update { list ->
-                            list.map { m ->
-                                if (m.id == assistantMessage.id) m.copy(content = m.content + token) else m
-                            }
+                    history = _messages.value.filter { !it.isStreaming },
+                    model = _selectedModel.value.wireValue
+                ) { chunk ->
+                    _messages.update { list ->
+                        list.map { m ->
+                            if (m.id == assistantMessage.id) m.copy(content = m.content + chunk) else m
                         }
                     }
-                )
+                }
                 _messages.update { list ->
                     list.map { m ->
                         if (m.id == assistantMessage.id) m.copy(isStreaming = false) else m
