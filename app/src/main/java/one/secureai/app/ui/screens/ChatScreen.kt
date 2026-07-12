@@ -483,15 +483,32 @@ fun ChatScreen(
                             onDismissRequest = { showPlusMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Camera") },
-                                leadingIcon = { Icon(painterResource(R.drawable.ic_camera), null, modifier = Modifier.size(20.dp)) },
+                                text = { Text("Incognito") },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_lock), null, modifier = Modifier.size(20.dp)) },
+                                onClick = {
+                                    showPlusMenu = false
+                                    Prefs.setIncognito(context, !Prefs.isIncognito(context))
+                                }
+                            )
+                            HorizontalDivider()
+                            DropdownMenuItem(
+                                text = { Text("New chat") },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_new_chat), null, modifier = Modifier.size(20.dp)) },
+                                onClick = {
+                                    showPlusMenu = false
+                                    viewModel.clearHistory()
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Files") },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
                                     if (AuthManager.isAnonymous) {
-                                        signInFeature = "camera"
+                                        signInFeature = "files"
                                         showSignIn = true
                                     } else {
-                                        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                                        filePickerLauncher.launch("*/*")
                                     }
                                 }
                             )
@@ -509,25 +526,16 @@ fun ChatScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Files") },
-                                leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
+                                text = { Text("Camera") },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_camera), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
                                     if (AuthManager.isAnonymous) {
-                                        signInFeature = "files"
+                                        signInFeature = "camera"
                                         showSignIn = true
                                     } else {
-                                        filePickerLauncher.launch("*/*")
+                                        cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
                                     }
-                                }
-                            )
-                            HorizontalDivider()
-                            DropdownMenuItem(
-                                text = { Text("New chat") },
-                                leadingIcon = { Icon(painterResource(R.drawable.ic_new_chat), null, modifier = Modifier.size(20.dp)) },
-                                onClick = {
-                                    showPlusMenu = false
-                                    viewModel.clearHistory()
                                 }
                             )
                         }
@@ -539,7 +547,7 @@ fun ChatScreen(
                         value = inputText,
                         onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("Ask Secure AI", color = if (activeBg.usesLightText) Color.White else Color.Gray, fontSize = 17.sp) },
+                        placeholder = { Text(context.getString(R.string.ask_secure_ai), color = if (activeBg.usesLightText) Color.White else Color.Gray, fontSize = 17.sp) },
                         shape = RoundedCornerShape(25.dp),
                         maxLines = 6,
                         textStyle = androidx.compose.ui.text.TextStyle(fontSize = 17.sp),
@@ -659,12 +667,13 @@ fun ChatScreen(
 @Composable
 private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = false, onSuggestion: (String) -> Unit) {
     val profile by UserProfileManager.profile.collectAsState()
+    val context = LocalContext.current
     val greeting = remember {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         when {
-            hour < 12 -> "Good morning"
-            hour < 17 -> "Good afternoon"
-            else -> "Good evening"
+            hour < 12 -> context.getString(R.string.greeting_morning)
+            hour < 17 -> context.getString(R.string.greeting_afternoon)
+            else -> context.getString(R.string.greeting_evening)
         }
     }
     val firstName = profile?.userName?.split(" ")?.firstOrNull()?.ifEmpty { null }
@@ -683,18 +692,28 @@ private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = f
                 .padding(horizontal = 20.dp)
                 .aspectRatio(16f / 9f)
                 .clip(RoundedCornerShape(16.dp))
-                .background(textColor.copy(alpha = 0.08f))
+                .background(textColor.copy(alpha = 0.12f))
                 .then(
                     Modifier.padding(1.dp)
                 ),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = if (firstName != null) "$greeting, $firstName" else greeting,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = textColor
-            )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Image(
+                    painter = painterResource(R.drawable.logo_full),
+                    contentDescription = "Secure AI",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(14.dp))
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = if (firstName != null) "$greeting, $firstName" else greeting,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = textColor
+                )
+            }
         }
 
         Spacer(Modifier.weight(2f))

@@ -117,21 +117,21 @@ object Prefs {
     fun getLifetimeMessages(ctx: Context) = prefs(ctx).getInt(KEY_LIFETIME_MESSAGES, 0)
 
     // Sidebar item visibility
-    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, true)
+    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, false)
     fun setShowChats(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_CHATS, v) }
     fun showHistory(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_HISTORY, false)
     fun setShowHistory(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_HISTORY, v) }
     fun showProjects(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS, true)
     fun setShowProjects(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS, v) }
-    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, true)
+    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, false)
     fun setShowPhotos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PHOTOS, v) }
-    fun showDocuments(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_DOCUMENTS, true)
+    fun showDocuments(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_DOCUMENTS, false)
     fun setShowDocuments(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_DOCUMENTS, v) }
-    fun showMemories(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_MEMORIES, true)
+    fun showMemories(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_MEMORIES, false)
     fun setShowMemories(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_MEMORIES, v) }
-    fun showTeam(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_TEAM, true)
+    fun showTeam(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_TEAM, false)
     fun setShowTeam(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_TEAM, v) }
-    fun showProjectsNav(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS_NAV, true)
+    fun showProjectsNav(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS_NAV, false)
     fun setShowProjectsNav(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS_NAV, v) }
 
     fun chatBackground(ctx: Context): String = prefs(ctx).getString(KEY_CHAT_BACKGROUND, "system") ?: "system"

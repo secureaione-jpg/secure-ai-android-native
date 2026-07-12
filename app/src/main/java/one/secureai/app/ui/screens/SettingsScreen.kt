@@ -3,10 +3,12 @@ package one.secureai.app.ui.screens
 import android.content.Intent
 import android.net.Uri
 import androidx.biometric.BiometricManager
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,7 +28,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -58,20 +59,23 @@ import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.theme.Brand
 
-private val LabelSecondary = Color(0xFF8E8E93)
+private val SettingsBg = Color(0xFF000000)
+private val SettingsSurface = Color(0xFF1C1C1E)
+private val SettingsText = Color.White
+private val SettingsSecondary = Color(0xFF8E8E93)
+private val SettingsSeparator = Color(0xFF38383A)
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onOpenPaywall: () -> Unit = {},
+    onOpenNotifications: () -> Unit = {},
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val profile by UserProfileManager.profile.collectAsState()
-    val biometricAvailable = BiometricManager.from(context)
-        .canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK) ==
-            BiometricManager.BIOMETRIC_SUCCESS
 
-    var biometricEnabled by remember { mutableStateOf(Prefs.isBiometricEnabled(context)) }
     var hapticsEnabled by remember { mutableStateOf(Prefs.isHapticsEnabled(context)) }
-    var incognito by remember { mutableStateOf(Prefs.isIncognito(context)) }
     var textSize by remember { mutableIntStateOf(Prefs.getTextSize(context)) }
     var chatBackground by remember { mutableStateOf(ChatBackground.fromKey(Prefs.chatBackground(context))) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
@@ -79,7 +83,7 @@ fun SettingsScreen(onBack: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(SettingsBg)
             .statusBarsPadding()
             .navigationBarsPadding()
     ) {
@@ -88,84 +92,100 @@ fun SettingsScreen(onBack: () -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            // Header with back button
+            // Header — matches iOS "Ajustes" / "Listo"
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back),
-                    contentDescription = "Back",
-                    tint = Brand,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .clickable { onBack() }
-                )
                 Spacer(Modifier.weight(1f))
                 Text(
                     "Settings",
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    color = SettingsText
                 )
                 Spacer(Modifier.weight(1f))
-                Spacer(Modifier.size(24.dp))
-            }
-
-            // Profile header
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Box(
-                    modifier = Modifier
-                        .size(72.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                        fontSize = 28.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-                Spacer(Modifier.height(10.dp))
                 Text(
-                    text = profile?.userName?.ifEmpty { "Guest" } ?: "Guest",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onBackground
+                    "Done",
+                    fontSize = 17.sp,
+                    color = Brand,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .clickable { onBack() }
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
                 )
-                if (!AuthManager.isAnonymous) {
-                    Text(
-                        text = AuthManager.user.value?.email ?: "",
-                        fontSize = 14.sp,
-                        color = LabelSecondary
-                    )
-                }
             }
 
             Spacer(Modifier.height(8.dp))
 
-            // Preferences section
-            SettingsSection("Preferences") {
-                SettingsToggle(
-                    icon = R.drawable.ic_lock,
-                    label = "Incognito mode",
-                    sublabel = "Messages are not saved",
-                    checked = incognito,
+            // Profile card — matches iOS: avatar + short name + @username
+            DarkCard {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { /* open profile editor */ }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(56.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFF3A3A3C)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = SettingsText
+                        )
+                    }
+                    Spacer(Modifier.width(14.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        val displayName = profile?.userName?.split(" ")?.firstOrNull()?.ifEmpty { "Guest" } ?: "Guest"
+                        Text(
+                            text = displayName,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = SettingsText
+                        )
+                        val username = profile?.username
+                        if (!username.isNullOrEmpty()) {
+                            Text(
+                                text = "@$username",
+                                fontSize = 14.sp,
+                                color = SettingsSecondary
+                            )
+                        }
+                    }
+                    Icon(
+                        painterResource(R.drawable.ic_chevron),
+                        null,
+                        tint = SettingsSecondary.copy(alpha = 0.5f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // Preferences section — matches iOS
+            SettingsLabel("Preferences")
+            DarkCard {
+                SettingsToggleRow(
+                    icon = R.drawable.ic_notification,
+                    label = "Haptic feedback",
+                    checked = hapticsEnabled,
                     onChecked = {
-                        incognito = it
-                        Prefs.setIncognito(context, it)
+                        hapticsEnabled = it
+                        Prefs.setHapticsEnabled(context, it)
                     }
                 )
-                SettingsSegment(
+                Divider()
+                SettingsSegmentRow(
                     icon = R.drawable.ic_new_chat,
                     label = "Text size",
                     options = listOf("Small", "Medium", "Large"),
@@ -175,21 +195,23 @@ fun SettingsScreen(onBack: () -> Unit) {
                         Prefs.setTextSize(context, it)
                     }
                 )
+                Divider()
+                // Background picker
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                     Text(
                         "Background",
                         fontSize = 13.sp,
-                        color = LabelSecondary,
+                        color = SettingsSecondary,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Row(
                         modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(10.dp)
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         ChatBackground.entries.forEach { bg ->
                             val colors = if (bg == ChatBackground.SYSTEM) listOf(
-                                MaterialTheme.colorScheme.background,
-                                MaterialTheme.colorScheme.background
+                                Color(0xFF2C2C2E),
+                                Color(0xFF2C2C2E)
                             ) else bg.gradient
                             Box(
                                 modifier = Modifier
@@ -210,7 +232,8 @@ fun SettingsScreen(onBack: () -> Unit) {
                                 Text(
                                     bg.label,
                                     fontSize = 9.sp,
-                                    color = if (bg.usesLightText) Color.White else MaterialTheme.colorScheme.onBackground,
+                                    color = if (bg == ChatBackground.SYSTEM || bg.usesLightText) Color.White
+                                           else Color.Black,
                                     modifier = Modifier.padding(bottom = 4.dp)
                                 )
                             }
@@ -219,108 +242,72 @@ fun SettingsScreen(onBack: () -> Unit) {
                 }
             }
 
-            // Privacy & Security
-            SettingsSection("Privacy & Security") {
-                if (biometricAvailable) {
-                    SettingsToggle(
-                        icon = R.drawable.ic_fingerprint,
-                        label = "Biometric lock",
-                        sublabel = "Require fingerprint or face to open",
-                        checked = biometricEnabled,
-                        onChecked = {
-                            biometricEnabled = it
-                            Prefs.setBiometricEnabled(context, it)
-                        }
-                    )
-                }
-                SettingsToggle(
-                    icon = R.drawable.ic_notification,
-                    label = "Haptic feedback",
-                    sublabel = "Vibrate on interactions",
-                    checked = hapticsEnabled,
-                    onChecked = {
-                        hapticsEnabled = it
-                        Prefs.setHapticsEnabled(context, it)
-                    }
+            Spacer(Modifier.height(24.dp))
+
+            // Notifications — matches iOS
+            DarkCard {
+                SettingsLinkRow(
+                    label = "Notifications",
+                    onClick = onOpenNotifications
                 )
-                SettingsLink(
-                    icon = R.drawable.ic_lock,
-                    label = "Privacy policy",
-                    onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://secureai.one/privacy")))
-                    }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // Subscription — matches iOS
+            SettingsLabel("Subscription")
+            DarkCard {
+                SettingsLinkRow(
+                    label = "Upgrade",
+                    sublabel = "Unlock premium models and higher limits",
+                    onClick = onOpenPaywall
                 )
-                SettingsLink(
-                    icon = R.drawable.ic_document,
-                    label = "Terms of service",
+                Divider()
+                SettingsLinkRow(
+                    label = "Restore purchases",
                     onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://secureai.one/terms")))
+                        // TODO: restore purchases
                     }
                 )
             }
 
-            // Support
-            SettingsSection("Support") {
-                SettingsLink(
-                    icon = R.drawable.ic_offline,
-                    label = "Help & support",
-                    onClick = {
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://secureai.one/support")))
-                    }
-                )
-                SettingsLink(
-                    icon = R.drawable.ic_new_chat,
-                    label = "Send feedback",
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_SENDTO).apply {
-                            data = Uri.parse("mailto:support@secureai.one")
-                            putExtra(Intent.EXTRA_SUBJECT, "Feedback — Secure AI Android")
-                        }
-                        context.startActivity(intent)
-                    }
-                )
-            }
+            Spacer(Modifier.height(24.dp))
 
             // Account
-            SettingsSection("Account") {
-                if (AuthManager.isAnonymous) {
-                    SettingsInfo(label = "Status", value = "Guest")
-                } else {
-                    SettingsInfo(
-                        label = "Email",
-                        value = AuthManager.user.value?.email ?: "Signed in"
-                    )
-                    SettingsLink(
-                        icon = R.drawable.ic_back,
+            if (!AuthManager.isAnonymous) {
+                SettingsLabel("Account")
+                DarkCard {
+                    SettingsLinkRow(
                         label = "Sign out",
                         onClick = {
                             AuthManager.signOut()
                             onBack()
                         }
                     )
-                    SettingsLink(
-                        icon = R.drawable.ic_back,
+                    Divider()
+                    SettingsLinkRow(
                         label = "Delete app data",
                         tint = Color(0xFFFF3B30),
                         onClick = {
-                            scope.launch {
-                                UserProfileManager.deleteAppData()
-                            }
+                            scope.launch { UserProfileManager.deleteAppData() }
                         }
                     )
-                    SettingsLink(
-                        icon = R.drawable.ic_back,
+                    Divider()
+                    SettingsLinkRow(
                         label = "Delete account",
                         tint = Color(0xFFFF3B30),
                         onClick = { showDeleteConfirm = true }
                     )
                 }
+                Spacer(Modifier.height(24.dp))
             }
 
             // About
-            SettingsSection("About") {
-                SettingsInfo(label = "Version", value = BuildConfig.VERSION_NAME)
-                SettingsInfo(label = "Build", value = BuildConfig.VERSION_CODE.toString())
+            SettingsLabel("About")
+            DarkCard {
+                SettingsInfoRow(label = "Version", value = BuildConfig.VERSION_NAME)
+                Divider()
+                SettingsInfoRow(label = "Build", value = BuildConfig.VERSION_CODE.toString())
             }
 
             Spacer(Modifier.height(32.dp))
@@ -353,92 +340,143 @@ fun SettingsScreen(onBack: () -> Unit) {
     }
 }
 
+// Dark card container matching iOS grouped settings style
 @Composable
-private fun SettingsSection(title: String, content: @Composable () -> Unit) {
-    Text(
-        text = title.uppercase(),
-        fontSize = 12.sp,
-        fontWeight = FontWeight.SemiBold,
-        color = LabelSecondary,
-        letterSpacing = 0.8.sp,
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp)
-    )
+private fun DarkCard(content: @Composable () -> Unit) {
     Column(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
+            .clip(RoundedCornerShape(12.dp))
+            .background(SettingsSurface)
     ) { content() }
-    Spacer(Modifier.height(24.dp))
 }
 
 @Composable
-private fun SettingsToggle(icon: Int, label: String, sublabel: String, checked: Boolean, onChecked: (Boolean) -> Unit) {
+private fun Divider() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 50.dp)
+            .height(0.5.dp)
+            .background(SettingsSeparator)
+    )
+}
+
+@Composable
+private fun SettingsLabel(text: String) {
+    Text(
+        text = text,
+        fontSize = 13.sp,
+        fontWeight = FontWeight.Normal,
+        color = SettingsSecondary,
+        modifier = Modifier.padding(horizontal = 32.dp, vertical = 6.dp)
+    )
+}
+
+@Composable
+private fun SettingsToggleRow(
+    icon: Int,
+    label: String,
+    checked: Boolean,
+    onChecked: (Boolean) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 14.dp),
+            .padding(horizontal = 16.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(painterResource(icon), null, tint = Brand, modifier = Modifier.size(20.dp))
-        Column(modifier = Modifier.weight(1f).padding(horizontal = 14.dp)) {
-            Text(label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground)
-            Text(sublabel, fontSize = 13.sp, color = LabelSecondary)
-        }
+        Text(
+            label,
+            fontSize = 16.sp,
+            color = SettingsText,
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 14.dp)
+        )
         Switch(
             checked = checked,
             onCheckedChange = onChecked,
-            colors = SwitchDefaults.colors(checkedThumbColor = Color.White, checkedTrackColor = Brand)
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = Color.White,
+                checkedTrackColor = Brand,
+                uncheckedThumbColor = Color.White,
+                uncheckedTrackColor = Color(0xFF39393D)
+            )
         )
     }
 }
 
 @Composable
-private fun SettingsLink(icon: Int, label: String, tint: Color = Brand, onClick: () -> Unit) {
+private fun SettingsLinkRow(
+    label: String,
+    sublabel: String? = null,
+    tint: Color? = null,
+    onClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(painterResource(icon), null, tint = tint, modifier = Modifier.size(20.dp))
-        Text(
-            label,
-            fontSize = 16.sp,
-            color = if (tint == Brand) MaterialTheme.colorScheme.onBackground else tint,
-            modifier = Modifier.weight(1f).padding(start = 14.dp)
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                label,
+                fontSize = 16.sp,
+                color = tint ?: SettingsText
+            )
+            if (sublabel != null) {
+                Text(
+                    sublabel,
+                    fontSize = 13.sp,
+                    color = SettingsSecondary
+                )
+            }
+        }
+        Icon(
+            painterResource(R.drawable.ic_chevron),
+            null,
+            tint = SettingsSecondary.copy(alpha = 0.5f),
+            modifier = Modifier.size(16.dp)
         )
-        Icon(painterResource(R.drawable.ic_chevron), null, tint = LabelSecondary.copy(alpha = 0.5f), modifier = Modifier.size(16.dp))
     }
 }
 
 @Composable
-private fun SettingsInfo(label: String, value: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(label, fontSize = 16.sp, color = MaterialTheme.colorScheme.onBackground, modifier = Modifier.weight(1f))
-        Text(value, fontSize = 15.sp, color = LabelSecondary)
-    }
-}
-
-@Composable
-private fun SettingsSegment(icon: Int, label: String, options: List<String>, selected: Int, onSelected: (Int) -> Unit) {
+private fun SettingsInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 14.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Text(label, fontSize = 16.sp, color = SettingsText, modifier = Modifier.weight(1f))
+        Text(value, fontSize = 15.sp, color = SettingsSecondary)
+    }
+}
+
+@Composable
+private fun SettingsSegmentRow(
+    icon: Int,
+    label: String,
+    options: List<String>,
+    selected: Int,
+    onSelected: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Icon(painterResource(icon), null, tint = Brand, modifier = Modifier.size(20.dp))
         Text(
             label,
             fontSize = 16.sp,
-            color = MaterialTheme.colorScheme.onBackground,
+            color = SettingsText,
             modifier = Modifier.padding(start = 14.dp)
         )
         Spacer(Modifier.weight(1f))
@@ -449,7 +487,7 @@ private fun SettingsSegment(icon: Int, label: String, options: List<String>, sel
                     text = option,
                     fontSize = 13.sp,
                     fontWeight = if (isSelected) FontWeight.SemiBold else FontWeight.Normal,
-                    color = if (isSelected) Brand else LabelSecondary,
+                    color = if (isSelected) Brand else SettingsSecondary,
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))

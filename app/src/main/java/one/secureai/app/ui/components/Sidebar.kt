@@ -3,6 +3,7 @@ package one.secureai.app.ui.components
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
@@ -56,6 +57,9 @@ import kotlin.math.roundToInt
 private val DrawerWidth = 280.dp
 private val UpgradeGold = Color(0xFFD9A621)
 private val AccentBlue = Color(0xFF2563EB)
+private val DrawerBg = Color(0xFF1C1C1E)
+private val DrawerText = Color.White
+private val DrawerTextSecondary = Color(0xFF8E8E93)
 
 data class SidebarCallbacks(
     val onApps: () -> Unit = {},
@@ -148,7 +152,7 @@ private fun SidebarContent(
         modifier = Modifier
             .width(DrawerWidth)
             .fillMaxHeight()
-            .background(MaterialTheme.colorScheme.background)
+            .background(DrawerBg)
             .statusBarsPadding()
     ) {
         // Header: logo + app name
@@ -158,44 +162,35 @@ private fun SidebarContent(
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Box(
+            Image(
+                painter = painterResource(R.drawable.logo_full),
+                contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)
                     .clip(RoundedCornerShape(10.dp))
-                    .background(AccentBlue),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_splash),
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
+            )
             Spacer(Modifier.width(10.dp))
             Text(
                 "Secure AI",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onBackground
+                color = DrawerText
             )
         }
 
-        // Nav items (scrollable)
+        // Nav items (scrollable) — matches iOS: Apps + togglable items
         Column(
             modifier = Modifier
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 8.dp)
         ) {
-            // 1. Apps (always visible)
             NavRow(
                 iconRes = R.drawable.ic_apps_grid,
                 label = "Apps",
                 onClick = { callbacks.onApps(); onCollapse() }
             )
 
-            // 2. Chats
             if (Prefs.showChats(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_chat_bubbles,
@@ -204,20 +199,10 @@ private fun SidebarContent(
                 )
             }
 
-            // 3. History
-            if (Prefs.showHistory(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_history,
-                    label = "History",
-                    onClick = { callbacks.onHistory(); onCollapse() }
-                )
-            }
-
-            // 4. Library
             if (Prefs.showProjects(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_folder,
-                    label = "Library",
+                    label = "Projects",
                     locked = isAnonymous,
                     onClick = {
                         if (isAnonymous) callbacks.onSignIn("library")
@@ -227,7 +212,6 @@ private fun SidebarContent(
                 )
             }
 
-            // 5. Photos
             if (Prefs.showPhotos(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_photos,
@@ -241,7 +225,6 @@ private fun SidebarContent(
                 )
             }
 
-            // 6. Documents
             if (Prefs.showDocuments(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_document,
@@ -255,7 +238,6 @@ private fun SidebarContent(
                 )
             }
 
-            // 7. Memories
             if (Prefs.showMemories(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_memories,
@@ -268,41 +250,6 @@ private fun SidebarContent(
                     }
                 )
             }
-
-            // 8. Projects
-            if (Prefs.showProjectsNav(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_briefcase,
-                    label = "Projects",
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("projects")
-                        else callbacks.onProjects()
-                        onCollapse()
-                    }
-                )
-            }
-
-            // 9. Team
-            if (Prefs.showTeam(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_team,
-                    label = "Team",
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("team")
-                        else callbacks.onTeam()
-                        onCollapse()
-                    }
-                )
-            }
-
-            // 10. Privacy
-            NavRow(
-                iconRes = R.drawable.ic_lock,
-                label = "Privacy",
-                onClick = { callbacks.onProfile(); onCollapse() }
-            )
         }
 
         // Bottom bar
@@ -313,7 +260,6 @@ private fun SidebarContent(
                 .padding(horizontal = 16.dp)
                 .padding(top = 24.dp, bottom = 32.dp)
         ) {
-            // Upgrade button (only for non-anonymous, non-subscribed)
             if (!isSubscribed && !isAnonymous) {
                 Surface(
                     onClick = { callbacks.onUpgrade(); onCollapse() },
@@ -350,24 +296,32 @@ private fun SidebarContent(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Avatar
                 Surface(
                     onClick = { callbacks.onProfile(); onCollapse() },
                     shape = CircleShape,
-                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    color = Color(0xFF3A3A3C),
                     modifier = Modifier.size(50.dp)
                 ) {
                     Box(contentAlignment = Alignment.Center) {
-                        Text(
-                            text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
+                        if (profile?.profileImageURL != null) {
+                            // Profile photo loaded via Coil or similar would go here
+                            Text(
+                                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = DrawerText
+                            )
+                        } else {
+                            Text(
+                                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = DrawerText
+                            )
+                        }
                     }
                 }
 
-                // New Chat button
                 Surface(
                     onClick = { callbacks.onNewChat(); onCollapse() },
                     shape = RoundedCornerShape(25.dp),
@@ -420,7 +374,7 @@ private fun NavRow(
         Icon(
             painter = painterResource(iconRes),
             contentDescription = label,
-            tint = if (isActive) AccentBlue else MaterialTheme.colorScheme.onBackground,
+            tint = if (isActive) AccentBlue else DrawerText,
             modifier = Modifier.size(23.dp)
         )
         Spacer(Modifier.width(14.dp))
@@ -428,14 +382,14 @@ private fun NavRow(
             text = label,
             fontSize = 20.sp,
             fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (isActive) AccentBlue else MaterialTheme.colorScheme.onBackground,
+            color = if (isActive) AccentBlue else DrawerText,
             modifier = Modifier.weight(1f)
         )
         if (locked) {
             Icon(
                 painter = painterResource(R.drawable.ic_lock),
                 contentDescription = "Locked",
-                tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                tint = DrawerTextSecondary,
                 modifier = Modifier.size(14.dp)
             )
         }

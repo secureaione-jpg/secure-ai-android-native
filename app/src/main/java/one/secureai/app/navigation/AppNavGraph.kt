@@ -130,11 +130,17 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         }
 
         composable(Screen.Profile.route) {
-            SettingsScreen(onBack = { navController.popBackStack() })
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onOpenPaywall = { navController.navigate(Screen.Paywall.route) }
+            )
         }
 
         composable(Screen.Settings.route) {
-            SettingsScreen(onBack = { navController.popBackStack() })
+            SettingsScreen(
+                onBack = { navController.popBackStack() },
+                onOpenPaywall = { navController.navigate(Screen.Paywall.route) }
+            )
         }
 
         composable(Screen.Tasks.route) {
