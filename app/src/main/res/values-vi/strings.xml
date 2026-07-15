@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Trò Chuyện Mới</string>
+    <string name="shortcut_new_chat_long">Bắt đầu một cuộc trò chuyện mới</string>
+    <string name="shortcut_notes">Ghi chú</string>
+    <string name="shortcut_notes_long">Mở Ghi chú</string>
+    <string name="shortcut_voice">Giọng nói</string>
+    <string name="shortcut_voice_long">Mở Ghi chú thoại</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Chào buổi sáng</string>
+    <string name="greeting_afternoon">Chào buổi chiều</string>
+    <string name="greeting_evening">Chào buổi tối</string>
+    <string name="ask_secure_ai">Hỏi Secure AI</string>
+
+    <string name="cancel">Hủy</string>
+    <string name="done">Xong</string>
+    <string name="save">Lưu</string>
+    <string name="delete">Xóa</string>
+    <string name="copy">Sao chép</string>
+    <string name="speak">Nói</string>
+    <string name="stop">Dừng</string>
+    <string name="redo">Làm lại</string>
+    <string name="not_now">Không phải bây giờ</string>
+    <string name="continue_text">Tiếp tục</string>
+    <string name="get_started">Bắt đầu</string>
+    <string name="create">Tạo</string>
+    <string name="join">Tham gia</string>
+    <string name="upgrade">Nâng cấp</string>
+    <string name="sign_in">Đăng nhập</string>
+    <string name="sign_out">Đăng xuất</string>
+    <string name="invite_friends">Mời bạn bè</string>
+    <string name="invite_friends_sub">Chia sẻ Secure AI với những người bạn quen biết</string>
+    <string name="company_apps">Ứng dụng của chúng tôi</string>
+    <string name="share_app">Chia sẻ %1$s</string>
+
+    <string name="sidebar_apps">Ứng dụng</string>
+    <string name="sidebar_chats">Trò chuyện</string>
+    <string name="sidebar_projects">Dự án</string>
+    <string name="sidebar_photos">Ảnh</string>
+    <string name="sidebar_notes">Ghi chú</string>
+    <string name="sidebar_voice">Giọng nói</string>
+    <string name="sidebar_documents">Tài liệu</string>
+    <string name="sidebar_new_chat">Trò Chuyện Mới</string>
+    <string name="sidebar_library">Thư viện</string>
+
+    <string name="new_chat">Trò chuyện mới</string>
+    <string name="incognito">Ẩn danh</string>
+    <string name="incognito_mode">Chế độ ẩn danh</string>
+    <string name="files">Tệp</string>
+    <string name="photos">Ảnh</string>
+    <string name="camera">Máy ảnh</string>
+    <string name="analyze_file">Phân tích tệp này</string>
+    <string name="conversations_empty">Các cuộc trò chuyện của bạn sẽ xuất hiện ở đây</string>
+
+    <string name="settings">Cài đặt</string>
+    <string name="preferences">Tùy chọn</string>
+    <string name="haptic_feedback">Phản hồi rung</string>
+    <string name="text_size">Cỡ chữ</string>
+    <string name="size_small">Nhỏ</string>
+    <string name="size_medium">Vừa</string>
+    <string name="size_large">Lớn</string>
+    <string name="background">Nền</string>
+    <string name="notifications">Thông báo</string>
+    <string name="subscription">Gói đăng ký</string>
+    <string name="upgrade_sublabel">Mở khóa các mô hình cao cấp và giới hạn cao hơn</string>
+    <string name="restore_purchases">Khôi phục giao dịch mua</string>
+    <string name="account">Tài khoản</string>
+    <string name="delete_app_data">Xóa dữ liệu ứng dụng</string>
+    <string name="delete_account">Xóa tài khoản</string>
+    <string name="delete_account_title">Xóa Tài Khoản</string>
+    <string name="about">Giới thiệu</string>
+    <string name="version">Phiên bản</string>
+    <string name="build">Bản dựng</string>
+
+    <string name="new_project">Dự Án Mới</string>
+    <string name="edit_project">Chỉnh Sửa Dự Án</string>
+    <string name="projects_empty">Cho AI của bạn một tính cách và trọng tâm riêng</string>
+
+    <string name="no_prompts_yet">Chưa có prompt nào</string>
+    <string name="prompts_empty_sub">Các prompt đã lưu sẽ xuất hiện ở đây</string>
+    <string name="no_photos_yet">Chưa có ảnh nào</string>
+    <string name="photos_empty_sub">Ảnh bạn lưu sẽ xuất hiện ở đây</string>
+    <string name="no_documents_yet">Chưa có tài liệu nào</string>
+    <string name="documents_empty_sub">Tài liệu bạn lưu sẽ xuất hiện ở đây</string>
+
+    <string name="sign_in_to_use">Đăng nhập để sử dụng %1$s</string>
+    <string name="sign_in_guest_body">Với tư cách khách, bạn có thể trò chuyện với Claude. Ghi chú, Ghi chú thoại, Thư viện và Dự án được lưu vào tài khoản của bạn — đăng nhập để mở khóa chúng. Các cuộc trò chuyện khách của bạn sẽ đi theo bạn.</string>
+    <string name="continue_with_google">Tiếp tục với Google</string>
+
+    <string name="unlock_secure_ai">Mở khóa Secure AI</string>
+    <string name="biometric_subtitle">Sử dụng sinh trắc học để truy cập các cuộc trò chuyện của bạn</string>
+    <string name="use_passcode">Sử dụng mã khóa</string>
+    <string name="app_locked">Secure AI đang bị khóa</string>
+    <string name="authenticate_to_continue">Xác thực để tiếp tục</string>
+
+    <string name="stay_in_the_loop">Luôn cập nhật</string>
+    <string name="allow_notifications">Cho phép thông báo</string>
+
+    <string name="onboarding_title_1">Được cung cấp bởi Claude</string>
+    <string name="onboarding_body_1">Secure AI được xây dựng trên Claude, mô hình tiên phong của Anthropic — chọn đúng mô hình Claude cho mỗi tác vụ.</string>
+    <string name="onboarding_title_2">Riêng tư theo mặc định</string>
+    <string name="onboarding_body_2">Danh tính của bạn không bao giờ đến được với AI. Mọi tin nhắn đều được định tuyến qua một proxy bảo mật — tên, email và IP của bạn luôn được ẩn.</string>
+    <string name="onboarding_title_3">Ghi lại mọi thứ</string>
+    <string name="onboarding_body_3">Ghi chú và ghi chú thoại được tự động phiên âm và tóm tắt — để những gì bạn ghi lại không bao giờ bị mất.</string>
+    <string name="onboarding_title_4">Luôn ngăn nắp</string>
+    <string name="onboarding_body_4">Dự án nhóm các cuộc trò chuyện, ghi chú và tệp của bạn theo những gì bạn đang làm — không gian làm việc AI cá nhân của bạn.</string>
+
+    <string name="no_connection">Không có kết nối</string>
+</resources>

@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -44,31 +45,31 @@ import one.secureai.app.R
 
 private data class OnboardingPage(
     val icon: Int,
-    val title: String,
-    val body: String,
+    val titleRes: Int,
+    val bodyRes: Int,
     val accent: Color = Color(0xFF2563EB)
 )
 
 private val PAGES = listOf(
     OnboardingPage(
-        icon = R.drawable.ic_splash,
-        title = "One AI for everything",
-        body = "Chat with Claude, GPT, Gemini and more — all in one place. Secure AI picks the right model for every task."
+        icon = R.drawable.ic_sparkle,
+        titleRes = R.string.onboarding_title_1,
+        bodyRes = R.string.onboarding_body_1
     ),
     OnboardingPage(
         icon = R.drawable.ic_lock,
-        title = "Private by default",
-        body = "Your identity is never shared with any AI provider. What you ask stays between you and your device."
+        titleRes = R.string.onboarding_title_2,
+        bodyRes = R.string.onboarding_body_2
     ),
     OnboardingPage(
-        icon = R.drawable.ic_memories,
-        title = "AI that knows you",
-        body = "Memories let Secure AI learn your goals, preferences, and context — so every response gets more useful over time."
+        icon = R.drawable.ic_document,
+        titleRes = R.string.onboarding_title_3,
+        bodyRes = R.string.onboarding_body_3
     ),
     OnboardingPage(
-        icon = R.drawable.ic_tasks,
-        title = "Your life, organized",
-        body = "Tasks, projects, and reminders all in one place. Your personal AI OS for work and life."
+        icon = R.drawable.ic_folder,
+        titleRes = R.string.onboarding_title_4,
+        bodyRes = R.string.onboarding_body_4
     ),
 )
 
@@ -122,7 +123,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 }
                 Spacer(Modifier.height(36.dp))
                 Text(
-                    text = current.title,
+                    text = stringResource(current.titleRes),
                     fontSize = 26.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color(0xFFF5F5F7),
@@ -131,7 +132,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 )
                 Spacer(Modifier.height(14.dp))
                 Text(
-                    text = current.body,
+                    text = stringResource(current.bodyRes),
                     fontSize = 16.sp,
                     color = Color(0xFF8E8E93),
                     textAlign = TextAlign.Center,
@@ -166,7 +167,7 @@ fun OnboardingScreen(onFinish: () -> Unit) {
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
             ) {
                 Text(
-                    text = if (page < PAGES.lastIndex) "Continue" else "Get started",
+                    text = if (page < PAGES.lastIndex) stringResource(R.string.continue_text) else stringResource(R.string.get_started),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )

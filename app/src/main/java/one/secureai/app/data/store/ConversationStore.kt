@@ -40,6 +40,7 @@ data class StoredConversation(
 }
 
 object ConversationStore {
+    private const val MAX_BATCH_OPS = 450
     private val db = FirebaseFirestore.getInstance()
     private val uid: String? get() = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -52,6 +53,8 @@ object ConversationStore {
     private fun chatsCol(uid: String) =
         db.collection("conversations").document(uid).collection("chats")
 
+    private val BASE64_TITLE = Regex("^[A-Za-z0-9+/=]{20,}$")
+
     suspend fun load() {
         val u = uid ?: return
         _isLoading.value = true
@@ -61,8 +64,35 @@ object ConversationStore {
                 .limit(50)
                 .get()
                 .await()
-            _conversations.value = snap.documents.mapNotNull {
-                StoredConversation.fromDoc(it.id, it.data ?: emptyMap())
+            _conversations.value = snap.documents.mapNotNull { doc ->
+                val conv = StoredConversation.fromDoc(doc.id, doc.data ?: emptyMap())
+                    ?: return@mapNotNull null
+                if (BASE64_TITLE.matches(conv.title)) {
+                    val decrypted = withContext(Dispatchers.Default) {
+                        try { ConversationEncryption.decrypt(conv.title, u) } catch (_: Exception) { null }
+                    }
+                    val fixed = if (decrypted != null) {
+                        decrypted.take(60)
+                    } else {
+                        val msgSnap = chatsCol(u).document(doc.id)
+                            .collection("messages")
+                            .orderBy("timestamp", Query.Direction.ASCENDING)
+                            .limit(5)
+                            .get().await()
+                        val firstUserMsg = msgSnap.documents.firstOrNull { d ->
+                            (d.data?.get("role") as? String) == "user"
+                        }
+                        val raw = firstUserMsg?.data?.get("content") as? String
+                        val isEnc = firstUserMsg?.data?.get("encrypted") as? Boolean ?: false
+                        val looksEncrypted = raw != null && BASE64_TITLE.matches(raw)
+                        val plain = if (raw != null && (isEnc || looksEncrypted)) {
+                            try { ConversationEncryption.decrypt(raw, u) } catch (_: Exception) { null }
+                        } else raw
+                        plain?.take(60) ?: "Chat"
+                    }
+                    chatsCol(u).document(doc.id).update("title", fixed)
+                    conv.copy(title = fixed)
+                } else conv
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -92,22 +122,25 @@ object ConversationStore {
             docRef.set(meta, SetOptions.merge()).await()
 
             val msgCol = docRef.collection("messages")
-            val batch = db.batch()
-            for (msg in newMessages) {
-                val encryptedContent = withContext(Dispatchers.Default) {
-                    ConversationEncryption.encrypt(msg.content, u)
+            val chunks = newMessages.chunked(MAX_BATCH_OPS)
+            for (chunk in chunks) {
+                val batch = db.batch()
+                for (msg in chunk) {
+                    val encryptedContent = withContext(Dispatchers.Default) {
+                        ConversationEncryption.encrypt(msg.content, u)
+                    }
+                    val msgData = hashMapOf<String, Any>(
+                        "role" to msg.role.wireValue,
+                        "content" to encryptedContent,
+                        "encrypted" to true,
+                        "timestamp" to Timestamp(msg.timestamp)
+                    )
+                    msg.model?.let { msgData["model"] = it }
+                    msg.exchangeId?.let { msgData["exchangeId"] = it }
+                    batch.set(msgCol.document(msg.id), msgData)
                 }
-                val msgData = hashMapOf<String, Any>(
-                    "role" to msg.role.wireValue,
-                    "content" to encryptedContent,
-                    "encrypted" to true,
-                    "timestamp" to Timestamp.now()
-                )
-                msg.model?.let { msgData["model"] = it }
-                msg.exchangeId?.let { msgData["exchangeId"] = it }
-                batch.set(msgCol.document(msg.id), msgData)
+                batch.commit().await()
             }
-            batch.commit().await()
 
             val conv = StoredConversation(
                 id = id, title = title, lastMessage = lastMessage,

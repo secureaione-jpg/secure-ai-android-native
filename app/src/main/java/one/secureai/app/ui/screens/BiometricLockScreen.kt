@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,9 +43,9 @@ fun BiometricLockScreen(onUnlocked: () -> Unit, onSkip: () -> Unit) {
             }
         })
         val info = BiometricPrompt.PromptInfo.Builder()
-            .setTitle("Unlock Secure AI")
-            .setSubtitle("Use biometrics to access your chats")
-            .setNegativeButtonText("Use passcode")
+            .setTitle(context.getString(R.string.unlock_secure_ai))
+            .setSubtitle(context.getString(R.string.biometric_subtitle))
+            .setNegativeButtonText(context.getString(R.string.use_passcode))
             .build()
         prompt.authenticate(info)
     }
@@ -65,14 +66,14 @@ fun BiometricLockScreen(onUnlocked: () -> Unit, onSkip: () -> Unit) {
             )
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Secure AI is locked",
+                text = stringResource(R.string.app_locked),
                 fontSize = 22.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = Color(0xFFF5F5F7)
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = "Authenticate to continue",
+                text = stringResource(R.string.authenticate_to_continue),
                 fontSize = 15.sp,
                 color = Color(0xFF8E8E93),
                 textAlign = TextAlign.Center

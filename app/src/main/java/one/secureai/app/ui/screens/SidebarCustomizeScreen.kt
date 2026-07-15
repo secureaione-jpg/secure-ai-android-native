@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -37,7 +38,7 @@ private val AccentBlue = Color(0xFF2563EB)
 
 private data class SidebarItem(
     val iconRes: Int,
-    val label: String,
+    val labelRes: Int,
     val getVisible: (android.content.Context) -> Boolean,
     val setVisible: (android.content.Context, Boolean) -> Unit,
 )
@@ -49,13 +50,11 @@ fun SidebarCustomizeScreen(onBack: () -> Unit) {
 
     val items = remember {
         listOf(
-            SidebarItem(R.drawable.ic_chat_bubbles, "Chats", Prefs::showChats, Prefs::setShowChats),
-            SidebarItem(R.drawable.ic_folder, "Library", Prefs::showProjects, Prefs::setShowProjects),
-            SidebarItem(R.drawable.ic_photos, "Photos", Prefs::showPhotos, Prefs::setShowPhotos),
-            SidebarItem(R.drawable.ic_document, "Documents", Prefs::showDocuments, Prefs::setShowDocuments),
-            SidebarItem(R.drawable.ic_memories, "Memories", Prefs::showMemories, Prefs::setShowMemories),
-            SidebarItem(R.drawable.ic_briefcase, "Projects", Prefs::showProjectsNav, Prefs::setShowProjectsNav),
-            SidebarItem(R.drawable.ic_team, "Team", Prefs::showTeam, Prefs::setShowTeam),
+            SidebarItem(R.drawable.ic_chat_bubbles, R.string.sidebar_chats, Prefs::showChats, Prefs::setShowChats),
+            SidebarItem(R.drawable.ic_folder, R.string.sidebar_library, Prefs::showProjects, Prefs::setShowProjects),
+            SidebarItem(R.drawable.ic_photos, R.string.sidebar_photos, Prefs::showPhotos, Prefs::setShowPhotos),
+            SidebarItem(R.drawable.ic_document, R.string.sidebar_notes, Prefs::showNotes, Prefs::setShowNotes),
+            SidebarItem(R.drawable.ic_mic, R.string.sidebar_voice, Prefs::showVoiceMemos, Prefs::setShowVoiceMemos),
         )
     }
 
@@ -63,7 +62,7 @@ fun SidebarCustomizeScreen(onBack: () -> Unit) {
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text("Apps", fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
+                    Text(stringResource(R.string.sidebar_apps), fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
@@ -100,7 +99,7 @@ fun SidebarCustomizeScreen(onBack: () -> Unit) {
                     )
                     Spacer(Modifier.width(14.dp))
                     Text(
-                        text = item.label,
+                        text = stringResource(item.labelRes),
                         fontSize = 17.sp,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.weight(1f)

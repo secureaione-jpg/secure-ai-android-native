@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Yeni Sohbet</string>
+    <string name="shortcut_new_chat_long">Yeni bir sohbet başlat</string>
+    <string name="shortcut_notes">Notlar</string>
+    <string name="shortcut_notes_long">Notları aç</string>
+    <string name="shortcut_voice">Ses</string>
+    <string name="shortcut_voice_long">Sesli Notları aç</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Günaydın</string>
+    <string name="greeting_afternoon">İyi günler</string>
+    <string name="greeting_evening">İyi akşamlar</string>
+    <string name="ask_secure_ai">Secure AI\'a sor</string>
+
+    <string name="cancel">İptal</string>
+    <string name="done">Bitti</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
+    <string name="copy">Kopyala</string>
+    <string name="speak">Konuş</string>
+    <string name="stop">Durdur</string>
+    <string name="redo">Yinele</string>
+    <string name="not_now">Şimdi değil</string>
+    <string name="continue_text">Devam et</string>
+    <string name="get_started">Başla</string>
+    <string name="create">Oluştur</string>
+    <string name="join">Katıl</string>
+    <string name="upgrade">Yükselt</string>
+    <string name="sign_in">Giriş yap</string>
+    <string name="sign_out">Çıkış yap</string>
+    <string name="invite_friends">Arkadaşlarını Davet Et</string>
+    <string name="invite_friends_sub">Secure AI\'ı tanıdıklarınla paylaş</string>
+    <string name="company_apps">Uygulamalarımız</string>
+    <string name="share_app">%1$s\'i paylaş</string>
+
+    <string name="sidebar_apps">Uygulamalar</string>
+    <string name="sidebar_chats">Sohbetler</string>
+    <string name="sidebar_projects">Projeler</string>
+    <string name="sidebar_photos">Fotoğraflar</string>
+    <string name="sidebar_notes">Notlar</string>
+    <string name="sidebar_voice">Ses</string>
+    <string name="sidebar_documents">Belgeler</string>
+    <string name="sidebar_new_chat">Yeni Sohbet</string>
+    <string name="sidebar_library">Kitaplık</string>
+
+    <string name="new_chat">Yeni sohbet</string>
+    <string name="incognito">Gizli</string>
+    <string name="incognito_mode">Gizli Mod</string>
+    <string name="files">Dosyalar</string>
+    <string name="photos">Fotoğraflar</string>
+    <string name="camera">Kamera</string>
+    <string name="analyze_file">Bu dosyayı analiz et</string>
+    <string name="conversations_empty">Konuşmalarınız burada görünecek</string>
+
+    <string name="settings">Ayarlar</string>
+    <string name="preferences">Tercihler</string>
+    <string name="haptic_feedback">Dokunsal geri bildirim</string>
+    <string name="text_size">Metin boyutu</string>
+    <string name="size_small">Küçük</string>
+    <string name="size_medium">Orta</string>
+    <string name="size_large">Büyük</string>
+    <string name="background">Arka plan</string>
+    <string name="notifications">Bildirimler</string>
+    <string name="subscription">Abonelik</string>
+    <string name="upgrade_sublabel">Premium modellerin ve daha yüksek limitlerin kilidini aç</string>
+    <string name="restore_purchases">Satın alımları geri yükle</string>
+    <string name="account">Hesap</string>
+    <string name="delete_app_data">Uygulama verilerini sil</string>
+    <string name="delete_account">Hesabı sil</string>
+    <string name="delete_account_title">Hesabı Sil</string>
+    <string name="about">Hakkında</string>
+    <string name="version">Sürüm</string>
+    <string name="build">Yapı</string>
+
+    <string name="new_project">Yeni Proje</string>
+    <string name="edit_project">Projeyi Düzenle</string>
+    <string name="projects_empty">Yapay zekanıza özel bir kişilik ve odak verin</string>
+
+    <string name="no_prompts_yet">Henüz komut yok</string>
+    <string name="prompts_empty_sub">Kaydedilen komutlar burada görünecek</string>
+    <string name="no_photos_yet">Henüz fotoğraf yok</string>
+    <string name="photos_empty_sub">Kaydettiğiniz fotoğraflar burada görünecek</string>
+    <string name="no_documents_yet">Henüz belge yok</string>
+    <string name="documents_empty_sub">Kaydettiğiniz belgeler burada görünecek</string>
+
+    <string name="sign_in_to_use">%1$s kullanmak için giriş yapın</string>
+    <string name="sign_in_guest_body">Misafir olarak Claude ile sohbet edebilirsiniz. Notlar, Sesli Notlar, Kitaplık ve Projeler hesabınıza kaydedilir — kilidini açmak için giriş yapın. Misafir sohbetleriniz sizinle kalır.</string>
+    <string name="continue_with_google">Google ile devam et</string>
+
+    <string name="unlock_secure_ai">Secure AI\'ın kilidini aç</string>
+    <string name="biometric_subtitle">Sohbetlerinize erişmek için biyometri kullanın</string>
+    <string name="use_passcode">Şifre kullan</string>
+    <string name="app_locked">Secure AI kilitli</string>
+    <string name="authenticate_to_continue">Devam etmek için kimlik doğrulayın</string>
+
+    <string name="stay_in_the_loop">Haberdar ol</string>
+    <string name="allow_notifications">Bildirimlere izin ver</string>
+
+    <string name="onboarding_title_1">Claude tarafından destekleniyor</string>
+    <string name="onboarding_body_1">Secure AI, Anthropic\'in öncü modeli Claude üzerine kuruludur — her görev için doğru Claude modelini seçer.</string>
+    <string name="onboarding_title_2">Varsayılan olarak gizli</string>
+    <string name="onboarding_body_2">Kimliğiniz asla yapay zekaya ulaşmaz. Her mesaj bir gizlilik proxy\'si üzerinden yönlendirilir — adınız, e-postanız ve IP\'niz gizli kalır.</string>
+    <string name="onboarding_title_3">Her şeyi kaydet</string>
+    <string name="onboarding_body_3">Notlar ve sesli notlar otomatik olarak metne dönüştürülür ve özetlenir — böylece kaydettiğiniz hiçbir şey kaybolmaz.</string>
+    <string name="onboarding_title_4">Düzenli kal</string>
+    <string name="onboarding_body_4">Projeler, sohbetlerinizi, notlarınızı ve dosyalarınızı üzerinde çalıştığınız şeye göre gruplar — kişisel yapay zeka çalışma alanınız.</string>
+
+    <string name="no_connection">Bağlantı yok</string>
+</resources>

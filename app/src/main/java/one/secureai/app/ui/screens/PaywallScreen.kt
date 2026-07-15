@@ -1,6 +1,7 @@
 package one.secureai.app.ui.screens
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,40 +59,40 @@ private data class TierCard(
 private val tiers = listOf(
     TierCard(
         name = "Plus",
-        price = "$9.99",
+        price = "$5",
         period = "/month",
         features = listOf(
-            TierFeature(R.drawable.ic_new_chat, "50 messages/day"),
-            TierFeature(R.drawable.ic_photos, "10 images/day"),
-            TierFeature(R.drawable.ic_sparkle, "Premium models"),
-            TierFeature(R.drawable.ic_memories, "Unlimited memories"),
+            TierFeature(R.drawable.ic_new_chat, "Core models"),
+            TierFeature(R.drawable.ic_photos, "More messages and uploads"),
+            TierFeature(R.drawable.ic_sparkle, "More image creation"),
+            TierFeature(R.drawable.ic_memories, "Longer memory"),
         ),
         color = Brand,
         productId = "secureai_plus_monthly",
     ),
     TierCard(
         name = "Pro",
-        price = "$19.99",
+        price = "$25",
         period = "/month",
         features = listOf(
-            TierFeature(R.drawable.ic_new_chat, "200 messages/day"),
-            TierFeature(R.drawable.ic_photos, "50 images/day"),
-            TierFeature(R.drawable.ic_sparkle, "Frontier models"),
-            TierFeature(R.drawable.ic_folder, "Unlimited projects"),
-            TierFeature(R.drawable.ic_memories, "Unlimited memories"),
+            TierFeature(R.drawable.ic_new_chat, "Advanced models"),
+            TierFeature(R.drawable.ic_photos, "Advanced image creation with Thinking"),
+            TierFeature(R.drawable.ic_sparkle, "Expanded memory across chats"),
+            TierFeature(R.drawable.ic_folder, "Even more file storage"),
+            TierFeature(R.drawable.ic_memories, "Even more projects capacity"),
         ),
         color = Color(0xFF8B5CF6),
         productId = "secureai_pro_monthly",
     ),
     TierCard(
         name = "Ultra",
-        price = "$49.99",
+        price = "$150",
         period = "/month",
         features = listOf(
-            TierFeature(R.drawable.ic_new_chat, "Unlimited messages"),
-            TierFeature(R.drawable.ic_photos, "Unlimited images"),
-            TierFeature(R.drawable.ic_sparkle, "Frontier models + priority"),
-            TierFeature(R.drawable.ic_folder, "Unlimited everything"),
+            TierFeature(R.drawable.ic_new_chat, "5x more usage than Plus"),
+            TierFeature(R.drawable.ic_photos, "Unlimited and faster image creation"),
+            TierFeature(R.drawable.ic_sparkle, "Maximum memory and context"),
+            TierFeature(R.drawable.ic_folder, "Early access to experimental features"),
         ),
         color = UpgradeGold,
         productId = "secureai_ultra_monthly",
@@ -123,14 +124,7 @@ fun PaywallScreen(onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_back),
-                    contentDescription = "Back",
-                    tint = Brand,
-                    modifier = Modifier
-                        .size(24.dp)
-                        .padding(0.dp)
-                )
+                Spacer(Modifier.size(24.dp))
                 Spacer(Modifier.weight(1f))
                 Text(
                     "Upgrade",
@@ -191,12 +185,12 @@ fun PaywallScreen(onBack: () -> Unit) {
                                 tier.price,
                                 fontSize = 24.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onBackground
+                                color = Color.White
                             )
                             Text(
                                 tier.period,
                                 fontSize = 14.sp,
-                                color = Color(0xFF8E8E93)
+                                color = Color(0xFFAEAEB2)
                             )
                         }
                         Spacer(Modifier.height(16.dp))
@@ -216,7 +210,7 @@ fun PaywallScreen(onBack: () -> Unit) {
                                 Text(
                                     feature.text,
                                     fontSize = 15.sp,
-                                    color = MaterialTheme.colorScheme.onBackground
+                                    color = Color(0xFFE5E5EA)
                                 )
                             }
                         }
@@ -246,7 +240,11 @@ fun PaywallScreen(onBack: () -> Unit) {
                                         val offer = product.subscriptionOfferDetails?.firstOrNull()?.offerToken
                                         if (offer != null && context is Activity) {
                                             StoreManager.purchase(context, product, offer)
+                                        } else {
+                                            Toast.makeText(context, "Unable to load subscription details. Please try again.", Toast.LENGTH_SHORT).show()
                                         }
+                                    } else {
+                                        Toast.makeText(context, "Unable to connect to Google Play. Please check your connection and try again.", Toast.LENGTH_LONG).show()
                                     }
                                 },
                                 modifier = Modifier.fillMaxWidth().height(48.dp),

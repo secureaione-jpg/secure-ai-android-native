@@ -76,7 +76,12 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 }
                 saveConversation()
             } catch (e: Exception) {
-                _messages.update { list -> list.filterNot { it.id == assistantMessage.id && it.content.isEmpty() } }
+                _messages.update { list ->
+                    list.filterNot {
+                        (it.id == assistantMessage.id && it.content.isEmpty()) ||
+                        (it.id == userMessage.id)
+                    }
+                }
                 _errorMessage.value = e.message ?: "Something went wrong. Try again."
             } finally {
                 _isStreaming.value = false
@@ -115,7 +120,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
         imageJob = viewModelScope.launch {
             try {
-                val bytes = imageService.generate(prompt)
+                val bytes = imageService.generate(prompt, getApplication())
                 _messages.update { list ->
                     list.map { m ->
                         if (m.id == assistantMessage.id) m.copy(imageBytes = bytes, isStreaming = false) else m
@@ -124,11 +129,12 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 saveConversation()
             } catch (e: Exception) {
                 _messages.update { list ->
-                    list.map { m ->
-                        if (m.id == assistantMessage.id) {
-                            m.copy(content = "Couldn't create that image. ${e.message.orEmpty()}", isStreaming = false)
-                        } else m
-                    }
+                    list.filterNot { it.id == userMessage.id }
+                        .map { m ->
+                            if (m.id == assistantMessage.id) {
+                                m.copy(content = "Couldn't create that image. ${e.message.orEmpty()}", isStreaming = false)
+                            } else m
+                        }
                 }
                 _errorMessage.value = e.message ?: "Something went wrong. Try again."
             } finally {
@@ -142,7 +148,9 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         imageJob?.cancel()
         _isStreaming.value = false
         _messages.update { list ->
-            list.map { m -> if (m.isStreaming) m.copy(isStreaming = false) else m }
+            list
+                .filterNot { it.isStreaming && it.content.isEmpty() && it.imageBytes == null }
+                .map { m -> if (m.isStreaming) m.copy(isStreaming = false) else m }
         }
     }
 
@@ -187,7 +195,10 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
                 saveConversation()
             } catch (e: Exception) {
                 _messages.update { list ->
-                    list.map { m ->
+                    list.filterNot {
+                        (it.id == assistantMessage.id && it.content.isEmpty()) ||
+                        (it.id == userMessage.id)
+                    }.map { m ->
                         if (m.id == assistantMessage.id) m.copy(content = e.message ?: "Error", isStreaming = false) else m
                     }
                 }

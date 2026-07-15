@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Nova conversa</string>
+    <string name="shortcut_new_chat_long">Iniciar uma nova conversa</string>
+    <string name="shortcut_notes">Notas</string>
+    <string name="shortcut_notes_long">Abrir Notas</string>
+    <string name="shortcut_voice">Voz</string>
+    <string name="shortcut_voice_long">Abrir memorandos de voz</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Bom dia</string>
+    <string name="greeting_afternoon">Boa tarde</string>
+    <string name="greeting_evening">Boa noite</string>
+    <string name="ask_secure_ai">Pergunte ao Secure AI</string>
+
+    <string name="cancel">Cancelar</string>
+    <string name="done">Concluído</string>
+    <string name="save">Salvar</string>
+    <string name="delete">Excluir</string>
+    <string name="copy">Copiar</string>
+    <string name="speak">Falar</string>
+    <string name="stop">Parar</string>
+    <string name="redo">Refazer</string>
+    <string name="not_now">Agora não</string>
+    <string name="continue_text">Continuar</string>
+    <string name="get_started">Começar</string>
+    <string name="create">Criar</string>
+    <string name="join">Entrar</string>
+    <string name="upgrade">Fazer upgrade</string>
+    <string name="sign_in">Entrar</string>
+    <string name="sign_out">Sair</string>
+    <string name="invite_friends">Convidar amigos</string>
+    <string name="invite_friends_sub">Compartilhe o Secure AI com pessoas que você conhece</string>
+    <string name="company_apps">Nossos apps</string>
+    <string name="share_app">Compartilhar %1$s</string>
+
+    <string name="sidebar_apps">Apps</string>
+    <string name="sidebar_chats">Conversas</string>
+    <string name="sidebar_projects">Projetos</string>
+    <string name="sidebar_photos">Fotos</string>
+    <string name="sidebar_notes">Notas</string>
+    <string name="sidebar_voice">Voz</string>
+    <string name="sidebar_documents">Documentos</string>
+    <string name="sidebar_new_chat">Nova conversa</string>
+    <string name="sidebar_library">Biblioteca</string>
+
+    <string name="new_chat">Nova conversa</string>
+    <string name="incognito">Anônimo</string>
+    <string name="incognito_mode">Modo anônimo</string>
+    <string name="files">Arquivos</string>
+    <string name="photos">Fotos</string>
+    <string name="camera">Câmera</string>
+    <string name="analyze_file">Analisar este arquivo</string>
+    <string name="conversations_empty">Suas conversas aparecerão aqui</string>
+
+    <string name="settings">Configurações</string>
+    <string name="preferences">Preferências</string>
+    <string name="haptic_feedback">Retorno tátil</string>
+    <string name="text_size">Tamanho do texto</string>
+    <string name="size_small">Pequeno</string>
+    <string name="size_medium">Médio</string>
+    <string name="size_large">Grande</string>
+    <string name="background">Plano de fundo</string>
+    <string name="notifications">Notificações</string>
+    <string name="subscription">Assinatura</string>
+    <string name="upgrade_sublabel">Desbloqueie modelos premium e limites mais altos</string>
+    <string name="restore_purchases">Restaurar compras</string>
+    <string name="account">Conta</string>
+    <string name="delete_app_data">Excluir dados do app</string>
+    <string name="delete_account">Excluir conta</string>
+    <string name="delete_account_title">Excluir conta</string>
+    <string name="about">Sobre</string>
+    <string name="version">Versão</string>
+    <string name="build">Compilação</string>
+
+    <string name="new_project">Novo projeto</string>
+    <string name="edit_project">Editar projeto</string>
+    <string name="projects_empty">Dê à sua IA uma personalidade e foco personalizados</string>
+
+    <string name="no_prompts_yet">Nenhum prompt ainda</string>
+    <string name="prompts_empty_sub">Prompts salvos aparecerão aqui</string>
+    <string name="no_photos_yet">Nenhuma foto ainda</string>
+    <string name="photos_empty_sub">Fotos salvas aparecerão aqui</string>
+    <string name="no_documents_yet">Nenhum documento ainda</string>
+    <string name="documents_empty_sub">Documentos salvos aparecerão aqui</string>
+
+    <string name="sign_in_to_use">Entre para usar %1$s</string>
+    <string name="sign_in_guest_body">Como convidado, você pode conversar com o Claude. Notas, memorandos de voz, Biblioteca e Projetos são salvos na sua conta — faça login para desbloqueá-los. Suas conversas de convidado acompanham você.</string>
+    <string name="continue_with_google">Continuar com o Google</string>
+
+    <string name="unlock_secure_ai">Desbloquear Secure AI</string>
+    <string name="biometric_subtitle">Use biometria para acessar suas conversas</string>
+    <string name="use_passcode">Usar código de acesso</string>
+    <string name="app_locked">Secure AI está bloqueado</string>
+    <string name="authenticate_to_continue">Autentique-se para continuar</string>
+
+    <string name="stay_in_the_loop">Fique por dentro</string>
+    <string name="allow_notifications">Permitir notificações</string>
+
+    <string name="onboarding_title_1">Com tecnologia Claude</string>
+    <string name="onboarding_body_1">O Secure AI é construído sobre o Claude, o modelo de ponta da Anthropic — escolhendo o modelo Claude certo para cada tarefa.</string>
+    <string name="onboarding_title_2">Privado por padrão</string>
+    <string name="onboarding_body_2">Sua identidade nunca chega à IA. Cada mensagem passa por um proxy de privacidade — seu nome, e-mail e IP ficam ocultos.</string>
+    <string name="onboarding_title_3">Capture tudo</string>
+    <string name="onboarding_body_3">Notas e memorandos de voz, transcritos e resumidos automaticamente — para que nada do que você registrar se perca.</string>
+
+    <string name="no_connection">Sem conexão</string>
+    <string name="onboarding_title_4">Mantenha-se organizado</string>
+    <string name="onboarding_body_4">Os projetos agrupam suas conversas, notas e arquivos de acordo com o que você está trabalhando — seu espaço de trabalho de IA pessoal.</string>
+</resources>

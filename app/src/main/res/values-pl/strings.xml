@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Nowy czat</string>
+    <string name="shortcut_new_chat_long">Rozpocznij nowy czat</string>
+    <string name="shortcut_notes">Notatki</string>
+    <string name="shortcut_notes_long">Otwórz Notatki</string>
+    <string name="shortcut_voice">Głos</string>
+    <string name="shortcut_voice_long">Otwórz Notatki głosowe</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Dzień dobry</string>
+    <string name="greeting_afternoon">Dzień dobry</string>
+    <string name="greeting_evening">Dobry wieczór</string>
+    <string name="ask_secure_ai">Zapytaj Secure AI</string>
+
+    <string name="cancel">Anuluj</string>
+    <string name="done">Gotowe</string>
+    <string name="save">Zapisz</string>
+    <string name="delete">Usuń</string>
+    <string name="copy">Kopiuj</string>
+    <string name="speak">Mów</string>
+    <string name="stop">Zatrzymaj</string>
+    <string name="redo">Ponów</string>
+    <string name="not_now">Nie teraz</string>
+    <string name="continue_text">Kontynuuj</string>
+    <string name="get_started">Rozpocznij</string>
+    <string name="create">Utwórz</string>
+    <string name="join">Dołącz</string>
+    <string name="upgrade">Ulepsz</string>
+    <string name="sign_in">Zaloguj się</string>
+    <string name="sign_out">Wyloguj się</string>
+    <string name="invite_friends">Zaproś znajomych</string>
+    <string name="invite_friends_sub">Udostępnij Secure AI znajomym</string>
+    <string name="company_apps">Nasze aplikacje</string>
+    <string name="share_app">Udostępnij %1$s</string>
+
+    <string name="sidebar_apps">Aplikacje</string>
+    <string name="sidebar_chats">Czaty</string>
+    <string name="sidebar_projects">Projekty</string>
+    <string name="sidebar_photos">Zdjęcia</string>
+    <string name="sidebar_notes">Notatki</string>
+    <string name="sidebar_voice">Głos</string>
+    <string name="sidebar_documents">Dokumenty</string>
+    <string name="sidebar_new_chat">Nowy czat</string>
+    <string name="sidebar_library">Biblioteka</string>
+
+    <string name="new_chat">Nowy czat</string>
+    <string name="incognito">Incognito</string>
+    <string name="incognito_mode">Tryb incognito</string>
+    <string name="files">Pliki</string>
+    <string name="photos">Zdjęcia</string>
+    <string name="camera">Aparat</string>
+    <string name="analyze_file">Przeanalizuj ten plik</string>
+    <string name="conversations_empty">Twoje rozmowy pojawią się tutaj</string>
+
+    <string name="settings">Ustawienia</string>
+    <string name="preferences">Preferencje</string>
+    <string name="haptic_feedback">Wibracje</string>
+    <string name="text_size">Rozmiar tekstu</string>
+    <string name="size_small">Mały</string>
+    <string name="size_medium">Średni</string>
+    <string name="size_large">Duży</string>
+    <string name="background">Tło</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="subscription">Subskrypcja</string>
+    <string name="upgrade_sublabel">Odblokuj modele premium i wyższe limity</string>
+    <string name="restore_purchases">Przywróć zakupy</string>
+    <string name="account">Konto</string>
+    <string name="delete_app_data">Usuń dane aplikacji</string>
+    <string name="delete_account">Usuń konto</string>
+    <string name="delete_account_title">Usuń konto</string>
+    <string name="about">Informacje</string>
+    <string name="version">Wersja</string>
+    <string name="build">Build</string>
+
+    <string name="new_project">Nowy projekt</string>
+    <string name="edit_project">Edytuj projekt</string>
+    <string name="projects_empty">Nadaj swojej AI niestandardową osobowość i skupienie</string>
+
+    <string name="no_prompts_yet">Brak promptów</string>
+    <string name="prompts_empty_sub">Zapisane prompty pojawią się tutaj</string>
+    <string name="no_photos_yet">Brak zdjęć</string>
+    <string name="photos_empty_sub">Zapisane zdjęcia pojawią się tutaj</string>
+    <string name="no_documents_yet">Brak dokumentów</string>
+    <string name="documents_empty_sub">Zapisane dokumenty pojawią się tutaj</string>
+
+    <string name="sign_in_to_use">Zaloguj się, aby korzystać z %1$s</string>
+    <string name="sign_in_guest_body">Jako gość możesz rozmawiać z Claude. Notatki, Notatki głosowe, Biblioteka i Projekty są zapisywane na Twoim koncie — zaloguj się, aby je odblokować. Twoje czaty gościa pozostaną z Tobą.</string>
+    <string name="continue_with_google">Kontynuuj z Google</string>
+
+    <string name="unlock_secure_ai">Odblokuj Secure AI</string>
+    <string name="biometric_subtitle">Użyj biometrii, aby uzyskać dostęp do czatów</string>
+    <string name="use_passcode">Użyj kodu dostępu</string>
+    <string name="app_locked">Secure AI jest zablokowane</string>
+    <string name="authenticate_to_continue">Uwierzytelnij się, aby kontynuować</string>
+
+    <string name="stay_in_the_loop">Bądź na bieżąco</string>
+    <string name="allow_notifications">Zezwól na powiadomienia</string>
+
+    <string name="onboarding_title_1">Napędzane przez Claude</string>
+    <string name="onboarding_body_1">Secure AI oparte jest na Claude, najnowocześniejszym modelu Anthropic — wybierając odpowiedni model Claude do każdego zadania.</string>
+    <string name="onboarding_title_2">Prywatne domyślnie</string>
+    <string name="onboarding_body_2">Twoja tożsamość nigdy nie dociera do AI. Każda wiadomość jest przesyłana przez serwer proxy chroniący prywatność — Twoje imię, e-mail i IP pozostają ukryte.</string>
+    <string name="onboarding_title_3">Rejestruj wszystko</string>
+    <string name="onboarding_body_3">Notatki i notatki głosowe, automatycznie transkrybowane i podsumowywane — dzięki czemu nic z tego, co zarejestrujesz, nie zostanie utracone.</string>
+    <string name="onboarding_title_4">Zachowaj porządek</string>
+    <string name="onboarding_body_4">Projekty grupują Twoje czaty, notatki i pliki według tego, nad czym pracujesz — Twoja osobista przestrzeń robocza AI.</string>
+
+    <string name="no_connection">Brak połączenia</string>
+</resources>

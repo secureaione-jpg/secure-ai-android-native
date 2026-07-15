@@ -54,13 +54,21 @@ class RemoteAIService(context: Context) {
      * and streams the assistant's reply via [onChunk]. Returns the full
      * accumulated response text.
      */
+    companion object {
+        const val MAX_HISTORY_MESSAGES = 80
+    }
+
     suspend fun sendMessageStreaming(
         history: List<ChatMessage>,
         model: String = "secureai-auto",
         onChunk: suspend (String) -> Unit
     ): String = withContext(Dispatchers.IO) {
+        val trimmed = if (history.size > MAX_HISTORY_MESSAGES)
+            history.takeLast(MAX_HISTORY_MESSAGES)
+        else history
+
         val messagesJson = JSONArray().apply {
-            history.forEach { m ->
+            trimmed.forEach { m ->
                 put(JSONObject().apply {
                     put("role", m.role.wireValue)
                     put("content", m.content)

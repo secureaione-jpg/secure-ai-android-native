@@ -25,7 +25,7 @@ android {
         applicationId = "one.secureai.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0.0"
         buildConfigField("String", "APP_SECRET", "\"$appSecret\"")
         buildConfigField("String", "WORKER_URL", "\"https://secure-ai-worker.secureai-one.workers.dev\"")
@@ -89,6 +89,8 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
+    implementation(libs.firebase.appcheck.playintegrity)
+    debugImplementation(libs.firebase.appcheck.debug)
     implementation(libs.credentials)
     implementation(libs.credentials.play.services)
     implementation(libs.googleid)

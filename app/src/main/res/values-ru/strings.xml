@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Новый чат</string>
+    <string name="shortcut_new_chat_long">Начать новый чат</string>
+    <string name="shortcut_notes">Заметки</string>
+    <string name="shortcut_notes_long">Открыть заметки</string>
+    <string name="shortcut_voice">Голос</string>
+    <string name="shortcut_voice_long">Открыть голосовые заметки</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Доброе утро</string>
+    <string name="greeting_afternoon">Добрый день</string>
+    <string name="greeting_evening">Добрый вечер</string>
+    <string name="ask_secure_ai">Спросить Secure AI</string>
+
+    <string name="cancel">Отмена</string>
+    <string name="done">Готово</string>
+    <string name="save">Сохранить</string>
+    <string name="delete">Удалить</string>
+    <string name="copy">Копировать</string>
+    <string name="speak">Озвучить</string>
+    <string name="stop">Стоп</string>
+    <string name="redo">Повторить</string>
+    <string name="not_now">Не сейчас</string>
+    <string name="continue_text">Продолжить</string>
+    <string name="get_started">Начать</string>
+    <string name="create">Создать</string>
+    <string name="join">Присоединиться</string>
+    <string name="upgrade">Улучшить</string>
+    <string name="sign_in">Войти</string>
+    <string name="sign_out">Выйти</string>
+    <string name="invite_friends">Пригласить друзей</string>
+    <string name="invite_friends_sub">Поделитесь Secure AI со знакомыми</string>
+    <string name="company_apps">Наши приложения</string>
+    <string name="share_app">Поделиться %1$s</string>
+
+    <string name="sidebar_apps">Приложения</string>
+    <string name="sidebar_chats">Чаты</string>
+    <string name="sidebar_projects">Проекты</string>
+    <string name="sidebar_photos">Фото</string>
+    <string name="sidebar_notes">Заметки</string>
+    <string name="sidebar_voice">Голос</string>
+    <string name="sidebar_documents">Документы</string>
+    <string name="sidebar_new_chat">Новый чат</string>
+    <string name="sidebar_library">Библиотека</string>
+
+    <string name="new_chat">Новый чат</string>
+    <string name="incognito">Инкогнито</string>
+    <string name="incognito_mode">Режим инкогнито</string>
+    <string name="files">Файлы</string>
+    <string name="photos">Фото</string>
+    <string name="camera">Камера</string>
+    <string name="analyze_file">Проанализировать этот файл</string>
+    <string name="conversations_empty">Здесь появятся ваши беседы</string>
+
+    <string name="settings">Настройки</string>
+    <string name="preferences">Настройки</string>
+    <string name="haptic_feedback">Тактильная отдача</string>
+    <string name="text_size">Размер текста</string>
+    <string name="size_small">Маленький</string>
+    <string name="size_medium">Средний</string>
+    <string name="size_large">Крупный</string>
+    <string name="background">Фон</string>
+    <string name="notifications">Уведомления</string>
+    <string name="subscription">Подписка</string>
+    <string name="upgrade_sublabel">Разблокируйте премиум-модели и более высокие лимиты</string>
+    <string name="restore_purchases">Восстановить покупки</string>
+    <string name="account">Аккаунт</string>
+    <string name="delete_app_data">Удалить данные приложения</string>
+    <string name="delete_account">Удалить аккаунт</string>
+    <string name="delete_account_title">Удалить аккаунт</string>
+    <string name="about">О приложении</string>
+    <string name="version">Версия</string>
+    <string name="build">Сборка</string>
+
+    <string name="new_project">Новый проект</string>
+    <string name="edit_project">Изменить проект</string>
+    <string name="projects_empty">Придайте вашему ИИ особую личность и фокус</string>
+
+    <string name="no_prompts_yet">Пока нет промптов</string>
+    <string name="prompts_empty_sub">Сохранённые промпты появятся здесь</string>
+    <string name="no_photos_yet">Пока нет фото</string>
+    <string name="photos_empty_sub">Сохранённые фото появятся здесь</string>
+    <string name="no_documents_yet">Пока нет документов</string>
+    <string name="documents_empty_sub">Сохранённые документы появятся здесь</string>
+
+    <string name="sign_in_to_use">Войдите, чтобы использовать %1$s</string>
+    <string name="sign_in_guest_body">В гостевом режиме вы можете общаться с Claude. Заметки, голосовые заметки, Библиотека и Проекты сохраняются в вашем аккаунте — войдите, чтобы разблокировать их. Ваши гостевые чаты сохранятся.</string>
+    <string name="continue_with_google">Продолжить с Google</string>
+
+    <string name="unlock_secure_ai">Разблокировать Secure AI</string>
+    <string name="biometric_subtitle">Используйте биометрию для доступа к чатам</string>
+    <string name="use_passcode">Использовать код доступа</string>
+    <string name="app_locked">Secure AI заблокировано</string>
+    <string name="authenticate_to_continue">Пройдите аутентификацию, чтобы продолжить</string>
+
+    <string name="stay_in_the_loop">Будьте в курсе</string>
+    <string name="allow_notifications">Разрешить уведомления</string>
+
+    <string name="onboarding_title_1">На основе Claude</string>
+    <string name="onboarding_body_1">Secure AI построен на Claude, передовой модели Anthropic — выбирая подходящую модель Claude для каждой задачи.</string>
+    <string name="onboarding_title_2">Приватность по умолчанию</string>
+    <string name="onboarding_body_2">Ваша личность никогда не достигает ИИ. Каждое сообщение проходит через прокси конфиденциальности — ваше имя, email и IP остаются скрытыми.</string>
+    <string name="onboarding_title_3">Фиксируйте всё</string>
+    <string name="onboarding_body_3">Заметки и голосовые заметки автоматически транскрибируются и суммируются — чтобы ничего из зафиксированного не потерялось.</string>
+    <string name="onboarding_title_4">Оставайтесь организованными</string>
+    <string name="onboarding_body_4">Проекты группируют ваши чаты, заметки и файлы по тому, над чем вы работаете — ваше личное рабочее пространство ИИ.</string>
+
+    <string name="no_connection">Нет соединения</string>
+</resources>

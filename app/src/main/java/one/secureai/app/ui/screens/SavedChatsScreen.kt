@@ -42,9 +42,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import one.secureai.app.R
 import one.secureai.app.data.store.ConversationStore
 import one.secureai.app.data.store.StoredConversation
 import java.text.DateFormat
@@ -93,7 +95,7 @@ fun SavedChatsScreen(onBack: () -> Unit, onSelectConversation: (String) -> Unit)
                     Text("No saved chats", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                     Spacer(Modifier.height(8.dp))
                     Text(
-                        "Your conversations will appear here",
+                        stringResource(R.string.conversations_empty),
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )

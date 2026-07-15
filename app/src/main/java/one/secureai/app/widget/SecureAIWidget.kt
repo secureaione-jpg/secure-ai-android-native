@@ -27,8 +27,8 @@ class SecureAIWidget : AppWidgetProvider() {
             }
 
             views.setOnClickPendingIntent(R.id.widget_new_chat, pendingIntent("https://secureai.one/chat?new=1", 1))
-            views.setOnClickPendingIntent(R.id.widget_tasks, pendingIntent("https://secureai.one/tasks", 2))
-            views.setOnClickPendingIntent(R.id.widget_memories, pendingIntent("https://secureai.one/memories", 3))
+            views.setOnClickPendingIntent(R.id.widget_notes, pendingIntent("https://secureai.one/notes", 2))
+            views.setOnClickPendingIntent(R.id.widget_voice, pendingIntent("https://secureai.one/voice", 3))
             views.setOnClickPendingIntent(R.id.widget_logo, pendingIntent("https://secureai.one/chat", 4))
 
             appWidgetManager.updateAppWidget(id, views)

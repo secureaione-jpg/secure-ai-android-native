@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">新しいチャット</string>
+    <string name="shortcut_new_chat_long">新しいチャットを始める</string>
+    <string name="shortcut_notes">メモ</string>
+    <string name="shortcut_notes_long">メモを開く</string>
+    <string name="shortcut_voice">ボイス</string>
+    <string name="shortcut_voice_long">ボイスメモを開く</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">おはようございます</string>
+    <string name="greeting_afternoon">こんにちは</string>
+    <string name="greeting_evening">こんばんは</string>
+    <string name="ask_secure_ai">Secure AIに聞く</string>
+
+    <string name="cancel">キャンセル</string>
+    <string name="done">完了</string>
+    <string name="save">保存</string>
+    <string name="delete">削除</string>
+    <string name="copy">コピー</string>
+    <string name="speak">話す</string>
+    <string name="stop">停止</string>
+    <string name="redo">やり直し</string>
+    <string name="not_now">後で</string>
+    <string name="continue_text">続ける</string>
+    <string name="get_started">始める</string>
+    <string name="create">作成</string>
+    <string name="join">参加</string>
+    <string name="upgrade">アップグレード</string>
+    <string name="sign_in">サインイン</string>
+    <string name="sign_out">サインアウト</string>
+    <string name="invite_friends">友達を招待</string>
+    <string name="invite_friends_sub">Secure AIを知り合いとシェアしよう</string>
+    <string name="company_apps">私たちのアプリ</string>
+    <string name="share_app">%1$sをシェア</string>
+
+    <string name="sidebar_apps">アプリ</string>
+    <string name="sidebar_chats">チャット</string>
+    <string name="sidebar_projects">プロジェクト</string>
+    <string name="sidebar_photos">写真</string>
+    <string name="sidebar_notes">メモ</string>
+    <string name="sidebar_voice">ボイス</string>
+    <string name="sidebar_documents">ドキュメント</string>
+    <string name="sidebar_new_chat">新しいチャット</string>
+    <string name="sidebar_library">ライブラリ</string>
+
+    <string name="new_chat">新しいチャット</string>
+    <string name="incognito">シークレット</string>
+    <string name="incognito_mode">シークレットモード</string>
+    <string name="files">ファイル</string>
+    <string name="photos">写真</string>
+    <string name="camera">カメラ</string>
+    <string name="analyze_file">このファイルを分析</string>
+    <string name="conversations_empty">会話がここに表示されます</string>
+
+    <string name="settings">設定</string>
+    <string name="preferences">設定</string>
+    <string name="haptic_feedback">触覚フィードバック</string>
+    <string name="text_size">テキストサイズ</string>
+    <string name="size_small">小</string>
+    <string name="size_medium">中</string>
+    <string name="size_large">大</string>
+    <string name="background">背景</string>
+    <string name="notifications">通知</string>
+    <string name="subscription">サブスクリプション</string>
+    <string name="upgrade_sublabel">プレミアムモデルと上限の引き上げ</string>
+    <string name="restore_purchases">購入を復元</string>
+    <string name="account">アカウント</string>
+    <string name="delete_app_data">アプリデータを削除</string>
+    <string name="delete_account">アカウントを削除</string>
+    <string name="delete_account_title">アカウントを削除</string>
+    <string name="about">情報</string>
+    <string name="version">バージョン</string>
+    <string name="build">ビルド</string>
+
+    <string name="new_project">新規プロジェクト</string>
+    <string name="edit_project">プロジェクトを編集</string>
+    <string name="projects_empty">AIにカスタムの個性とフォーカスを与えましょう</string>
+
+    <string name="no_prompts_yet">まだプロンプトはありません</string>
+    <string name="prompts_empty_sub">保存したプロンプトがここに表示されます</string>
+    <string name="no_photos_yet">まだ写真はありません</string>
+    <string name="photos_empty_sub">保存した写真がここに表示されます</string>
+    <string name="no_documents_yet">まだドキュメントはありません</string>
+    <string name="documents_empty_sub">保存したドキュメントがここに表示されます</string>
+
+    <string name="sign_in_to_use">%1$sを使用するにはサインインしてください</string>
+    <string name="sign_in_guest_body">ゲストとしてClaudeとチャットできます。メモ、ボイスメモ、ライブラリ、プロジェクトはアカウントに保存されます。サインインしてロック解除してください。ゲストチャットは引き継がれます。</string>
+    <string name="continue_with_google">Googleで続ける</string>
+
+    <string name="unlock_secure_ai">Secure AIのロック解除</string>
+    <string name="biometric_subtitle">生体認証でチャットにアクセス</string>
+    <string name="use_passcode">パスコードを使用</string>
+    <string name="app_locked">Secure AIはロックされています</string>
+    <string name="authenticate_to_continue">続けるには認証してください</string>
+
+    <string name="stay_in_the_loop">最新情報を受け取る</string>
+    <string name="allow_notifications">通知を許可</string>
+
+    <string name="onboarding_title_1">Claude搭載</string>
+    <string name="onboarding_body_1">Secure AIはAnthropicの最先端モデルClaudeを基盤とし、タスクごとに最適なClaudeモデルを選びます。</string>
+    <string name="onboarding_title_2">デフォルトでプライベート</string>
+    <string name="onboarding_body_2">あなたの身元はAIに届きません。すべてのメッセージはプライバシープロキシを経由 — 名前、メール、IPは隠されます。</string>
+    <string name="onboarding_title_3">すべてを記録</string>
+    <string name="onboarding_body_3">メモとボイスメモを自動で文字起こし・要約 — 記録したことが失われません。</string>
+
+    <string name="no_connection">接続なし</string>
+    <string name="onboarding_title_4">整理整頓</string>
+    <string name="onboarding_body_4">プロジェクトでチャット、メモ、ファイルを作業内容ごとにまとめる — あなた専用のAIワークスペース。</string>
+</resources>

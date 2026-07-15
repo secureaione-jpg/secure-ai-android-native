@@ -17,7 +17,7 @@
             android:id="@+id/widget_logo"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:src="@drawable/ic_splash"
+            android:src="@drawable/logo_full"
             android:contentDescription="Secure AI" />
 
         <TextView
@@ -62,7 +62,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/widget_tasks"
+            android:id="@+id/widget_notes"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -72,19 +72,19 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_tasks"
+                android:src="@drawable/ic_document"
                 android:tint="#2563EB" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Tasks"
+                android:text="Notes"
                 android:textColor="#8E8E93"
                 android:textSize="11sp"
                 android:layout_marginTop="4dp" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/widget_memories"
+            android:id="@+id/widget_voice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -94,12 +94,12 @@
             <ImageView
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_memories"
+                android:src="@drawable/ic_mic"
                 android:tint="#2563EB" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Memories"
+                android:text="Voice"
                 android:textColor="#8E8E93"
                 android:textSize="11sp"
                 android:layout_marginTop="4dp" />

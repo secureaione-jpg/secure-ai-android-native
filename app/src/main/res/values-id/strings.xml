@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Obrolan Baru</string>
+    <string name="shortcut_new_chat_long">Mulai obrolan baru</string>
+    <string name="shortcut_notes">Catatan</string>
+    <string name="shortcut_notes_long">Buka Catatan</string>
+    <string name="shortcut_voice">Suara</string>
+    <string name="shortcut_voice_long">Buka Memo Suara</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Selamat pagi</string>
+    <string name="greeting_afternoon">Selamat siang</string>
+    <string name="greeting_evening">Selamat malam</string>
+    <string name="ask_secure_ai">Tanya Secure AI</string>
+
+    <string name="cancel">Batal</string>
+    <string name="done">Selesai</string>
+    <string name="save">Simpan</string>
+    <string name="delete">Hapus</string>
+    <string name="copy">Salin</string>
+    <string name="speak">Bicara</string>
+    <string name="stop">Berhenti</string>
+    <string name="redo">Ulangi</string>
+    <string name="not_now">Nanti saja</string>
+    <string name="continue_text">Lanjutkan</string>
+    <string name="get_started">Mulai</string>
+    <string name="create">Buat</string>
+    <string name="join">Gabung</string>
+    <string name="upgrade">Tingkatkan</string>
+    <string name="sign_in">Masuk</string>
+    <string name="sign_out">Keluar</string>
+    <string name="invite_friends">Undang Teman</string>
+    <string name="invite_friends_sub">Bagikan Secure AI dengan orang yang Anda kenal</string>
+    <string name="company_apps">Aplikasi Kami</string>
+    <string name="share_app">Bagikan %1$s</string>
+
+    <string name="sidebar_apps">Aplikasi</string>
+    <string name="sidebar_chats">Obrolan</string>
+    <string name="sidebar_projects">Proyek</string>
+    <string name="sidebar_photos">Foto</string>
+    <string name="sidebar_notes">Catatan</string>
+    <string name="sidebar_voice">Suara</string>
+    <string name="sidebar_documents">Dokumen</string>
+    <string name="sidebar_new_chat">Obrolan Baru</string>
+    <string name="sidebar_library">Pustaka</string>
+
+    <string name="new_chat">Obrolan baru</string>
+    <string name="incognito">Penyamaran</string>
+    <string name="incognito_mode">Mode Penyamaran</string>
+    <string name="files">File</string>
+    <string name="photos">Foto</string>
+    <string name="camera">Kamera</string>
+    <string name="analyze_file">Analisis file ini</string>
+    <string name="conversations_empty">Percakapan Anda akan muncul di sini</string>
+
+    <string name="settings">Pengaturan</string>
+    <string name="preferences">Preferensi</string>
+    <string name="haptic_feedback">Umpan balik haptik</string>
+    <string name="text_size">Ukuran teks</string>
+    <string name="size_small">Kecil</string>
+    <string name="size_medium">Sedang</string>
+    <string name="size_large">Besar</string>
+    <string name="background">Latar belakang</string>
+    <string name="notifications">Notifikasi</string>
+    <string name="subscription">Langganan</string>
+    <string name="upgrade_sublabel">Buka kunci model premium dan batas yang lebih tinggi</string>
+    <string name="restore_purchases">Pulihkan pembelian</string>
+    <string name="account">Akun</string>
+    <string name="delete_app_data">Hapus data aplikasi</string>
+    <string name="delete_account">Hapus akun</string>
+    <string name="delete_account_title">Hapus Akun</string>
+    <string name="about">Tentang</string>
+    <string name="version">Versi</string>
+    <string name="build">Build</string>
+
+    <string name="new_project">Proyek Baru</string>
+    <string name="edit_project">Edit Proyek</string>
+    <string name="projects_empty">Berikan AI Anda kepribadian dan fokus khusus</string>
+
+    <string name="no_prompts_yet">Belum ada prompt</string>
+    <string name="prompts_empty_sub">Prompt tersimpan akan muncul di sini</string>
+    <string name="no_photos_yet">Belum ada foto</string>
+    <string name="photos_empty_sub">Foto yang Anda simpan akan muncul di sini</string>
+    <string name="no_documents_yet">Belum ada dokumen</string>
+    <string name="documents_empty_sub">Dokumen yang Anda simpan akan muncul di sini</string>
+
+    <string name="sign_in_to_use">Masuk untuk menggunakan %1$s</string>
+    <string name="sign_in_guest_body">Sebagai tamu Anda dapat mengobrol dengan Claude. Catatan, Memo Suara, Pustaka, dan Proyek disimpan ke akun Anda — masuk untuk membukanya. Obrolan tamu Anda akan tetap ada.</string>
+    <string name="continue_with_google">Lanjutkan dengan Google</string>
+
+    <string name="unlock_secure_ai">Buka kunci Secure AI</string>
+    <string name="biometric_subtitle">Gunakan biometrik untuk mengakses obrolan Anda</string>
+    <string name="use_passcode">Gunakan kode sandi</string>
+    <string name="app_locked">Secure AI terkunci</string>
+    <string name="authenticate_to_continue">Autentikasi untuk melanjutkan</string>
+
+    <string name="stay_in_the_loop">Tetap terhubung</string>
+    <string name="allow_notifications">Izinkan notifikasi</string>
+
+    <string name="onboarding_title_1">Didukung oleh Claude</string>
+    <string name="onboarding_body_1">Secure AI dibangun di atas Claude, model unggulan dari Anthropic — memilih model Claude yang tepat untuk setiap tugas.</string>
+    <string name="onboarding_title_2">Privat secara default</string>
+    <string name="onboarding_body_2">Identitas Anda tidak pernah sampai ke AI. Setiap pesan dialihkan melalui proxy privasi — nama, email, dan IP Anda tetap tersembunyi.</string>
+    <string name="onboarding_title_3">Tangkap semuanya</string>
+    <string name="onboarding_body_3">Catatan dan memo suara, ditranskripsi dan diringkas secara otomatis — sehingga apa pun yang Anda tangkap tidak akan hilang.</string>
+    <string name="onboarding_title_4">Tetap teratur</string>
+    <string name="onboarding_body_4">Proyek mengelompokkan obrolan, catatan, dan file Anda berdasarkan apa yang sedang Anda kerjakan — ruang kerja AI pribadi Anda.</string>
+
+    <string name="no_connection">Tidak ada koneksi</string>
+</resources>

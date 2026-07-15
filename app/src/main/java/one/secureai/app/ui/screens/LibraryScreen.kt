@@ -52,6 +52,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -66,11 +67,11 @@ import one.secureai.app.data.store.UserPrompt
 import one.secureai.app.ui.theme.Brand
 import java.text.DateFormat
 
-private val tabs = listOf("Library", "Photos", "Documents")
+private val tabRes = listOf(R.string.sidebar_library, R.string.sidebar_photos, R.string.sidebar_documents)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(onBack: () -> Unit) {
+fun LibraryScreen(onBack: () -> Unit, onOpenProjects: () -> Unit = {}) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
 
@@ -82,10 +83,15 @@ fun LibraryScreen(onBack: () -> Unit) {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text("Library", fontWeight = FontWeight.SemiBold) },
+                title = { Text(stringResource(R.string.sidebar_library), fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                },
+                actions = {
+                    IconButton(onClick = onOpenProjects) {
+                        Icon(painterResource(R.drawable.ic_folder), contentDescription = stringResource(R.string.sidebar_projects))
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -106,13 +112,13 @@ fun LibraryScreen(onBack: () -> Unit) {
                     )
                 }
             ) {
-                tabs.forEachIndexed { index, title ->
+                tabRes.forEachIndexed { index, resId ->
                     Tab(
                         selected = selectedTab == index,
                         onClick = { selectedTab = index },
                         text = {
                             Text(
-                                title,
+                                stringResource(resId),
                                 fontWeight = if (selectedTab == index) FontWeight.SemiBold else FontWeight.Normal
                             )
                         }
@@ -134,7 +140,7 @@ private fun PromptsTab() {
     val prompts by PromptStore.prompts.collectAsState()
 
     if (prompts.isEmpty()) {
-        EmptyTabContent("No prompts yet", "Saved prompts will appear here")
+        EmptyTabContent(stringResource(R.string.no_prompts_yet), stringResource(R.string.prompts_empty_sub))
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -153,7 +159,7 @@ private fun PhotosTab(onDelete: (LibraryItem) -> Unit) {
     val photos = items.filter { it.isImage }
 
     if (photos.isEmpty()) {
-        EmptyTabContent("No photos yet", "Photos you save will appear here")
+        EmptyTabContent(stringResource(R.string.no_photos_yet), stringResource(R.string.photos_empty_sub))
     } else {
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
@@ -182,7 +188,7 @@ private fun DocumentsTab(onDelete: (LibraryItem) -> Unit) {
     val docs = items.filter { !it.isImage }
 
     if (docs.isEmpty()) {
-        EmptyTabContent("No documents yet", "Documents you save will appear here")
+        EmptyTabContent(stringResource(R.string.no_documents_yet), stringResource(R.string.documents_empty_sub))
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Nuova chat</string>
+    <string name="shortcut_new_chat_long">Inizia una nuova chat</string>
+    <string name="shortcut_notes">Note</string>
+    <string name="shortcut_notes_long">Apri Note</string>
+    <string name="shortcut_voice">Voce</string>
+    <string name="shortcut_voice_long">Apri Promemoria vocali</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Buongiorno</string>
+    <string name="greeting_afternoon">Buon pomeriggio</string>
+    <string name="greeting_evening">Buonasera</string>
+    <string name="ask_secure_ai">Chiedi a Secure AI</string>
+
+    <string name="cancel">Annulla</string>
+    <string name="done">Fatto</string>
+    <string name="save">Salva</string>
+    <string name="delete">Elimina</string>
+    <string name="copy">Copia</string>
+    <string name="speak">Parla</string>
+    <string name="stop">Ferma</string>
+    <string name="redo">Ripeti</string>
+    <string name="not_now">Non ora</string>
+    <string name="continue_text">Continua</string>
+    <string name="get_started">Inizia</string>
+    <string name="create">Crea</string>
+    <string name="join">Partecipa</string>
+    <string name="upgrade">Esegui l\'upgrade</string>
+    <string name="sign_in">Accedi</string>
+    <string name="sign_out">Esci</string>
+    <string name="invite_friends">Invita amici</string>
+    <string name="invite_friends_sub">Condividi Secure AI con le persone che conosci</string>
+    <string name="company_apps">Le nostre app</string>
+    <string name="share_app">Condividi %1$s</string>
+
+    <string name="sidebar_apps">App</string>
+    <string name="sidebar_chats">Chat</string>
+    <string name="sidebar_projects">Progetti</string>
+    <string name="sidebar_photos">Foto</string>
+    <string name="sidebar_notes">Note</string>
+    <string name="sidebar_voice">Voce</string>
+    <string name="sidebar_documents">Documenti</string>
+    <string name="sidebar_new_chat">Nuova chat</string>
+    <string name="sidebar_library">Libreria</string>
+
+    <string name="new_chat">Nuova chat</string>
+    <string name="incognito">Anonimo</string>
+    <string name="incognito_mode">Modalità anonima</string>
+    <string name="files">File</string>
+    <string name="photos">Foto</string>
+    <string name="camera">Fotocamera</string>
+    <string name="analyze_file">Analizza questo file</string>
+    <string name="conversations_empty">Le tue conversazioni appariranno qui</string>
+
+    <string name="settings">Impostazioni</string>
+    <string name="preferences">Preferenze</string>
+    <string name="haptic_feedback">Feedback aptico</string>
+    <string name="text_size">Dimensione testo</string>
+    <string name="size_small">Piccolo</string>
+    <string name="size_medium">Medio</string>
+    <string name="size_large">Grande</string>
+    <string name="background">Sfondo</string>
+    <string name="notifications">Notifiche</string>
+    <string name="subscription">Abbonamento</string>
+    <string name="upgrade_sublabel">Sblocca modelli premium e limiti più alti</string>
+    <string name="restore_purchases">Ripristina acquisti</string>
+    <string name="account">Account</string>
+    <string name="delete_app_data">Elimina dati dell\'app</string>
+    <string name="delete_account">Elimina account</string>
+    <string name="delete_account_title">Elimina account</string>
+    <string name="about">Informazioni</string>
+    <string name="version">Versione</string>
+    <string name="build">Build</string>
+
+    <string name="new_project">Nuovo progetto</string>
+    <string name="edit_project">Modifica progetto</string>
+    <string name="projects_empty">Dai alla tua IA una personalità e un focus personalizzati</string>
+
+    <string name="no_prompts_yet">Ancora nessun prompt</string>
+    <string name="prompts_empty_sub">I prompt salvati appariranno qui</string>
+    <string name="no_photos_yet">Ancora nessuna foto</string>
+    <string name="photos_empty_sub">Le foto salvate appariranno qui</string>
+    <string name="no_documents_yet">Ancora nessun documento</string>
+    <string name="documents_empty_sub">I documenti salvati appariranno qui</string>
+
+    <string name="sign_in_to_use">Accedi per usare %1$s</string>
+    <string name="sign_in_guest_body">Come ospite puoi chattare con Claude. Note, Promemoria vocali, Libreria e Progetti vengono salvati nel tuo account — accedi per sbloccarli. Le tue chat da ospite ti seguiranno.</string>
+    <string name="continue_with_google">Continua con Google</string>
+
+    <string name="unlock_secure_ai">Sblocca Secure AI</string>
+    <string name="biometric_subtitle">Usa la biometria per accedere alle tue chat</string>
+    <string name="use_passcode">Usa il codice di accesso</string>
+    <string name="app_locked">Secure AI è bloccato</string>
+    <string name="authenticate_to_continue">Autenticati per continuare</string>
+
+    <string name="stay_in_the_loop">Resta aggiornato</string>
+    <string name="allow_notifications">Consenti notifiche</string>
+
+    <string name="onboarding_title_1">Basato su Claude</string>
+    <string name="onboarding_body_1">Secure AI è costruito su Claude, il modello all\'avanguardia di Anthropic — scegliendo il modello Claude giusto per ogni attività.</string>
+    <string name="onboarding_title_2">Privato per impostazione predefinita</string>
+    <string name="onboarding_body_2">La tua identità non raggiunge mai l\'IA. Ogni messaggio viene instradato tramite un proxy per la privacy — nome, email e IP restano nascosti.</string>
+    <string name="onboarding_title_3">Cattura tutto</string>
+    <string name="onboarding_body_3">Note e promemoria vocali, trascritti e riassunti automaticamente — così nulla di ciò che catturi va perso.</string>
+    <string name="onboarding_title_4">Resta organizzato</string>
+    <string name="onboarding_body_4">I progetti raggruppano le tue chat, note e file in base a ciò su cui stai lavorando — il tuo spazio di lavoro IA personale.</string>
+
+    <string name="no_connection">Nessuna connessione</string>
+</resources>

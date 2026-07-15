@@ -45,9 +45,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import one.secureai.app.R
 import one.secureai.app.data.store.Project
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.ui.theme.Brand
@@ -106,7 +108,7 @@ fun ProjectsScreen(
                 Text("No projects yet", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "Projects give your AI a custom personality and focus",
+                    stringResource(R.string.projects_empty),
                     fontSize = 14.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -200,7 +202,7 @@ private fun ProjectFormSheet(
                 .padding(bottom = 40.dp)
         ) {
             Text(
-                if (project != null) "Edit Project" else "New Project",
+                if (project != null) stringResource(R.string.edit_project) else stringResource(R.string.new_project),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.SemiBold
             )

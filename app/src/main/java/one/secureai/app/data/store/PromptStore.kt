@@ -1,6 +1,7 @@
 package one.secureai.app.data.store
 
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,13 +40,18 @@ object PromptStore {
     val prompts: StateFlow<List<UserPrompt>> = _prompts.asStateFlow()
 
     suspend fun load() {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         try {
-            val snap = col.orderBy("createdAt", Query.Direction.DESCENDING).get().await()
+            val snap = col
+                .whereEqualTo("uid", uid)
+                .orderBy("createdAt", Query.Direction.DESCENDING)
+                .get().await()
             _prompts.value = snap.documents.mapNotNull { UserPrompt.fromDoc(it.id, it.data ?: emptyMap()) }
         } catch (e: Exception) { e.printStackTrace() }
     }
 
     fun add(title: String, content: String, category: String = "") {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val prompt = UserPrompt(title = title.trim(), content = content.trim(), category = category.trim())
         _prompts.value = listOf(prompt) + _prompts.value
         col.document(prompt.id).set(
@@ -53,6 +59,7 @@ object PromptStore {
                 "title" to prompt.title,
                 "content" to prompt.content,
                 "category" to prompt.category,
+                "uid" to uid,
                 "createdAt" to Timestamp.now()
             )
         )

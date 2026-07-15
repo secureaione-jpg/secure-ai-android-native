@@ -26,6 +26,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Switch
@@ -46,6 +48,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -101,14 +104,14 @@ fun SettingsScreen(
             ) {
                 Spacer(Modifier.weight(1f))
                 Text(
-                    "Settings",
+                    stringResource(R.string.settings),
                     fontSize = 17.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = SettingsText
                 )
                 Spacer(Modifier.weight(1f))
                 Text(
-                    "Done",
+                    stringResource(R.string.done),
                     fontSize = 17.sp,
                     color = Brand,
                     modifier = Modifier
@@ -172,12 +175,59 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(24.dp))
 
+            // Invite Friends — matches iOS
+            DarkCard {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(
+                                    Intent.EXTRA_TEXT,
+                                    "Check out Secure AI: https://play.google.com/store/apps/details?id=${context.packageName}"
+                                )
+                            }
+                            context.startActivity(Intent.createChooser(shareIntent, null))
+                        }
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painterResource(R.drawable.logo_full),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp).clip(RoundedCornerShape(6.dp))
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(R.string.invite_friends),
+                            fontSize = 16.sp,
+                            color = SettingsText
+                        )
+                        Text(
+                            stringResource(R.string.invite_friends_sub),
+                            fontSize = 13.sp,
+                            color = SettingsSecondary
+                        )
+                    }
+                    Icon(
+                        Icons.Default.Share,
+                        contentDescription = null,
+                        tint = SettingsSecondary,
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
+            }
+
+            Spacer(Modifier.height(24.dp))
+
             // Preferences section — matches iOS
-            SettingsLabel("Preferences")
+            SettingsLabel(stringResource(R.string.preferences))
             DarkCard {
                 SettingsToggleRow(
                     icon = R.drawable.ic_notification,
-                    label = "Haptic feedback",
+                    label = stringResource(R.string.haptic_feedback),
                     checked = hapticsEnabled,
                     onChecked = {
                         hapticsEnabled = it
@@ -187,8 +237,8 @@ fun SettingsScreen(
                 Divider()
                 SettingsSegmentRow(
                     icon = R.drawable.ic_new_chat,
-                    label = "Text size",
-                    options = listOf("Small", "Medium", "Large"),
+                    label = stringResource(R.string.text_size),
+                    options = listOf(stringResource(R.string.size_small), stringResource(R.string.size_medium), stringResource(R.string.size_large)),
                     selected = textSize,
                     onSelected = {
                         textSize = it
@@ -199,7 +249,7 @@ fun SettingsScreen(
                 // Background picker
                 Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
                     Text(
-                        "Background",
+                        stringResource(R.string.background),
                         fontSize = 13.sp,
                         color = SettingsSecondary,
                         modifier = Modifier.padding(bottom = 8.dp)
@@ -247,7 +297,7 @@ fun SettingsScreen(
             // Notifications — matches iOS
             DarkCard {
                 SettingsLinkRow(
-                    label = "Notifications",
+                    label = stringResource(R.string.notifications),
                     onClick = onOpenNotifications
                 )
             }
@@ -255,19 +305,17 @@ fun SettingsScreen(
             Spacer(Modifier.height(24.dp))
 
             // Subscription — matches iOS
-            SettingsLabel("Subscription")
+            SettingsLabel(stringResource(R.string.subscription))
             DarkCard {
                 SettingsLinkRow(
-                    label = "Upgrade",
-                    sublabel = "Unlock premium models and higher limits",
+                    label = stringResource(R.string.upgrade),
+                    sublabel = stringResource(R.string.upgrade_sublabel),
                     onClick = onOpenPaywall
                 )
                 Divider()
                 SettingsLinkRow(
-                    label = "Restore purchases",
-                    onClick = {
-                        // TODO: restore purchases
-                    }
+                    label = stringResource(R.string.restore_purchases),
+                    onClick = { one.secureai.app.data.store.StoreManager.restorePurchases() }
                 )
             }
 
@@ -275,10 +323,10 @@ fun SettingsScreen(
 
             // Account
             if (!AuthManager.isAnonymous) {
-                SettingsLabel("Account")
+                SettingsLabel(stringResource(R.string.account))
                 DarkCard {
                     SettingsLinkRow(
-                        label = "Sign out",
+                        label = stringResource(R.string.sign_out),
                         onClick = {
                             AuthManager.signOut()
                             onBack()
@@ -286,7 +334,7 @@ fun SettingsScreen(
                     )
                     Divider()
                     SettingsLinkRow(
-                        label = "Delete app data",
+                        label = stringResource(R.string.delete_app_data),
                         tint = Color(0xFFFF3B30),
                         onClick = {
                             scope.launch { UserProfileManager.deleteAppData() }
@@ -294,7 +342,7 @@ fun SettingsScreen(
                     )
                     Divider()
                     SettingsLinkRow(
-                        label = "Delete account",
+                        label = stringResource(R.string.delete_account),
                         tint = Color(0xFFFF3B30),
                         onClick = { showDeleteConfirm = true }
                     )
@@ -303,11 +351,21 @@ fun SettingsScreen(
             }
 
             // About
-            SettingsLabel("About")
+            SettingsLabel(stringResource(R.string.about))
             DarkCard {
-                SettingsInfoRow(label = "Version", value = BuildConfig.VERSION_NAME)
+                SettingsInfoRow(label = stringResource(R.string.version), value = BuildConfig.VERSION_NAME)
                 Divider()
-                SettingsInfoRow(label = "Build", value = BuildConfig.VERSION_CODE.toString())
+                SettingsInfoRow(label = stringResource(R.string.build), value = BuildConfig.VERSION_CODE.toString())
+            }
+
+            Spacer(Modifier.height(24.dp))
+
+            // Our Apps — cross-promote the family, matches iOS companySection.
+            SettingsLabel(stringResource(R.string.company_apps))
+            DarkCard {
+                CompanyAppRow("Sanna Health", "https://play.google.com/store/apps/details?id=one.sanna.health")
+                Divider()
+                CompanyAppRow("Secure AI", "https://play.google.com/store/apps/details?id=one.secureai.app")
             }
 
             Spacer(Modifier.height(32.dp))
@@ -317,7 +375,7 @@ fun SettingsScreen(
     if (showDeleteConfirm) {
         AlertDialog(
             onDismissRequest = { showDeleteConfirm = false },
-            title = { Text("Delete Account") },
+            title = { Text(stringResource(R.string.delete_account_title)) },
             text = { Text("This will permanently delete your account and all data. This cannot be undone.") },
             confirmButton = {
                 TextButton(onClick = {
@@ -333,7 +391,7 @@ fun SettingsScreen(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteConfirm = false }) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel))
                 }
             }
         )
@@ -441,6 +499,36 @@ private fun SettingsLinkRow(
             null,
             tint = SettingsSecondary.copy(alpha = 0.5f),
             modifier = Modifier.size(16.dp)
+        )
+    }
+}
+
+@Composable
+private fun CompanyAppRow(name: String, storeUrl: String) {
+    val context = LocalContext.current
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(storeUrl)))
+            }
+            .padding(horizontal = 16.dp, vertical = 14.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(name, fontSize = 16.sp, color = SettingsText, modifier = Modifier.weight(1f))
+        Icon(
+            Icons.Default.Share,
+            contentDescription = stringResource(R.string.share_app, name),
+            tint = SettingsSecondary,
+            modifier = Modifier
+                .size(20.dp)
+                .clickable {
+                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, "Check out $name: $storeUrl")
+                    }
+                    context.startActivity(Intent.createChooser(shareIntent, null))
+                }
         )
     }
 }

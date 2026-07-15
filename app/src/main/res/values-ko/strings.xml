@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">새 채팅</string>
+    <string name="shortcut_new_chat_long">새 채팅 시작</string>
+    <string name="shortcut_notes">메모</string>
+    <string name="shortcut_notes_long">메모 열기</string>
+    <string name="shortcut_voice">음성</string>
+    <string name="shortcut_voice_long">음성 메모 열기</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">좋은 아침이에요</string>
+    <string name="greeting_afternoon">좋은 오후예요</string>
+    <string name="greeting_evening">좋은 저녁이에요</string>
+    <string name="ask_secure_ai">Secure AI에게 물어보기</string>
+
+    <string name="cancel">취소</string>
+    <string name="done">완료</string>
+    <string name="save">저장</string>
+    <string name="delete">삭제</string>
+    <string name="copy">복사</string>
+    <string name="speak">말하기</string>
+    <string name="stop">중지</string>
+    <string name="redo">다시 하기</string>
+    <string name="not_now">나중에</string>
+    <string name="continue_text">계속</string>
+    <string name="get_started">시작하기</string>
+    <string name="create">만들기</string>
+    <string name="join">참여</string>
+    <string name="upgrade">업그레이드</string>
+    <string name="sign_in">로그인</string>
+    <string name="sign_out">로그아웃</string>
+    <string name="invite_friends">친구 초대</string>
+    <string name="invite_friends_sub">아는 사람들과 Secure AI를 공유하세요</string>
+    <string name="company_apps">우리 앱</string>
+    <string name="share_app">%1$s 공유</string>
+
+    <string name="sidebar_apps">앱</string>
+    <string name="sidebar_chats">채팅</string>
+    <string name="sidebar_projects">프로젝트</string>
+    <string name="sidebar_photos">사진</string>
+    <string name="sidebar_notes">메모</string>
+    <string name="sidebar_voice">음성</string>
+    <string name="sidebar_documents">문서</string>
+    <string name="sidebar_new_chat">새 채팅</string>
+    <string name="sidebar_library">라이브러리</string>
+
+    <string name="new_chat">새 채팅</string>
+    <string name="incognito">시크릿</string>
+    <string name="incognito_mode">시크릿 모드</string>
+    <string name="files">파일</string>
+    <string name="photos">사진</string>
+    <string name="camera">카메라</string>
+    <string name="analyze_file">이 파일 분석</string>
+    <string name="conversations_empty">대화가 여기에 표시됩니다</string>
+
+    <string name="settings">설정</string>
+    <string name="preferences">환경설정</string>
+    <string name="haptic_feedback">햅틱 피드백</string>
+    <string name="text_size">텍스트 크기</string>
+    <string name="size_small">작게</string>
+    <string name="size_medium">보통</string>
+    <string name="size_large">크게</string>
+    <string name="background">배경</string>
+    <string name="notifications">알림</string>
+    <string name="subscription">구독</string>
+    <string name="upgrade_sublabel">프리미엄 모델과 높은 한도 잠금 해제</string>
+    <string name="restore_purchases">구매 복원</string>
+    <string name="account">계정</string>
+    <string name="delete_app_data">앱 데이터 삭제</string>
+    <string name="delete_account">계정 삭제</string>
+    <string name="delete_account_title">계정 삭제</string>
+    <string name="about">정보</string>
+    <string name="version">버전</string>
+    <string name="build">빌드</string>
+
+    <string name="new_project">새 프로젝트</string>
+    <string name="edit_project">프로젝트 편집</string>
+    <string name="projects_empty">AI에게 맞춤 성격과 집중력을 부여하세요</string>
+
+    <string name="no_prompts_yet">아직 프롬프트가 없습니다</string>
+    <string name="prompts_empty_sub">저장된 프롬프트가 여기에 표시됩니다</string>
+    <string name="no_photos_yet">아직 사진이 없습니다</string>
+    <string name="photos_empty_sub">저장된 사진이 여기에 표시됩니다</string>
+    <string name="no_documents_yet">아직 문서가 없습니다</string>
+    <string name="documents_empty_sub">저장된 문서가 여기에 표시됩니다</string>
+
+    <string name="sign_in_to_use">%1$s을(를) 사용하려면 로그인하세요</string>
+    <string name="sign_in_guest_body">게스트로 Claude와 대화할 수 있습니다. 메모, 음성 메모, 라이브러리, 프로젝트는 계정에 저장됩니다. 로그인하여 잠금 해제하세요. 게스트 대화는 그대로 유지됩니다.</string>
+    <string name="continue_with_google">Google로 계속</string>
+
+    <string name="unlock_secure_ai">Secure AI 잠금 해제</string>
+    <string name="biometric_subtitle">생체 인식으로 채팅에 접근</string>
+    <string name="use_passcode">비밀번호 사용</string>
+    <string name="app_locked">Secure AI가 잠겨 있습니다</string>
+    <string name="authenticate_to_continue">계속하려면 인증하세요</string>
+
+    <string name="stay_in_the_loop">최신 소식 받기</string>
+    <string name="allow_notifications">알림 허용</string>
+
+    <string name="onboarding_title_1">Claude 기반</string>
+    <string name="onboarding_body_1">Secure AI는 Anthropic의 최첨단 모델 Claude를 기반으로 하며, 매 작업에 맞는 Claude 모델을 선택합니다.</string>
+    <string name="onboarding_title_2">기본적으로 비공개</string>
+    <string name="onboarding_body_2">당신의 신원은 AI에 도달하지 않습니다. 모든 메시지는 프라이버시 프록시를 거칩니다 — 이름, 이메일, IP가 숨겨집니다.</string>
+    <string name="onboarding_title_3">모든 것을 기록</string>
+    <string name="onboarding_body_3">메모와 음성 메모가 자동으로 텍스트 변환 및 요약됩니다 — 기록한 것을 잃어버리지 않도록.</string>
+
+    <string name="no_connection">연결 없음</string>
+    <string name="onboarding_title_4">정리된 상태 유지</string>
+    <string name="onboarding_body_4">프로젝트가 작업 중인 내용별로 채팅, 메모, 파일을 그룹화합니다 — 나만의 AI 작업 공간.</string>
+</resources>

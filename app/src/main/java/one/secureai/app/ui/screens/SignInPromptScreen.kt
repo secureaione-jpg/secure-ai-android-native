@@ -28,9 +28,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import one.secureai.app.R
 import one.secureai.app.auth.AuthManager
 
 @Composable
@@ -65,7 +67,7 @@ fun SignInPromptScreen(feature: String = "this", onDismiss: () -> Unit) {
         Spacer(Modifier.height(22.dp))
 
         Text(
-            text = "Sign in to use $feature",
+            text = stringResource(R.string.sign_in_to_use, feature),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
@@ -74,7 +76,7 @@ fun SignInPromptScreen(feature: String = "this", onDismiss: () -> Unit) {
         Spacer(Modifier.height(10.dp))
 
         Text(
-            text = "As a guest you can chat with every model. Tasks, Library, and Memories are saved to your account — sign in to unlock them. Your guest chats come with you.",
+            text = stringResource(R.string.sign_in_guest_body),
             fontSize = 15.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -98,13 +100,13 @@ fun SignInPromptScreen(feature: String = "this", onDismiss: () -> Unit) {
                 contentColor = Color.Black
             )
         ) {
-            Text("Continue with Google", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.continue_with_google), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
         }
 
         Spacer(Modifier.height(12.dp))
 
         TextButton(onClick = onDismiss) {
-            Text("Not now", fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(R.string.not_now), fontSize = 15.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
     }
 }

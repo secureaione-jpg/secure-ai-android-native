@@ -1,5 +1,8 @@
 package one.secureai.app.network
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Base64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,12 +15,6 @@ import org.json.JSONObject
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-/**
- * Kotlin port of secure-ai-iOS's ImageService.swift — calls the Worker's
- * /image endpoint (gpt-image-1). Unauthenticated like RemoteAIService: the
- * endpoint only checks X-App-Secret, no sign-in required (verified against
- * worker.ts — /image has no tier/uid gating at all).
- */
 class ImageService {
 
     class ImageError(message: String) : IOException(message)
@@ -30,8 +27,18 @@ class ImageService {
 
     private val jsonMedia = "application/json; charset=utf-8".toMediaType()
 
+    private fun isOnline(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+            ?: return true
+        val caps = cm.getNetworkCapabilities(cm.activeNetwork) ?: return false
+        return caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
+
     /** Returns raw PNG/JPEG bytes for a single 1024x1024 generated image. */
-    suspend fun generate(prompt: String): ByteArray = withContext(Dispatchers.IO) {
+    suspend fun generate(prompt: String, context: Context? = null): ByteArray = withContext(Dispatchers.IO) {
+        if (context != null && !isOnline(context)) {
+            throw ImageError("No internet connection. Connect to a network and try again.")
+        }
         val payload = JSONObject().apply {
             put("prompt", prompt)
             put("size", "1024x1024")

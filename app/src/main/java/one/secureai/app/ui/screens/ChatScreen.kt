@@ -73,6 +73,7 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,17 +103,15 @@ private val TextSecondary = Color(0xFF8E8E93)
 fun ChatScreen(
     viewModel: ChatViewModel,
     onOpenSettings: () -> Unit,
-    onOpenTasks: () -> Unit = {},
-    onOpenMemory: () -> Unit = {},
     onOpenSavedChats: () -> Unit = {},
     onOpenLibrary: () -> Unit = {},
     onOpenPhotos: () -> Unit = {},
-    onOpenDocuments: () -> Unit = {},
     onOpenPaywall: () -> Unit = {},
     onOpenProfile: () -> Unit = {},
-    onOpenApps: () -> Unit = {},
     onOpenProjects: () -> Unit = {},
-    onOpenTeam: () -> Unit = {},
+    onOpenNotes: () -> Unit = {},
+    onOpenVoiceMemos: () -> Unit = {},
+    onOpenApps: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val messages by viewModel.messages.collectAsState()
@@ -160,7 +159,7 @@ fun ChatScreen(
                 val bytes = context.contentResolver.openInputStream(uri)?.readBytes()
                 val mime = context.contentResolver.getType(uri) ?: "application/octet-stream"
                 if (bytes != null) {
-                    viewModel.sendWithAttachment(inputText.ifBlank { "Analyze this file" }, bytes, mime)
+                    viewModel.sendWithAttachment(inputText.ifBlank { context.getString(R.string.analyze_file) }, bytes, mime)
                     inputText = ""
                 }
             } catch (_: Exception) {}
@@ -197,6 +196,9 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         AuthManager.signInAnonymouslyIfNeeded()
         UserProfileManager.load()
+        if (one.secureai.app.BuildConfig.DEBUG) {
+            one.secureai.app.debug.ScreenshotSeeder.seed()
+        }
     }
 
     fun startVoiceInput() {
@@ -233,7 +235,6 @@ fun ChatScreen(
     }
 
     val sidebarCallbacks = SidebarCallbacks(
-        onApps = onOpenApps,
         onChats = onOpenSavedChats,
         onHistory = onOpenSavedChats,
         onLibrary = {
@@ -244,16 +245,16 @@ fun ChatScreen(
             if (AuthManager.isAnonymous) { signInFeature = "photos"; showSignIn = true }
             else onOpenPhotos()
         },
-        onDocuments = {
-            if (AuthManager.isAnonymous) { signInFeature = "documents"; showSignIn = true }
-            else onOpenDocuments()
+        onNotes = {
+            if (AuthManager.isAnonymous) { signInFeature = "notes"; showSignIn = true }
+            else onOpenNotes()
         },
-        onMemories = {
-            if (AuthManager.isAnonymous) { signInFeature = "memories"; showSignIn = true }
-            else onOpenMemory()
+        onVoiceMemos = {
+            if (AuthManager.isAnonymous) { signInFeature = "voice memos"; showSignIn = true }
+            else onOpenVoiceMemos()
         },
+        onApps = onOpenApps,
         onProjects = onOpenProjects,
-        onTeam = onOpenTeam,
         onProfile = onOpenProfile,
         onNewChat = { viewModel.clearHistory() },
         onUpgrade = onOpenPaywall,
@@ -326,7 +327,7 @@ fun ChatScreen(
                             color = Color.Transparent
                         ) {
                             Text(
-                                "Sign In",
+                                stringResource(R.string.sign_in),
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold,
                                 color = contentColor,
@@ -367,7 +368,7 @@ fun ChatScreen(
                             )
                             Spacer(Modifier.width(6.dp))
                             Text(
-                                "Incognito Mode",
+                                stringResource(R.string.incognito_mode),
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Medium,
                                 color = MaterialTheme.colorScheme.onBackground
@@ -483,7 +484,7 @@ fun ChatScreen(
                             onDismissRequest = { showPlusMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Incognito") },
+                                text = { Text(stringResource(R.string.incognito)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_lock), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
@@ -492,7 +493,7 @@ fun ChatScreen(
                             )
                             HorizontalDivider()
                             DropdownMenuItem(
-                                text = { Text("New chat") },
+                                text = { Text(stringResource(R.string.new_chat)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_new_chat), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
@@ -500,7 +501,7 @@ fun ChatScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Files") },
+                                text = { Text(stringResource(R.string.files)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
@@ -513,7 +514,7 @@ fun ChatScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Photos") },
+                                text = { Text(stringResource(R.string.photos)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_photos), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
@@ -526,7 +527,7 @@ fun ChatScreen(
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Camera") },
+                                text = { Text(stringResource(R.string.camera)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_camera), null, modifier = Modifier.size(20.dp)) },
                                 onClick = {
                                     showPlusMenu = false
@@ -821,15 +822,15 @@ private fun MessageBubble(
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    ActionButton("Copy", R.drawable.ic_document) { onCopy(); showActions = false }
+                    ActionButton(stringResource(R.string.copy), R.drawable.ic_document) { onCopy(); showActions = false }
                     ActionButton(
-                        if (playingId == message.id) "Stop" else "Speak",
+                        if (playingId == message.id) stringResource(R.string.stop) else stringResource(R.string.speak),
                         R.drawable.ic_notification
                     ) { onSpeak(); showActions = false }
                     ActionButton("👍", tint = if (message.thumbsUp == true) Brand else null) { onThumbsUp(); showActions = false }
                     ActionButton("👎", tint = if (message.thumbsUp == false) Brand else null) { onThumbsDown(); showActions = false }
                     if (isLast) {
-                        ActionButton("Redo", R.drawable.ic_history) { onRegenerate(); showActions = false }
+                        ActionButton(stringResource(R.string.redo), R.drawable.ic_history) { onRegenerate(); showActions = false }
                     }
                     ActionButton(if (message.saved) "★" else "☆") { onSave(); showActions = false }
                 }

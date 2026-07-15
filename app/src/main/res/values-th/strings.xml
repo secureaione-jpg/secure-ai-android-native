@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">แชทใหม่</string>
+    <string name="shortcut_new_chat_long">เริ่มแชทใหม่</string>
+    <string name="shortcut_notes">โน้ต</string>
+    <string name="shortcut_notes_long">เปิดโน้ต</string>
+    <string name="shortcut_voice">เสียง</string>
+    <string name="shortcut_voice_long">เปิดบันทึกเสียง</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">อรุณสวัสดิ์</string>
+    <string name="greeting_afternoon">สวัสดีตอนบ่าย</string>
+    <string name="greeting_evening">สวัสดีตอนเย็น</string>
+    <string name="ask_secure_ai">ถาม Secure AI</string>
+
+    <string name="cancel">ยกเลิก</string>
+    <string name="done">เสร็จสิ้น</string>
+    <string name="save">บันทึก</string>
+    <string name="delete">ลบ</string>
+    <string name="copy">คัดลอก</string>
+    <string name="speak">พูด</string>
+    <string name="stop">หยุด</string>
+    <string name="redo">ทำซ้ำ</string>
+    <string name="not_now">ไม่ใช่ตอนนี้</string>
+    <string name="continue_text">ดำเนินการต่อ</string>
+    <string name="get_started">เริ่มต้นใช้งาน</string>
+    <string name="create">สร้าง</string>
+    <string name="join">เข้าร่วม</string>
+    <string name="upgrade">อัปเกรด</string>
+    <string name="sign_in">เข้าสู่ระบบ</string>
+    <string name="sign_out">ออกจากระบบ</string>
+    <string name="invite_friends">เชิญเพื่อน</string>
+    <string name="invite_friends_sub">แชร์ Secure AI ให้คนที่คุณรู้จัก</string>
+    <string name="company_apps">แอปของเรา</string>
+    <string name="share_app">แชร์ %1$s</string>
+
+    <string name="sidebar_apps">แอป</string>
+    <string name="sidebar_chats">แชท</string>
+    <string name="sidebar_projects">โปรเจกต์</string>
+    <string name="sidebar_photos">รูปภาพ</string>
+    <string name="sidebar_notes">โน้ต</string>
+    <string name="sidebar_voice">เสียง</string>
+    <string name="sidebar_documents">เอกสาร</string>
+    <string name="sidebar_new_chat">แชทใหม่</string>
+    <string name="sidebar_library">คลัง</string>
+
+    <string name="new_chat">แชทใหม่</string>
+    <string name="incognito">ไม่ระบุตัวตน</string>
+    <string name="incognito_mode">โหมดไม่ระบุตัวตน</string>
+    <string name="files">ไฟล์</string>
+    <string name="photos">รูปภาพ</string>
+    <string name="camera">กล้อง</string>
+    <string name="analyze_file">วิเคราะห์ไฟล์นี้</string>
+    <string name="conversations_empty">บทสนทนาของคุณจะปรากฏที่นี่</string>
+
+    <string name="settings">การตั้งค่า</string>
+    <string name="preferences">การตั้งค่า</string>
+    <string name="haptic_feedback">การตอบสนองแบบสัมผัส</string>
+    <string name="text_size">ขนาดตัวอักษร</string>
+    <string name="size_small">เล็ก</string>
+    <string name="size_medium">กลาง</string>
+    <string name="size_large">ใหญ่</string>
+    <string name="background">พื้นหลัง</string>
+    <string name="notifications">การแจ้งเตือน</string>
+    <string name="subscription">การสมัครสมาชิก</string>
+    <string name="upgrade_sublabel">ปลดล็อกโมเดลพรีเมียมและขีดจำกัดที่สูงขึ้น</string>
+    <string name="restore_purchases">กู้คืนการซื้อ</string>
+    <string name="account">บัญชี</string>
+    <string name="delete_app_data">ลบข้อมูลแอป</string>
+    <string name="delete_account">ลบบัญชี</string>
+    <string name="delete_account_title">ลบบัญชี</string>
+    <string name="about">เกี่ยวกับ</string>
+    <string name="version">เวอร์ชัน</string>
+    <string name="build">บิลด์</string>
+
+    <string name="new_project">โปรเจกต์ใหม่</string>
+    <string name="edit_project">แก้ไขโปรเจกต์</string>
+    <string name="projects_empty">มอบบุคลิกและจุดโฟกัสเฉพาะให้ AI ของคุณ</string>
+
+    <string name="no_prompts_yet">ยังไม่มีพรอมต์</string>
+    <string name="prompts_empty_sub">พรอมต์ที่บันทึกไว้จะปรากฏที่นี่</string>
+    <string name="no_photos_yet">ยังไม่มีรูปภาพ</string>
+    <string name="photos_empty_sub">รูปภาพที่คุณบันทึกจะปรากฏที่นี่</string>
+    <string name="no_documents_yet">ยังไม่มีเอกสาร</string>
+    <string name="documents_empty_sub">เอกสารที่คุณบันทึกจะปรากฏที่นี่</string>
+
+    <string name="sign_in_to_use">เข้าสู่ระบบเพื่อใช้ %1$s</string>
+    <string name="sign_in_guest_body">ในฐานะผู้เยี่ยมชม คุณสามารถแชทกับ Claude ได้ โน้ต บันทึกเสียง คลัง และโปรเจกต์จะถูกบันทึกไว้ในบัญชีของคุณ — เข้าสู่ระบบเพื่อปลดล็อก แชทผู้เยี่ยมชมของคุณจะติดตัวไปด้วย</string>
+    <string name="continue_with_google">ดำเนินการต่อด้วย Google</string>
+
+    <string name="unlock_secure_ai">ปลดล็อก Secure AI</string>
+    <string name="biometric_subtitle">ใช้ไบโอเมตริกเพื่อเข้าถึงแชทของคุณ</string>
+    <string name="use_passcode">ใช้รหัสผ่าน</string>
+    <string name="app_locked">Secure AI ถูกล็อกอยู่</string>
+    <string name="authenticate_to_continue">ยืนยันตัวตนเพื่อดำเนินการต่อ</string>
+
+    <string name="stay_in_the_loop">ติดตามข่าวสาร</string>
+    <string name="allow_notifications">อนุญาตการแจ้งเตือน</string>
+
+    <string name="onboarding_title_1">ขับเคลื่อนโดย Claude</string>
+    <string name="onboarding_body_1">Secure AI สร้างขึ้นบนพื้นฐานของ Claude โมเดลชั้นนำจาก Anthropic — เลือกโมเดล Claude ที่เหมาะสมสำหรับทุกงาน</string>
+    <string name="onboarding_title_2">เป็นส่วนตัวโดยค่าเริ่มต้น</string>
+    <string name="onboarding_body_2">ข้อมูลตัวตนของคุณจะไม่ไปถึง AI ทุกข้อความถูกส่งผ่านพร็อกซีความเป็นส่วนตัว — ชื่อ อีเมล และ IP ของคุณจะถูกซ่อนไว้</string>
+    <string name="onboarding_title_3">บันทึกทุกอย่าง</string>
+    <string name="onboarding_body_3">โน้ตและบันทึกเสียงจะถูกถอดความและสรุปโดยอัตโนมัติ — เพื่อไม่ให้สิ่งที่คุณบันทึกไว้สูญหาย</string>
+    <string name="onboarding_title_4">จัดระเบียบอยู่เสมอ</string>
+    <string name="onboarding_body_4">โปรเจกต์จะจัดกลุ่มแชท โน้ต และไฟล์ของคุณตามสิ่งที่คุณกำลังทำอยู่ — พื้นที่ทำงาน AI ส่วนตัวของคุณ</string>
+
+    <string name="no_connection">ไม่มีการเชื่อมต่อ</string>
+</resources>

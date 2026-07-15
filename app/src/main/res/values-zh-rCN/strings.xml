@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">新对话</string>
+    <string name="shortcut_new_chat_long">开始新对话</string>
+    <string name="shortcut_notes">笔记</string>
+    <string name="shortcut_notes_long">打开笔记</string>
+    <string name="shortcut_voice">语音</string>
+    <string name="shortcut_voice_long">打开语音备忘录</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">早上好</string>
+    <string name="greeting_afternoon">下午好</string>
+    <string name="greeting_evening">晚上好</string>
+    <string name="ask_secure_ai">问Secure AI</string>
+
+    <string name="cancel">取消</string>
+    <string name="done">完成</string>
+    <string name="save">保存</string>
+    <string name="delete">删除</string>
+    <string name="copy">复制</string>
+    <string name="speak">朗读</string>
+    <string name="stop">停止</string>
+    <string name="redo">重做</string>
+    <string name="not_now">暂不</string>
+    <string name="continue_text">继续</string>
+    <string name="get_started">开始使用</string>
+    <string name="create">创建</string>
+    <string name="join">加入</string>
+    <string name="upgrade">升级</string>
+    <string name="sign_in">登录</string>
+    <string name="sign_out">退出登录</string>
+    <string name="invite_friends">邀请好友</string>
+    <string name="invite_friends_sub">与您认识的人分享Secure AI</string>
+    <string name="company_apps">我们的应用</string>
+    <string name="share_app">分享%1$s</string>
+
+    <string name="sidebar_apps">应用</string>
+    <string name="sidebar_chats">聊天</string>
+    <string name="sidebar_projects">项目</string>
+    <string name="sidebar_photos">照片</string>
+    <string name="sidebar_notes">笔记</string>
+    <string name="sidebar_voice">语音</string>
+    <string name="sidebar_documents">文档</string>
+    <string name="sidebar_new_chat">新对话</string>
+    <string name="sidebar_library">库</string>
+
+    <string name="new_chat">新对话</string>
+    <string name="incognito">隐身</string>
+    <string name="incognito_mode">隐身模式</string>
+    <string name="files">文件</string>
+    <string name="photos">照片</string>
+    <string name="camera">相机</string>
+    <string name="analyze_file">分析此文件</string>
+    <string name="conversations_empty">您的对话将显示在这里</string>
+
+    <string name="settings">设置</string>
+    <string name="preferences">偏好设置</string>
+    <string name="haptic_feedback">触感反馈</string>
+    <string name="text_size">字体大小</string>
+    <string name="size_small">小</string>
+    <string name="size_medium">中</string>
+    <string name="size_large">大</string>
+    <string name="background">背景</string>
+    <string name="notifications">通知</string>
+    <string name="subscription">订阅</string>
+    <string name="upgrade_sublabel">解锁高级模型和更高限额</string>
+    <string name="restore_purchases">恢复购买</string>
+    <string name="account">账户</string>
+    <string name="delete_app_data">删除应用数据</string>
+    <string name="delete_account">删除账户</string>
+    <string name="delete_account_title">删除账户</string>
+    <string name="about">关于</string>
+    <string name="version">版本</string>
+    <string name="build">构建</string>
+
+    <string name="new_project">新建项目</string>
+    <string name="edit_project">编辑项目</string>
+    <string name="projects_empty">为您的AI赋予自定义个性和专注点</string>
+
+    <string name="no_prompts_yet">暂无提示词</string>
+    <string name="prompts_empty_sub">保存的提示词将显示在这里</string>
+    <string name="no_photos_yet">暂无照片</string>
+    <string name="photos_empty_sub">保存的照片将显示在这里</string>
+    <string name="no_documents_yet">暂无文档</string>
+    <string name="documents_empty_sub">保存的文档将显示在这里</string>
+
+    <string name="sign_in_to_use">登录以使用%1$s</string>
+    <string name="sign_in_guest_body">作为访客，您可以与Claude聊天。笔记、语音备忘录、库和项目保存在您的账户中——登录即可解锁。您的访客聊天会保留。</string>
+    <string name="continue_with_google">使用Google继续</string>
+
+    <string name="unlock_secure_ai">解锁Secure AI</string>
+    <string name="biometric_subtitle">使用生物识别访问您的聊天</string>
+    <string name="use_passcode">使用密码</string>
+    <string name="app_locked">Secure AI已锁定</string>
+    <string name="authenticate_to_continue">请验证身份以继续</string>
+
+    <string name="stay_in_the_loop">保持更新</string>
+    <string name="allow_notifications">允许通知</string>
+
+    <string name="onboarding_title_1">由Claude驱动</string>
+    <string name="onboarding_body_1">Secure AI基于Anthropic的前沿模型Claude构建——为每项任务选择合适的Claude模型。</string>
+    <string name="onboarding_title_2">默认私密</string>
+    <string name="onboarding_body_2">您的身份永远不会到达AI。每条消息都通过隐私代理路由——您的姓名、邮箱和IP保持隐藏。</string>
+    <string name="onboarding_title_3">记录一切</string>
+    <string name="onboarding_body_3">笔记和语音备忘录会自动转录并生成摘要——让您记录的一切都不会丢失。</string>
+
+    <string name="no_connection">无连接</string>
+    <string name="onboarding_title_4">保持井然有序</string>
+    <string name="onboarding_body_4">项目会按照您正在处理的内容，将聊天、笔记和文件分组——专属于您的AI工作空间。</string>
+</resources>

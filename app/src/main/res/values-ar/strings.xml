@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">محادثة جديدة</string>
+    <string name="shortcut_new_chat_long">بدء محادثة جديدة</string>
+    <string name="shortcut_notes">الملاحظات</string>
+    <string name="shortcut_notes_long">فتح الملاحظات</string>
+    <string name="shortcut_voice">الصوت</string>
+    <string name="shortcut_voice_long">فتح المذكرات الصوتية</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">صباح الخير</string>
+    <string name="greeting_afternoon">مساء الخير</string>
+    <string name="greeting_evening">مساء الخير</string>
+    <string name="ask_secure_ai">اسأل Secure AI</string>
+
+    <string name="cancel">إلغاء</string>
+    <string name="done">تم</string>
+    <string name="save">حفظ</string>
+    <string name="delete">حذف</string>
+    <string name="copy">نسخ</string>
+    <string name="speak">تحدث</string>
+    <string name="stop">إيقاف</string>
+    <string name="redo">إعادة</string>
+    <string name="not_now">ليس الآن</string>
+    <string name="continue_text">متابعة</string>
+    <string name="get_started">ابدأ الآن</string>
+    <string name="create">إنشاء</string>
+    <string name="join">انضمام</string>
+    <string name="upgrade">ترقية</string>
+    <string name="sign_in">تسجيل الدخول</string>
+    <string name="sign_out">تسجيل الخروج</string>
+    <string name="invite_friends">دعوة الأصدقاء</string>
+    <string name="invite_friends_sub">شارك Secure AI مع من تعرفهم</string>
+    <string name="company_apps">تطبيقاتنا</string>
+    <string name="share_app">مشاركة %1$s</string>
+
+    <string name="sidebar_apps">التطبيقات</string>
+    <string name="sidebar_chats">المحادثات</string>
+    <string name="sidebar_projects">المشاريع</string>
+    <string name="sidebar_photos">الصور</string>
+    <string name="sidebar_notes">الملاحظات</string>
+    <string name="sidebar_voice">الصوت</string>
+    <string name="sidebar_documents">المستندات</string>
+    <string name="sidebar_new_chat">محادثة جديدة</string>
+    <string name="sidebar_library">المكتبة</string>
+
+    <string name="new_chat">محادثة جديدة</string>
+    <string name="incognito">التصفح المتخفي</string>
+    <string name="incognito_mode">وضع التصفح المتخفي</string>
+    <string name="files">الملفات</string>
+    <string name="photos">الصور</string>
+    <string name="camera">الكاميرا</string>
+    <string name="analyze_file">تحليل هذا الملف</string>
+    <string name="conversations_empty">ستظهر محادثاتك هنا</string>
+
+    <string name="settings">الإعدادات</string>
+    <string name="preferences">التفضيلات</string>
+    <string name="haptic_feedback">ردود اللمس</string>
+    <string name="text_size">حجم النص</string>
+    <string name="size_small">صغير</string>
+    <string name="size_medium">متوسط</string>
+    <string name="size_large">كبير</string>
+    <string name="background">الخلفية</string>
+    <string name="notifications">الإشعارات</string>
+    <string name="subscription">الاشتراك</string>
+    <string name="upgrade_sublabel">فتح النماذج المتقدمة وحدود أعلى</string>
+    <string name="restore_purchases">استعادة المشتريات</string>
+    <string name="account">الحساب</string>
+    <string name="delete_app_data">حذف بيانات التطبيق</string>
+    <string name="delete_account">حذف الحساب</string>
+    <string name="delete_account_title">حذف الحساب</string>
+    <string name="about">حول</string>
+    <string name="version">الإصدار</string>
+    <string name="build">البناء</string>
+
+    <string name="new_project">مشروع جديد</string>
+    <string name="edit_project">تعديل المشروع</string>
+    <string name="projects_empty">امنح الذكاء الاصطناعي شخصية مخصصة وتركيزاً محدداً</string>
+
+    <string name="no_prompts_yet">لا توجد أوامر بعد</string>
+    <string name="prompts_empty_sub">ستظهر الأوامر المحفوظة هنا</string>
+    <string name="no_photos_yet">لا توجد صور بعد</string>
+    <string name="photos_empty_sub">ستظهر الصور المحفوظة هنا</string>
+    <string name="no_documents_yet">لا توجد مستندات بعد</string>
+    <string name="documents_empty_sub">ستظهر المستندات المحفوظة هنا</string>
+
+    <string name="sign_in_to_use">سجّل الدخول لاستخدام %1$s</string>
+    <string name="sign_in_guest_body">كضيف يمكنك الدردشة مع Claude. الملاحظات والمذكرات الصوتية والمكتبة والمشاريع تُحفظ في حسابك — سجّل الدخول لفتحها. محادثاتك كضيف تنتقل معك.</string>
+    <string name="continue_with_google">المتابعة باستخدام Google</string>
+
+    <string name="unlock_secure_ai">فتح Secure AI</string>
+    <string name="biometric_subtitle">استخدم المقاييس الحيوية للوصول إلى محادثاتك</string>
+    <string name="use_passcode">استخدم رمز المرور</string>
+    <string name="app_locked">Secure AI مقفل</string>
+    <string name="authenticate_to_continue">قم بالمصادقة للمتابعة</string>
+
+    <string name="stay_in_the_loop">ابقَ على اطلاع</string>
+    <string name="allow_notifications">السماح بالإشعارات</string>
+
+    <string name="onboarding_title_1">مدعوم بـ Claude</string>
+    <string name="onboarding_body_1">Secure AI مبني على Claude، النموذج المتطور من Anthropic — ويختار نموذج Claude المناسب لكل مهمة.</string>
+    <string name="onboarding_title_2">خاص بشكل افتراضي</string>
+    <string name="onboarding_body_2">هويتك لا تصل أبداً إلى الذكاء الاصطناعي. كل رسالة تُوجَّه عبر وكيل خصوصية — اسمك وبريدك الإلكتروني وعنوان IP تبقى مخفية.</string>
+    <string name="onboarding_title_3">التقط كل شيء</string>
+    <string name="onboarding_body_3">ملاحظات ومذكرات صوتية، تُفرَّغ وتُلخَّص تلقائياً — حتى لا يضيع ما تلتقطه.</string>
+
+    <string name="no_connection">لا يوجد اتصال</string>
+    <string name="onboarding_title_4">ابقَ منظماً</string>
+    <string name="onboarding_body_4">تجمع المشاريع محادثاتك وملاحظاتك وملفاتك حسب ما تعمل عليه — مساحة عملك الشخصية بالذكاء الاصطناعي.</string>
+</resources>

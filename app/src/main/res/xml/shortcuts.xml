@@ -15,27 +15,27 @@
     </shortcut>
 
     <shortcut
-        android:shortcutId="tasks"
+        android:shortcutId="notes"
         android:enabled="true"
-        android:icon="@drawable/ic_tasks"
-        android:shortcutShortLabel="@string/shortcut_tasks"
-        android:shortcutLongLabel="@string/shortcut_tasks_long">
+        android:icon="@drawable/ic_document"
+        android:shortcutShortLabel="@string/shortcut_notes"
+        android:shortcutLongLabel="@string/shortcut_notes_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://secureai.one/tasks"
+            android:data="https://secureai.one/notes"
             android:targetPackage="one.secureai.app"
             android:targetClass="one.secureai.app.MainActivity" />
     </shortcut>
 
     <shortcut
-        android:shortcutId="memories"
+        android:shortcutId="voice_memos"
         android:enabled="true"
-        android:icon="@drawable/ic_memories"
-        android:shortcutShortLabel="@string/shortcut_memories"
-        android:shortcutLongLabel="@string/shortcut_memories_long">
+        android:icon="@drawable/ic_mic"
+        android:shortcutShortLabel="@string/shortcut_voice"
+        android:shortcutLongLabel="@string/shortcut_voice_long">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://secureai.one/memories"
+            android:data="https://secureai.one/voice"
             android:targetPackage="one.secureai.app"
             android:targetClass="one.secureai.app.MainActivity" />
     </shortcut>

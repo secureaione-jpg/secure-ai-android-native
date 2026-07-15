@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,7 +71,7 @@ fun NotificationPermissionScreen(onResult: () -> Unit) {
             }
             Spacer(Modifier.height(36.dp))
             Text(
-                "Stay in the loop",
+                stringResource(R.string.stay_in_the_loop),
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFFF5F5F7),
@@ -97,11 +98,11 @@ fun NotificationPermissionScreen(onResult: () -> Unit) {
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2563EB))
             ) {
-                Text("Allow notifications", fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.allow_notifications), fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
             }
             Spacer(Modifier.height(12.dp))
             TextButton(onClick = onResult) {
-                Text("Not now", color = Color(0xFF8E8E93), fontSize = 15.sp)
+                Text(stringResource(R.string.not_now), color = Color(0xFF8E8E93), fontSize = 15.sp)
             }
         }
     }

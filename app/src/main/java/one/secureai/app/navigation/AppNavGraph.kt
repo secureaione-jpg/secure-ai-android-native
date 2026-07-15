@@ -9,15 +9,15 @@ import androidx.navigation.compose.rememberNavController
 import one.secureai.app.data.Prefs
 import one.secureai.app.ui.screens.BiometricLockScreen
 import one.secureai.app.ui.screens.ChatScreen
-import one.secureai.app.ui.screens.MemoryScreen
 import one.secureai.app.ui.screens.NotificationPermissionScreen
 import one.secureai.app.ui.screens.SavedChatsScreen
 import one.secureai.app.ui.screens.SettingsScreen
-import one.secureai.app.ui.screens.TasksScreen
 import one.secureai.app.ui.screens.LibraryScreen
+import one.secureai.app.ui.screens.AIPhotosScreen
+import one.secureai.app.ui.screens.NotesScreen
+import one.secureai.app.ui.screens.VoiceMemosScreen
 import one.secureai.app.ui.screens.PaywallScreen
 import one.secureai.app.ui.screens.SidebarCustomizeScreen
-import one.secureai.app.ui.screens.TeamScreen
 import one.secureai.app.ui.screens.ProjectsScreen
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.chat.ChatViewModel
@@ -30,16 +30,14 @@ sealed class Screen(val route: String) {
     object Lock : Screen("lock")
     object Chat : Screen("chat")
     object Settings : Screen("settings")
-    object Tasks : Screen("tasks")
-    object Memory : Screen("memory")
     object SavedChats : Screen("saved_chats")
     object Library : Screen("library")
     object Photos : Screen("photos")
-    object Documents : Screen("documents")
+    object Notes : Screen("notes")
+    object VoiceMemos : Screen("voice_memos")
     object Paywall : Screen("paywall")
     object Profile : Screen("profile")
     object Apps : Screen("apps")
-    object Team : Screen("team")
     object Projects : Screen("projects")
 }
 
@@ -103,17 +101,15 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
             ChatScreen(
                 viewModel = chatViewModel,
                 onOpenSettings = { navController.navigate(Screen.Settings.route) },
-                onOpenTasks = { navController.navigate(Screen.Tasks.route) },
-                onOpenMemory = { navController.navigate(Screen.Memory.route) },
                 onOpenSavedChats = { navController.navigate(Screen.SavedChats.route) },
                 onOpenLibrary = { navController.navigate(Screen.Library.route) },
-                onOpenPhotos = { navController.navigate(Screen.Library.route) },
-                onOpenDocuments = { navController.navigate(Screen.Library.route) },
+                onOpenPhotos = { navController.navigate(Screen.Photos.route) },
                 onOpenPaywall = { navController.navigate(Screen.Paywall.route) },
                 onOpenProfile = { navController.navigate(Screen.Profile.route) },
-                onOpenApps = { navController.navigate(Screen.Apps.route) },
                 onOpenProjects = { navController.navigate(Screen.Projects.route) },
-                onOpenTeam = { navController.navigate(Screen.Team.route) },
+                onOpenNotes = { navController.navigate(Screen.Notes.route) },
+                onOpenVoiceMemos = { navController.navigate(Screen.VoiceMemos.route) },
+                onOpenApps = { navController.navigate(Screen.Apps.route) },
             )
         }
 
@@ -122,7 +118,22 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         }
 
         composable(Screen.Library.route) {
-            LibraryScreen(onBack = { navController.popBackStack() })
+            LibraryScreen(
+                onBack = { navController.popBackStack() },
+                onOpenProjects = { navController.navigate(Screen.Projects.route) }
+            )
+        }
+
+        composable(Screen.Photos.route) {
+            AIPhotosScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.Notes.route) {
+            NotesScreen(onBack = { navController.popBackStack() })
+        }
+
+        composable(Screen.VoiceMemos.route) {
+            VoiceMemosScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Screen.Paywall.route) {
@@ -143,18 +154,6 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
             )
         }
 
-        composable(Screen.Tasks.route) {
-            TasksScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Screen.Memory.route) {
-            MemoryScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Screen.Team.route) {
-            TeamScreen(onBack = { navController.popBackStack() })
-        }
-
         composable(Screen.Projects.route) {
             ProjectsScreen(
                 onBack = { navController.popBackStack() },
@@ -170,7 +169,6 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onBack = { navController.popBackStack() },
                 onSelectConversation = { id ->
                     chatViewModel.loadConversation(id)
-                    navController.popBackStack()
                 }
             )
         }

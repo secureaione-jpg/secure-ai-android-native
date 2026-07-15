@@ -3,13 +3,120 @@
     <string name="app_name">Secure AI</string>
     <string name="shortcut_new_chat">New Chat</string>
     <string name="shortcut_new_chat_long">Start a new chat</string>
-    <string name="shortcut_tasks">Tasks</string>
-    <string name="shortcut_tasks_long">Open Tasks</string>
-    <string name="shortcut_memories">Memories</string>
-    <string name="shortcut_memories_long">Open Memories</string>
+    <string name="shortcut_notes">Notes</string>
+    <string name="shortcut_notes_long">Open Notes</string>
+    <string name="shortcut_voice">Voice</string>
+    <string name="shortcut_voice_long">Open Voice Memos</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
     <string name="greeting_evening">Good evening</string>
     <string name="ask_secure_ai">Ask Secure AI</string>
+
+    <!-- Common -->
+    <string name="cancel">Cancel</string>
+    <string name="done">Done</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
+    <string name="speak">Speak</string>
+    <string name="stop">Stop</string>
+    <string name="redo">Redo</string>
+    <string name="not_now">Not now</string>
+    <string name="continue_text">Continue</string>
+    <string name="get_started">Get started</string>
+    <string name="create">Create</string>
+    <string name="join">Join</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="sign_in">Sign In</string>
+    <string name="sign_out">Sign out</string>
+    <string name="invite_friends">Invite Friends</string>
+    <string name="invite_friends_sub">Share Secure AI with people you know</string>
+    <string name="company_apps">Our Apps</string>
+    <string name="share_app">Share %1$s</string>
+
+    <!-- Sidebar -->
+    <string name="sidebar_apps">Apps</string>
+    <string name="sidebar_chats">Chats</string>
+    <string name="sidebar_projects">Projects</string>
+    <string name="sidebar_photos">Photos</string>
+    <string name="sidebar_notes">Notes</string>
+    <string name="sidebar_voice">Voice</string>
+    <string name="sidebar_documents">Documents</string>
+    <string name="sidebar_new_chat">New Chat</string>
+    <string name="sidebar_library">Library</string>
+
+    <!-- Chat -->
+    <string name="new_chat">New chat</string>
+    <string name="incognito">Incognito</string>
+    <string name="incognito_mode">Incognito Mode</string>
+    <string name="files">Files</string>
+    <string name="photos">Photos</string>
+    <string name="camera">Camera</string>
+    <string name="analyze_file">Analyze this file</string>
+    <string name="conversations_empty">Your conversations will appear here</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="preferences">Preferences</string>
+    <string name="haptic_feedback">Haptic feedback</string>
+    <string name="text_size">Text size</string>
+    <string name="size_small">Small</string>
+    <string name="size_medium">Medium</string>
+    <string name="size_large">Large</string>
+    <string name="background">Background</string>
+    <string name="notifications">Notifications</string>
+    <string name="subscription">Subscription</string>
+    <string name="upgrade_sublabel">Unlock premium models and higher limits</string>
+    <string name="restore_purchases">Restore purchases</string>
+    <string name="account">Account</string>
+    <string name="delete_app_data">Delete app data</string>
+    <string name="delete_account">Delete account</string>
+    <string name="delete_account_title">Delete Account</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="build">Build</string>
+
+    <!-- Projects -->
+    <string name="new_project">New Project</string>
+    <string name="edit_project">Edit Project</string>
+    <string name="projects_empty">Projects give your AI a custom personality and focus</string>
+
+    <!-- Library -->
+    <string name="no_prompts_yet">No prompts yet</string>
+    <string name="prompts_empty_sub">Saved prompts will appear here</string>
+    <string name="no_photos_yet">No photos yet</string>
+    <string name="photos_empty_sub">Photos you save will appear here</string>
+    <string name="no_documents_yet">No documents yet</string>
+    <string name="documents_empty_sub">Documents you save will appear here</string>
+
+
+    <!-- Sign in -->
+    <string name="sign_in_to_use">Sign in to use %1$s</string>
+    <string name="sign_in_guest_body">As a guest you can chat with Claude. Notes, Voice Memos, Library, and Projects are saved to your account — sign in to unlock them. Your guest chats come with you.</string>
+    <string name="continue_with_google">Continue with Google</string>
+
+    <!-- Biometric -->
+    <string name="unlock_secure_ai">Unlock Secure AI</string>
+    <string name="biometric_subtitle">Use biometrics to access your chats</string>
+    <string name="use_passcode">Use passcode</string>
+    <string name="app_locked">Secure AI is locked</string>
+    <string name="authenticate_to_continue">Authenticate to continue</string>
+
+    <!-- Notification permission -->
+    <string name="stay_in_the_loop">Stay in the loop</string>
+    <string name="allow_notifications">Allow notifications</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_title_1">Powered by Claude</string>
+    <string name="onboarding_body_1">Secure AI is built on Claude, Anthropic\'s frontier model — picking the right Claude model for every task.</string>
+    <string name="onboarding_title_2">Private by default</string>
+    <string name="onboarding_body_2">Your identity never reaches the AI. Every message is routed through a privacy proxy — your name, email, and IP stay hidden.</string>
+    <string name="onboarding_title_3">Capture everything</string>
+    <string name="onboarding_body_3">Notes and voice memos, transcribed and summarized automatically — so nothing you capture gets lost.</string>
+    <string name="onboarding_title_4">Stay organized</string>
+    <string name="onboarding_body_4">Projects keep your chats, notes, and files grouped by what you\'re working on — your personal AI workspace.</string>
+
+    <!-- Offline -->
+    <string name="no_connection">No connection</string>
 </resources>

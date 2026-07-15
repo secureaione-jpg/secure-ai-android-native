@@ -22,13 +22,10 @@ object Prefs {
     private const val KEY_DAILY_COUNT_DATE = "daily_count_date"
     private const val KEY_LIFETIME_MESSAGES = "lifetime_messages"
     private const val KEY_SHOW_CHATS = "sidebar_chats"
-    private const val KEY_SHOW_HISTORY = "sidebar_history"
     private const val KEY_SHOW_PROJECTS = "sidebar_projects"
     private const val KEY_SHOW_PHOTOS = "sidebar_photos"
-    private const val KEY_SHOW_DOCUMENTS = "sidebar_documents"
-    private const val KEY_SHOW_MEMORIES = "sidebar_memories"
-    private const val KEY_SHOW_TEAM = "sidebar_team"
-    private const val KEY_SHOW_PROJECTS_NAV = "sidebar_projects_nav"
+    private const val KEY_SHOW_NOTES = "sidebar_notes"
+    private const val KEY_SHOW_VOICE_MEMOS = "sidebar_voice_memos"
     private const val KEY_CHAT_BACKGROUND = "chat_background"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -116,23 +113,17 @@ object Prefs {
 
     fun getLifetimeMessages(ctx: Context) = prefs(ctx).getInt(KEY_LIFETIME_MESSAGES, 0)
 
-    // Sidebar item visibility
-    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, false)
+    // Sidebar item visibility — all default true, matching iOS SidebarCustomizeView.
+    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, true)
     fun setShowChats(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_CHATS, v) }
-    fun showHistory(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_HISTORY, false)
-    fun setShowHistory(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_HISTORY, v) }
     fun showProjects(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS, true)
     fun setShowProjects(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS, v) }
-    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, false)
+    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, true)
     fun setShowPhotos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PHOTOS, v) }
-    fun showDocuments(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_DOCUMENTS, false)
-    fun setShowDocuments(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_DOCUMENTS, v) }
-    fun showMemories(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_MEMORIES, false)
-    fun setShowMemories(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_MEMORIES, v) }
-    fun showTeam(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_TEAM, false)
-    fun setShowTeam(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_TEAM, v) }
-    fun showProjectsNav(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS_NAV, false)
-    fun setShowProjectsNav(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS_NAV, v) }
+    fun showNotes(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_NOTES, true)
+    fun setShowNotes(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_NOTES, v) }
+    fun showVoiceMemos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_VOICE_MEMOS, true)
+    fun setShowVoiceMemos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_VOICE_MEMOS, v) }
 
     fun chatBackground(ctx: Context): String = prefs(ctx).getString(KEY_CHAT_BACKGROUND, "system") ?: "system"
     fun setChatBackground(ctx: Context, v: String) = prefs(ctx).edit { putString(KEY_CHAT_BACKGROUND, v) }

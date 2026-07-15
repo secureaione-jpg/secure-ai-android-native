@@ -42,6 +42,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -62,15 +63,14 @@ private val DrawerText = Color.White
 private val DrawerTextSecondary = Color(0xFF8E8E93)
 
 data class SidebarCallbacks(
-    val onApps: () -> Unit = {},
     val onChats: () -> Unit = {},
     val onHistory: () -> Unit = {},
     val onLibrary: () -> Unit = {},
     val onPhotos: () -> Unit = {},
-    val onDocuments: () -> Unit = {},
-    val onMemories: () -> Unit = {},
+    val onNotes: () -> Unit = {},
+    val onVoiceMemos: () -> Unit = {},
+    val onApps: () -> Unit = {},
     val onProjects: () -> Unit = {},
-    val onTeam: () -> Unit = {},
     val onProfile: () -> Unit = {},
     val onNewChat: () -> Unit = {},
     val onUpgrade: () -> Unit = {},
@@ -155,10 +155,11 @@ private fun SidebarContent(
             .background(DrawerBg)
             .statusBarsPadding()
     ) {
-        // Header: logo + app name
+        // Header: logo + app name — tapping the logo opens the sidebar customize screen (matches iOS).
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable { callbacks.onApps(); onCollapse() }
                 .padding(horizontal = 20.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -185,16 +186,10 @@ private fun SidebarContent(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 8.dp)
         ) {
-            NavRow(
-                iconRes = R.drawable.ic_apps_grid,
-                label = "Apps",
-                onClick = { callbacks.onApps(); onCollapse() }
-            )
-
             if (Prefs.showChats(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_chat_bubbles,
-                    label = "Chats",
+                    label = stringResource(R.string.sidebar_chats),
                     onClick = { callbacks.onChats(); onCollapse() }
                 )
             }
@@ -202,7 +197,7 @@ private fun SidebarContent(
             if (Prefs.showProjects(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_folder,
-                    label = "Projects",
+                    label = stringResource(R.string.sidebar_projects),
                     locked = isAnonymous,
                     onClick = {
                         if (isAnonymous) callbacks.onSignIn("library")
@@ -215,7 +210,7 @@ private fun SidebarContent(
             if (Prefs.showPhotos(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_photos,
-                    label = "Photos",
+                    label = stringResource(R.string.sidebar_photos),
                     locked = isAnonymous,
                     onClick = {
                         if (isAnonymous) callbacks.onSignIn("photos")
@@ -225,27 +220,27 @@ private fun SidebarContent(
                 )
             }
 
-            if (Prefs.showDocuments(context)) {
+            if (Prefs.showNotes(context)) {
                 NavRow(
                     iconRes = R.drawable.ic_document,
-                    label = "Documents",
+                    label = stringResource(R.string.sidebar_notes),
                     locked = isAnonymous,
                     onClick = {
-                        if (isAnonymous) callbacks.onSignIn("documents")
-                        else callbacks.onDocuments()
+                        if (isAnonymous) callbacks.onSignIn("notes")
+                        else callbacks.onNotes()
                         onCollapse()
                     }
                 )
             }
 
-            if (Prefs.showMemories(context)) {
+            if (Prefs.showVoiceMemos(context)) {
                 NavRow(
-                    iconRes = R.drawable.ic_memories,
-                    label = "Memories",
+                    iconRes = R.drawable.ic_mic,
+                    label = stringResource(R.string.sidebar_voice),
                     locked = isAnonymous,
                     onClick = {
-                        if (isAnonymous) callbacks.onSignIn("memories")
-                        else callbacks.onMemories()
+                        if (isAnonymous) callbacks.onSignIn("voice memos")
+                        else callbacks.onVoiceMemos()
                         onCollapse()
                     }
                 )
@@ -280,7 +275,7 @@ private fun SidebarContent(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            "Upgrade",
+                            stringResource(R.string.upgrade),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White
@@ -343,7 +338,7 @@ private fun SidebarContent(
                         )
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            "New Chat",
+                            stringResource(R.string.sidebar_new_chat),
                             fontSize = 15.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White

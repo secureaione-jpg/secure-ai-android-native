@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Secure AI</string>
+    <string name="shortcut_new_chat">Neuer Chat</string>
+    <string name="shortcut_new_chat_long">Einen neuen Chat starten</string>
+    <string name="shortcut_notes">Notizen</string>
+    <string name="shortcut_notes_long">Notizen öffnen</string>
+    <string name="shortcut_voice">Sprache</string>
+    <string name="shortcut_voice_long">Sprachmemos öffnen</string>
+    <string name="widget_title">Secure AI</string>
+    <string name="greeting_morning">Guten Morgen</string>
+    <string name="greeting_afternoon">Guten Tag</string>
+    <string name="greeting_evening">Guten Abend</string>
+    <string name="ask_secure_ai">Secure AI fragen</string>
+
+    <string name="cancel">Abbrechen</string>
+    <string name="done">Fertig</string>
+    <string name="save">Speichern</string>
+    <string name="delete">Löschen</string>
+    <string name="copy">Kopieren</string>
+    <string name="speak">Sprechen</string>
+    <string name="stop">Stopp</string>
+    <string name="redo">Wiederholen</string>
+    <string name="not_now">Nicht jetzt</string>
+    <string name="continue_text">Weiter</string>
+    <string name="get_started">Loslegen</string>
+    <string name="create">Erstellen</string>
+    <string name="join">Beitreten</string>
+    <string name="upgrade">Upgraden</string>
+    <string name="sign_in">Anmelden</string>
+    <string name="sign_out">Abmelden</string>
+    <string name="invite_friends">Freunde einladen</string>
+    <string name="invite_friends_sub">Teile Secure AI mit Menschen, die du kennst</string>
+    <string name="company_apps">Unsere Apps</string>
+    <string name="share_app">%1$s teilen</string>
+
+    <string name="sidebar_apps">Apps</string>
+    <string name="sidebar_chats">Chats</string>
+    <string name="sidebar_projects">Projekte</string>
+    <string name="sidebar_photos">Fotos</string>
+    <string name="sidebar_notes">Notizen</string>
+    <string name="sidebar_voice">Sprache</string>
+    <string name="sidebar_documents">Dokumente</string>
+    <string name="sidebar_new_chat">Neuer Chat</string>
+    <string name="sidebar_library">Bibliothek</string>
+
+    <string name="new_chat">Neuer Chat</string>
+    <string name="incognito">Inkognito</string>
+    <string name="incognito_mode">Inkognito-Modus</string>
+    <string name="files">Dateien</string>
+    <string name="photos">Fotos</string>
+    <string name="camera">Kamera</string>
+    <string name="analyze_file">Diese Datei analysieren</string>
+    <string name="conversations_empty">Deine Unterhaltungen erscheinen hier</string>
+
+    <string name="settings">Einstellungen</string>
+    <string name="preferences">Einstellungen</string>
+    <string name="haptic_feedback">Haptisches Feedback</string>
+    <string name="text_size">Textgröße</string>
+    <string name="size_small">Klein</string>
+    <string name="size_medium">Mittel</string>
+    <string name="size_large">Groß</string>
+    <string name="background">Hintergrund</string>
+    <string name="notifications">Mitteilungen</string>
+    <string name="subscription">Abonnement</string>
+    <string name="upgrade_sublabel">Premium-Modelle und höhere Limits freischalten</string>
+    <string name="restore_purchases">Käufe wiederherstellen</string>
+    <string name="account">Konto</string>
+    <string name="delete_app_data">App-Daten löschen</string>
+    <string name="delete_account">Konto löschen</string>
+    <string name="delete_account_title">Konto löschen</string>
+    <string name="about">Über</string>
+    <string name="version">Version</string>
+    <string name="build">Build</string>
+
+    <string name="new_project">Neues Projekt</string>
+    <string name="edit_project">Projekt bearbeiten</string>
+    <string name="projects_empty">Gib deiner KI eine eigene Persönlichkeit und Fokus</string>
+
+    <string name="no_prompts_yet">Noch keine Prompts</string>
+    <string name="prompts_empty_sub">Gespeicherte Prompts erscheinen hier</string>
+    <string name="no_photos_yet">Noch keine Fotos</string>
+    <string name="photos_empty_sub">Gespeicherte Fotos erscheinen hier</string>
+    <string name="no_documents_yet">Noch keine Dokumente</string>
+    <string name="documents_empty_sub">Gespeicherte Dokumente erscheinen hier</string>
+
+    <string name="sign_in_to_use">Anmelden, um %1$s zu nutzen</string>
+    <string name="sign_in_guest_body">Als Gast kannst du mit Claude chatten. Notizen, Sprachmemos, Bibliothek und Projekte werden in deinem Konto gespeichert — melde dich an, um sie freizuschalten. Deine Gast-Chats bleiben erhalten.</string>
+    <string name="continue_with_google">Mit Google fortfahren</string>
+
+    <string name="unlock_secure_ai">Secure AI entsperren</string>
+    <string name="biometric_subtitle">Verwende Biometrie, um auf deine Chats zuzugreifen</string>
+    <string name="use_passcode">Passcode verwenden</string>
+    <string name="app_locked">Secure AI ist gesperrt</string>
+    <string name="authenticate_to_continue">Authentifiziere dich, um fortzufahren</string>
+
+    <string name="stay_in_the_loop">Bleib auf dem Laufenden</string>
+    <string name="allow_notifications">Mitteilungen erlauben</string>
+
+    <string name="onboarding_title_1">Angetrieben von Claude</string>
+    <string name="onboarding_body_1">Secure AI basiert auf Claude, dem Spitzenmodell von Anthropic — und wählt für jede Aufgabe das passende Claude-Modell.</string>
+    <string name="onboarding_title_2">Privat von Anfang an</string>
+    <string name="onboarding_body_2">Deine Identität erreicht nie die KI. Jede Nachricht wird über einen Datenschutz-Proxy geleitet — dein Name, deine E-Mail und deine IP bleiben verborgen.</string>
+    <string name="onboarding_title_3">Alles festhalten</string>
+    <string name="onboarding_body_3">Notizen und Sprachmemos, automatisch transkribiert und zusammengefasst — damit nichts verloren geht.</string>
+
+    <string name="no_connection">Keine Verbindung</string>
+    <string name="onboarding_title_4">Organisiert bleiben</string>
+    <string name="onboarding_body_4">Projekte bündeln deine Chats, Notizen und Dateien nach Thema — dein persönlicher KI-Arbeitsbereich.</string>
+</resources>
