@@ -104,6 +104,7 @@ fun AIPhotosScreen(onBack: () -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
     var showCreateSheet by remember { mutableStateOf(false) }
     var filterMode by remember { mutableStateOf(PhotoFilter.ALL) }
+    var editSourceUrl by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) { LibraryStore.load() }
 
@@ -264,8 +265,6 @@ fun AIPhotosScreen(onBack: () -> Unit) {
             }
         }
     }
-
-    var editSourceUrl by remember { mutableStateOf<String?>(null) }
 
     if (showCreateSheet || editSourceUrl != null) {
         CreateImageSheet(
