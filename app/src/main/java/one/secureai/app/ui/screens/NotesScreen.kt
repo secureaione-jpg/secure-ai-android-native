@@ -508,6 +508,8 @@ private fun NoteEditor(note: Note, onDone: () -> Unit) {
                 placeholder = { Text("Title") },
                 textStyle = androidx.compose.ui.text.TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
                 colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent
                 ),
@@ -519,6 +521,8 @@ private fun NoteEditor(note: Note, onDone: () -> Unit) {
                 placeholder = { Text("") },
                 textStyle = androidx.compose.ui.text.TextStyle(fontSize = 16.sp),
                 colors = TextFieldDefaults.colors(
+                    unfocusedContainerColor = Color.Transparent,
+                    focusedContainerColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedIndicatorColor = Color.Transparent
                 ),
