@@ -25,8 +25,8 @@ android {
         applicationId = "one.secureai.app"
         minSdk = 29
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.0.0"
+        versionCode = 10
+        versionName = "1.1.0"
         buildConfigField("String", "APP_SECRET", "\"$appSecret\"")
         buildConfigField("String", "WORKER_URL", "\"https://secure-ai-worker.secureai-one.workers.dev\"")
     }
