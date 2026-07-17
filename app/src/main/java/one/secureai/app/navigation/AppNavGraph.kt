@@ -19,6 +19,7 @@ import one.secureai.app.ui.screens.VoiceMemosScreen
 import one.secureai.app.ui.screens.PaywallScreen
 import one.secureai.app.ui.screens.SidebarCustomizeScreen
 import one.secureai.app.ui.screens.ProjectsScreen
+import one.secureai.app.ui.screens.ProjectDetailScreen
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.chat.ChatViewModel
 import one.secureai.app.ui.screens.onboarding.OnboardingScreen
@@ -39,6 +40,7 @@ sealed class Screen(val route: String) {
     object Profile : Screen("profile")
     object Apps : Screen("apps")
     object Projects : Screen("projects")
+    object ProjectDetail : Screen("project_detail")
 }
 
 @Composable
@@ -159,9 +161,25 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onBack = { navController.popBackStack() },
                 onSelectProject = { project ->
                     ProjectStore.setActive(project)
-                    navController.popBackStack(Screen.Chat.route, inclusive = false)
+                    navController.navigate(Screen.ProjectDetail.route)
                 }
             )
+        }
+
+        composable(Screen.ProjectDetail.route) {
+            val project = ProjectStore.activeProject.value
+            if (project != null) {
+                ProjectDetailScreen(
+                    project = project,
+                    onBack = { navController.popBackStack() },
+                    onEdit = {
+                        navController.popBackStack()
+                    },
+                    onStartChat = {
+                        navController.popBackStack(Screen.Chat.route, inclusive = false)
+                    }
+                )
+            }
         }
 
         composable(Screen.SavedChats.route) {

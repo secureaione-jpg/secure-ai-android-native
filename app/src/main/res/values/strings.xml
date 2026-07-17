@@ -119,4 +119,24 @@
 
     <!-- Offline -->
     <string name="no_connection">No connection</string>
+
+    <!-- Share -->
+    <string name="share">Share</string>
+    <string name="share_conversation">Share conversation</string>
+
+    <!-- Project detail -->
+    <string name="name_label">Name</string>
+    <string name="instructions_label">Instructions</string>
+    <string name="no_instructions">No instructions</string>
+    <string name="created_label">Created</string>
+    <string name="last_updated_label">Last Updated</string>
+    <string name="start_chat">Start Chat</string>
+
+    <!-- Image edit -->
+    <string name="edit_image">Edit Image</string>
+    <string name="describe_edit">Describe your edit…</string>
+
+    <!-- Promo code -->
+    <string name="redeem_code">Redeem code</string>
+    <string name="redeem_code_sub">Enter a Google Play promo code</string>
 </resources>

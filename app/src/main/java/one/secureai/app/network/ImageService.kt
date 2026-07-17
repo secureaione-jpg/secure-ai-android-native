@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import one.secureai.app.BuildConfig
 import org.json.JSONObject
@@ -72,6 +73,47 @@ class ImageService {
                 }
             }
             throw ImageError("The image couldn't be created. Try rephrasing your request.")
+        }
+    }
+
+    suspend fun edit(imageBytes: ByteArray, prompt: String, context: Context? = null): ByteArray = withContext(Dispatchers.IO) {
+        if (context != null && !isOnline(context)) {
+            throw ImageError("No internet connection. Connect to a network and try again.")
+        }
+        val body = MultipartBody.Builder()
+            .setType(MultipartBody.FORM)
+            .addFormDataPart("prompt", prompt)
+            .addFormDataPart("image", "image.png", imageBytes.toRequestBody("image/png".toMediaType()))
+            .build()
+
+        val request = Request.Builder()
+            .url("${BuildConfig.WORKER_URL}/image/edit")
+            .header("X-App-Secret", BuildConfig.APP_SECRET)
+            .post(body)
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            val bodyString = response.body?.string().orEmpty()
+            if (!response.isSuccessful) {
+                val msg = runCatching { JSONObject(bodyString).optString("error") }.getOrNull()
+                throw ImageError(msg?.takeIf { it.isNotEmpty() } ?: "Image edit failed (${response.code}).")
+            }
+            val json = runCatching { JSONObject(bodyString) }.getOrNull()
+                ?: throw ImageError("The image couldn't be edited. Try rephrasing your request.")
+            val item = json.optJSONArray("data")?.optJSONObject(0)
+                ?: throw ImageError("The image couldn't be edited. Try rephrasing your request.")
+
+            item.optString("b64_json").takeIf { it.isNotEmpty() }?.let {
+                return@withContext Base64.decode(it, Base64.DEFAULT)
+            }
+            item.optString("url").takeIf { it.isNotEmpty() }?.let { imageUrl ->
+                val imgRequest = Request.Builder().url(imageUrl).build()
+                client.newCall(imgRequest).execute().use { imgResponse ->
+                    val bytes = imgResponse.body?.bytes()
+                    if (imgResponse.isSuccessful && bytes != null) return@withContext bytes
+                }
+            }
+            throw ImageError("The image couldn't be edited. Try rephrasing your request.")
         }
     }
 }

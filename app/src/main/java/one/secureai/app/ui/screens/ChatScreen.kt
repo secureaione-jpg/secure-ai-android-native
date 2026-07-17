@@ -196,9 +196,6 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         AuthManager.signInAnonymouslyIfNeeded()
         UserProfileManager.load()
-        if (one.secureai.app.BuildConfig.DEBUG) {
-            one.secureai.app.debug.ScreenshotSeeder.seed()
-        }
     }
 
     fun startVoiceInput() {
@@ -500,6 +497,26 @@ fun ChatScreen(
                                     viewModel.clearHistory()
                                 }
                             )
+                            if (messages.isNotEmpty()) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.share_conversation)) },
+                                    leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
+                                    onClick = {
+                                        showPlusMenu = false
+                                        val text = messages
+                                            .filter { it.content.isNotEmpty() }
+                                            .joinToString("\n\n") { msg ->
+                                                (if (msg.role == ChatRole.USER) "You: " else "Assistant: ") + msg.content
+                                            }
+                                        val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            putExtra(Intent.EXTRA_TEXT, text)
+                                        }
+                                        context.startActivity(Intent.createChooser(shareIntent, null))
+                                    }
+                                )
+                                HorizontalDivider()
+                            }
                             DropdownMenuItem(
                                 text = { Text(stringResource(R.string.files)) },
                                 leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },

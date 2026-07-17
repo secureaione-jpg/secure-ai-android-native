@@ -317,6 +317,15 @@ fun SettingsScreen(
                     label = stringResource(R.string.restore_purchases),
                     onClick = { one.secureai.app.data.store.StoreManager.restorePurchases() }
                 )
+                Divider()
+                SettingsLinkRow(
+                    label = stringResource(R.string.redeem_code),
+                    sublabel = stringResource(R.string.redeem_code_sub),
+                    onClick = {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/redeem"))
+                        context.startActivity(intent)
+                    }
+                )
             }
 
             Spacer(Modifier.height(24.dp))

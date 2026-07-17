@@ -4,7 +4,10 @@ import android.graphics.Bitmap
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import android.graphics.BitmapFactory
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,12 +63,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import kotlinx.coroutines.launch
 import one.secureai.app.data.store.LibraryStore
 import one.secureai.app.network.ImageService
+import one.secureai.app.R
 import one.secureai.app.ui.theme.Brand
 
 private data class AIStyle(val id: String, val name: String, val colors: List<Color>, val promptPrefix: String)
@@ -89,7 +94,7 @@ private enum class PhotoFilter(val label: String) {
     ALL("All"), AI_GENERATED("AI Generated"), UPLOADED("Uploaded"),
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun AIPhotosScreen(onBack: () -> Unit) {
     val context = LocalContext.current
@@ -221,22 +226,52 @@ fun AIPhotosScreen(onBack: () -> Unit) {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(photos, key = { it.id }) { photo ->
-                        AsyncImage(
-                            model = photo.downloadURL,
-                            contentDescription = photo.name,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.aspectRatio(1f).clip(RoundedCornerShape(4.dp))
-                        )
+                        var showPhotoMenu by remember { mutableStateOf(false) }
+                        Box {
+                            AsyncImage(
+                                model = photo.downloadURL,
+                                contentDescription = photo.name,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .aspectRatio(1f)
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .combinedClickable(
+                                        onClick = { },
+                                        onLongClick = { showPhotoMenu = true }
+                                    )
+                            )
+                            DropdownMenu(expanded = showPhotoMenu, onDismissRequest = { showPhotoMenu = false }) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.edit_image)) },
+                                    leadingIcon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                                    onClick = {
+                                        showPhotoMenu = false
+                                        editSourceUrl = photo.downloadURL
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.delete)) },
+                                    leadingIcon = { Icon(Icons.Default.Close, contentDescription = null, tint = Color.Red) },
+                                    onClick = {
+                                        showPhotoMenu = false
+                                        scope.launch { LibraryStore.delete(photo) }
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    if (showCreateSheet) {
+    var editSourceUrl by remember { mutableStateOf<String?>(null) }
+
+    if (showCreateSheet || editSourceUrl != null) {
         CreateImageSheet(
-            onDismiss = { showCreateSheet = false },
-            onSaved = { showCreateSheet = false }
+            editSourceUrl = editSourceUrl,
+            onDismiss = { showCreateSheet = false; editSourceUrl = null },
+            onSaved = { showCreateSheet = false; editSourceUrl = null }
         )
     }
 }
@@ -273,7 +308,7 @@ private fun EmptyPhotosState(onCreate: () -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CreateImageSheet(onDismiss: () -> Unit, onSaved: () -> Unit) {
+private fun CreateImageSheet(editSourceUrl: String? = null, onDismiss: () -> Unit, onSaved: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var prompt by remember { mutableStateOf("") }
@@ -281,6 +316,7 @@ private fun CreateImageSheet(onDismiss: () -> Unit, onSaved: () -> Unit) {
     var isGenerating by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
     val imageService = remember { ImageService() }
+    val isEdit = editSourceUrl != null
 
     fun generate() {
         val trimmed = prompt.trim()
@@ -288,23 +324,57 @@ private fun CreateImageSheet(onDismiss: () -> Unit, onSaved: () -> Unit) {
         isGenerating = true
         error = null
         scope.launch {
-            val fullPrompt = selectedStyle?.let { "${it.promptPrefix} $trimmed" } ?: trimmed
-            val result = runCatching { imageService.generate(fullPrompt, context) }
-            result.onSuccess { bytes ->
-                LibraryStore.add("ai_${System.currentTimeMillis()}.png", "image/png", bytes, tags = listOf("ai-generated"))
-                isGenerating = false
-                onSaved()
-            }.onFailure {
-                error = it.message ?: "Couldn't generate an image. Try again."
-                isGenerating = false
+            if (isEdit) {
+                val result = runCatching {
+                    val imgBytes = okhttp3.OkHttpClient().newCall(
+                        okhttp3.Request.Builder().url(editSourceUrl!!).build()
+                    ).execute().use { it.body?.bytes() ?: throw ImageService.ImageError("Failed to load image") }
+                    val styleClause = selectedStyle?.let { " Render the result as ${it.name.lowercase()}." } ?: ""
+                    imageService.edit(imgBytes, "$trimmed.$styleClause", context)
+                }
+                result.onSuccess { bytes ->
+                    LibraryStore.add("edit_${System.currentTimeMillis()}.png", "image/png", bytes, tags = listOf("ai-generated"))
+                    isGenerating = false
+                    onSaved()
+                }.onFailure {
+                    error = it.message ?: "Couldn't edit the image. Try again."
+                    isGenerating = false
+                }
+            } else {
+                val fullPrompt = selectedStyle?.let { "${it.promptPrefix} $trimmed" } ?: trimmed
+                val result = runCatching { imageService.generate(fullPrompt, context) }
+                result.onSuccess { bytes ->
+                    LibraryStore.add("ai_${System.currentTimeMillis()}.png", "image/png", bytes, tags = listOf("ai-generated"))
+                    isGenerating = false
+                    onSaved()
+                }.onFailure {
+                    error = it.message ?: "Couldn't generate an image. Try again."
+                    isGenerating = false
+                }
             }
         }
     }
 
     ModalBottomSheet(onDismissRequest = onDismiss, sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)) {
         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp).padding(bottom = 32.dp)) {
-            Text("Create Image", fontSize = 20.sp, fontWeight = FontWeight.SemiBold)
+            Text(
+                if (isEdit) stringResource(R.string.edit_image) else "Create Image",
+                fontSize = 20.sp, fontWeight = FontWeight.SemiBold
+            )
             Spacer(Modifier.height(16.dp))
+
+            if (isEdit) {
+                AsyncImage(
+                    model = editSourceUrl,
+                    contentDescription = "Source image",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(180.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                )
+                Spacer(Modifier.height(16.dp))
+            }
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -349,7 +419,7 @@ private fun CreateImageSheet(onDismiss: () -> Unit, onSaved: () -> Unit) {
                 OutlinedTextField(
                     value = prompt,
                     onValueChange = { prompt = it },
-                    placeholder = { Text("Describe what you want to see...") },
+                    placeholder = { Text(if (isEdit) stringResource(R.string.describe_edit) else "Describe what you want to see...") },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(16.dp)
                 )
