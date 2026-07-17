@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">新しいチャットを始める</string>
     <string name="shortcut_notes">メモ</string>
     <string name="shortcut_notes_long">メモを開く</string>
-    <string name="shortcut_voice">ボイス</string>
-    <string name="shortcut_voice_long">ボイスメモを開く</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">おはようございます</string>
     <string name="greeting_afternoon">こんにちは</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">プロジェクト</string>
     <string name="sidebar_photos">写真</string>
     <string name="sidebar_notes">メモ</string>
-    <string name="sidebar_voice">ボイス</string>
     <string name="sidebar_documents">ドキュメント</string>
     <string name="sidebar_new_chat">新しいチャット</string>
     <string name="sidebar_library">ライブラリ</string>

@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">새 채팅 시작</string>
     <string name="shortcut_notes">메모</string>
     <string name="shortcut_notes_long">메모 열기</string>
-    <string name="shortcut_voice">음성</string>
-    <string name="shortcut_voice_long">음성 메모 열기</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">좋은 아침이에요</string>
     <string name="greeting_afternoon">좋은 오후예요</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">프로젝트</string>
     <string name="sidebar_photos">사진</string>
     <string name="sidebar_notes">메모</string>
-    <string name="sidebar_voice">음성</string>
     <string name="sidebar_documents">문서</string>
     <string name="sidebar_new_chat">새 채팅</string>
     <string name="sidebar_library">라이브러리</string>

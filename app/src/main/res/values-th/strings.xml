@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">เริ่มแชทใหม่</string>
     <string name="shortcut_notes">โน้ต</string>
     <string name="shortcut_notes_long">เปิดโน้ต</string>
-    <string name="shortcut_voice">เสียง</string>
-    <string name="shortcut_voice_long">เปิดบันทึกเสียง</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">อรุณสวัสดิ์</string>
     <string name="greeting_afternoon">สวัสดีตอนบ่าย</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">โปรเจกต์</string>
     <string name="sidebar_photos">รูปภาพ</string>
     <string name="sidebar_notes">โน้ต</string>
-    <string name="sidebar_voice">เสียง</string>
     <string name="sidebar_documents">เอกสาร</string>
     <string name="sidebar_new_chat">แชทใหม่</string>
     <string name="sidebar_library">คลัง</string>

@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">Bắt đầu một cuộc trò chuyện mới</string>
     <string name="shortcut_notes">Ghi chú</string>
     <string name="shortcut_notes_long">Mở Ghi chú</string>
-    <string name="shortcut_voice">Giọng nói</string>
-    <string name="shortcut_voice_long">Mở Ghi chú thoại</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">Chào buổi sáng</string>
     <string name="greeting_afternoon">Chào buổi chiều</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">Dự án</string>
     <string name="sidebar_photos">Ảnh</string>
     <string name="sidebar_notes">Ghi chú</string>
-    <string name="sidebar_voice">Giọng nói</string>
     <string name="sidebar_documents">Tài liệu</string>
     <string name="sidebar_new_chat">Trò Chuyện Mới</string>
     <string name="sidebar_library">Thư viện</string>

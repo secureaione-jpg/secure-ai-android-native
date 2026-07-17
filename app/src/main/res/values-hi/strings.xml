@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">नई चैट शुरू करें</string>
     <string name="shortcut_notes">नोट्स</string>
     <string name="shortcut_notes_long">नोट्स खोलें</string>
-    <string name="shortcut_voice">वॉइस</string>
-    <string name="shortcut_voice_long">वॉइस मेमो खोलें</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">सुप्रभात</string>
     <string name="greeting_afternoon">नमस्कार</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">प्रोजेक्ट</string>
     <string name="sidebar_photos">फ़ोटो</string>
     <string name="sidebar_notes">नोट्स</string>
-    <string name="sidebar_voice">वॉइस</string>
     <string name="sidebar_documents">दस्तावेज़</string>
     <string name="sidebar_new_chat">नई चैट</string>
     <string name="sidebar_library">लाइब्रेरी</string>

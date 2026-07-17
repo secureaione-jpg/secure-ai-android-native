@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">Inizia una nuova chat</string>
     <string name="shortcut_notes">Note</string>
     <string name="shortcut_notes_long">Apri Note</string>
-    <string name="shortcut_voice">Voce</string>
-    <string name="shortcut_voice_long">Apri Promemoria vocali</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">Buongiorno</string>
     <string name="greeting_afternoon">Buon pomeriggio</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">Progetti</string>
     <string name="sidebar_photos">Foto</string>
     <string name="sidebar_notes">Note</string>
-    <string name="sidebar_voice">Voce</string>
     <string name="sidebar_documents">Documenti</string>
     <string name="sidebar_new_chat">Nuova chat</string>
     <string name="sidebar_library">Libreria</string>

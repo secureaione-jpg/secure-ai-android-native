@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">Начать новый чат</string>
     <string name="shortcut_notes">Заметки</string>
     <string name="shortcut_notes_long">Открыть заметки</string>
-    <string name="shortcut_voice">Голос</string>
-    <string name="shortcut_voice_long">Открыть голосовые заметки</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">Доброе утро</string>
     <string name="greeting_afternoon">Добрый день</string>
@@ -39,7 +37,6 @@
     <string name="sidebar_projects">Проекты</string>
     <string name="sidebar_photos">Фото</string>
     <string name="sidebar_notes">Заметки</string>
-    <string name="sidebar_voice">Голос</string>
     <string name="sidebar_documents">Документы</string>
     <string name="sidebar_new_chat">Новый чат</string>
     <string name="sidebar_library">Библиотека</string>
