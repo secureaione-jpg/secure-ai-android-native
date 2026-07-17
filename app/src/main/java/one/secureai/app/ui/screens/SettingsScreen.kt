@@ -60,6 +60,8 @@ import one.secureai.app.auth.AuthManager
 import one.secureai.app.auth.UserProfileManager
 import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
 import one.secureai.app.ui.theme.Brand
 
 private val SettingsBg = Color(0xFF000000)
@@ -82,6 +84,7 @@ fun SettingsScreen(
     var textSize by remember { mutableIntStateOf(Prefs.getTextSize(context)) }
     var chatBackground by remember { mutableStateOf(ChatBackground.fromKey(Prefs.chatBackground(context))) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
+    var showRedeemDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -321,10 +324,7 @@ fun SettingsScreen(
                 SettingsLinkRow(
                     label = stringResource(R.string.redeem_code),
                     sublabel = stringResource(R.string.redeem_code_sub),
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/redeem"))
-                        context.startActivity(intent)
-                    }
+                    onClick = { showRedeemDialog = true }
                 )
             }
 
@@ -379,6 +379,13 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(32.dp))
         }
+    }
+
+    if (showRedeemDialog) {
+        RedeemCodeDialog(
+            onDismiss = { showRedeemDialog = false },
+            onRedeemed = { showRedeemDialog = false }
+        )
     }
 
     if (showDeleteConfirm) {
@@ -596,4 +603,93 @@ private fun SettingsSegmentRow(
             }
         }
     }
+}
+
+@Composable
+private fun RedeemCodeDialog(onDismiss: () -> Unit, onRedeemed: () -> Unit) {
+    val scope = rememberCoroutineScope()
+    var code by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var success by remember { mutableStateOf<String?>(null) }
+
+    AlertDialog(
+        onDismissRequest = { if (!isLoading) onDismiss() },
+        title = { Text(stringResource(R.string.redeem_code)) },
+        text = {
+            Column {
+                Text(stringResource(R.string.redeem_code_sub), fontSize = 14.sp, color = SettingsSecondary)
+                Spacer(Modifier.height(12.dp))
+                androidx.compose.material3.OutlinedTextField(
+                    value = code,
+                    onValueChange = { code = it.uppercase(); error = null },
+                    placeholder = { Text("Enter code") },
+                    singleLine = true,
+                    enabled = !isLoading && success == null,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                if (error != null) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(error!!, color = Color(0xFFFF3B30), fontSize = 13.sp)
+                }
+                if (success != null) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(success!!, color = Color(0xFF34C759), fontSize = 13.sp)
+                }
+                if (isLoading) {
+                    Spacer(Modifier.height(8.dp))
+                    androidx.compose.material3.CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        strokeWidth = 2.dp
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    val trimmed = code.trim()
+                    if (trimmed.isEmpty()) { error = "Please enter a code"; return@TextButton }
+                    isLoading = true
+                    error = null
+                    scope.launch {
+                        try {
+                            val result = redeemCode(trimmed)
+                            success = "Upgraded to ${result.uppercase()}"
+                            kotlinx.coroutines.delay(1500)
+                            onRedeemed()
+                        } catch (e: Exception) {
+                            error = e.message ?: "Failed to redeem code"
+                        } finally {
+                            isLoading = false
+                        }
+                    }
+                },
+                enabled = !isLoading && success == null
+            ) { Text("Redeem") }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss, enabled = !isLoading) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+private suspend fun redeemCode(code: String): String = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.IO) {
+    val token = AuthManager.getIdToken() ?: throw Exception("Please sign in first")
+    val url = "https://secureai.one/api/redeem"
+    val body = org.json.JSONObject().put("code", code)
+    val request = okhttp3.Request.Builder()
+        .url(url)
+        .post(body.toString().toRequestBody("application/json".toMediaTypeOrNull()))
+        .addHeader("Authorization", "Bearer $token")
+        .build()
+    val response = okhttp3.OkHttpClient().newCall(request).execute()
+    val responseBody = response.body?.string() ?: ""
+    if (!response.isSuccessful) {
+        val msg = try { org.json.JSONObject(responseBody).optString("error", "Unknown error") } catch (_: Exception) { "Unknown error" }
+        throw Exception(msg)
+    }
+    try { org.json.JSONObject(responseBody).optString("tier", "plus") } catch (_: Exception) { "plus" }
 }

@@ -30,6 +30,9 @@ object AuthManager {
     val uid: String? get() = _user.value?.uid
     val isAnonymous: Boolean get() = _user.value?.isAnonymous ?: true
 
+    suspend fun getIdToken(): String? =
+        _user.value?.getIdToken(false)?.await()?.token
+
     init {
         auth.addAuthStateListener { fa ->
             _user.value = fa.currentUser
