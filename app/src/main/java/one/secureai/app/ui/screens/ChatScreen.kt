@@ -110,7 +110,6 @@ fun ChatScreen(
     onOpenProfile: () -> Unit = {},
     onOpenProjects: () -> Unit = {},
     onOpenNotes: () -> Unit = {},
-    onOpenVoiceMemos: () -> Unit = {},
     onOpenApps: () -> Unit = {},
 ) {
     val context = LocalContext.current
@@ -238,6 +237,10 @@ fun ChatScreen(
             if (AuthManager.isAnonymous) { signInFeature = "library"; showSignIn = true }
             else onOpenLibrary()
         },
+        onProjects = {
+            if (AuthManager.isAnonymous) { signInFeature = "library"; showSignIn = true }
+            else onOpenProjects()
+        },
         onPhotos = {
             if (AuthManager.isAnonymous) { signInFeature = "photos"; showSignIn = true }
             else onOpenPhotos()
@@ -246,12 +249,7 @@ fun ChatScreen(
             if (AuthManager.isAnonymous) { signInFeature = "notes"; showSignIn = true }
             else onOpenNotes()
         },
-        onVoiceMemos = {
-            if (AuthManager.isAnonymous) { signInFeature = "voice memos"; showSignIn = true }
-            else onOpenVoiceMemos()
-        },
         onApps = onOpenApps,
-        onProjects = onOpenProjects,
         onProfile = onOpenProfile,
         onNewChat = { viewModel.clearHistory() },
         onUpgrade = onOpenPaywall,

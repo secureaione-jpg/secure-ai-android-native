@@ -51,10 +51,9 @@ fun SidebarCustomizeScreen(onBack: () -> Unit) {
     val items = remember {
         listOf(
             SidebarItem(R.drawable.ic_chat_bubbles, R.string.sidebar_chats, Prefs::showChats, Prefs::setShowChats),
-            SidebarItem(R.drawable.ic_folder, R.string.sidebar_library, Prefs::showProjects, Prefs::setShowProjects),
+            SidebarItem(R.drawable.ic_folder, R.string.sidebar_projects, Prefs::showProjects, Prefs::setShowProjects),
             SidebarItem(R.drawable.ic_photos, R.string.sidebar_photos, Prefs::showPhotos, Prefs::setShowPhotos),
             SidebarItem(R.drawable.ic_document, R.string.sidebar_notes, Prefs::showNotes, Prefs::setShowNotes),
-            SidebarItem(R.drawable.ic_mic, R.string.sidebar_voice, Prefs::showVoiceMemos, Prefs::setShowVoiceMemos),
         )
     }
 

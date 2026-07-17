@@ -5,8 +5,6 @@
     <string name="shortcut_new_chat_long">Start a new chat</string>
     <string name="shortcut_notes">Notes</string>
     <string name="shortcut_notes_long">Open Notes</string>
-    <string name="shortcut_voice">Voice</string>
-    <string name="shortcut_voice_long">Open Voice Memos</string>
     <string name="widget_title">Secure AI</string>
     <string name="greeting_morning">Good morning</string>
     <string name="greeting_afternoon">Good afternoon</string>
@@ -41,7 +39,6 @@
     <string name="sidebar_projects">Projects</string>
     <string name="sidebar_photos">Photos</string>
     <string name="sidebar_notes">Notes</string>
-    <string name="sidebar_voice">Voice</string>
     <string name="sidebar_documents">Documents</string>
     <string name="sidebar_new_chat">New Chat</string>
     <string name="sidebar_library">Library</string>
@@ -93,7 +90,7 @@
 
     <!-- Sign in -->
     <string name="sign_in_to_use">Sign in to use %1$s</string>
-    <string name="sign_in_guest_body">As a guest you can chat with Claude. Notes, Voice Memos, Library, and Projects are saved to your account — sign in to unlock them. Your guest chats come with you.</string>
+    <string name="sign_in_guest_body">As a guest you can chat with Claude. Notes, Library, and Projects are saved to your account — sign in to unlock them. Your guest chats come with you.</string>
     <string name="continue_with_google">Continue with Google</string>
 
     <!-- Biometric -->
@@ -113,7 +110,7 @@
     <string name="onboarding_title_2">Private by default</string>
     <string name="onboarding_body_2">Your identity never reaches the AI. Every message is routed through a privacy proxy — your name, email, and IP stay hidden.</string>
     <string name="onboarding_title_3">Capture everything</string>
-    <string name="onboarding_body_3">Notes and voice memos, transcribed and summarized automatically — so nothing you capture gets lost.</string>
+    <string name="onboarding_body_3">Notes, dictated or typed and summarized automatically — so nothing you capture gets lost.</string>
     <string name="onboarding_title_4">Stay organized</string>
     <string name="onboarding_body_4">Projects keep your chats, notes, and files grouped by what you\'re working on — your personal AI workspace.</string>
 

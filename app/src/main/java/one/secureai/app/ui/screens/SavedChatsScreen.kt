@@ -14,19 +14,27 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.SwipeToDismissBox
 import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
@@ -36,7 +44,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -49,20 +60,41 @@ import kotlinx.coroutines.launch
 import one.secureai.app.R
 import one.secureai.app.data.store.ConversationStore
 import one.secureai.app.data.store.StoredConversation
+import one.secureai.app.ui.theme.Brand
 import java.text.DateFormat
+import java.util.Calendar
 import java.util.Date
+
+private enum class ChatFilter(val label: String) {
+    ALL("All"),
+    PINNED("Pinned"),
+    THIS_WEEK("This Week"),
+    OLDER("Older")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SavedChatsScreen(onBack: () -> Unit, onSelectConversation: (String) -> Unit) {
+fun SavedChatsScreen(onBack: () -> Unit, onSelectConversation: (String) -> Unit, onNewChat: () -> Unit = {}) {
     val conversations by ConversationStore.conversations.collectAsState()
     val isLoading by ConversationStore.isLoading.collectAsState()
     val scope = rememberCoroutineScope()
+    var showMenu by remember { mutableStateOf(false) }
+    var filterMode by remember { mutableStateOf(ChatFilter.ALL) }
 
     LaunchedEffect(Unit) { ConversationStore.load() }
 
-    val pinned = conversations.filter { it.favorited }
-    val unpinned = conversations.filter { !it.favorited }
+    fun filtered(list: List<StoredConversation>): List<StoredConversation> {
+        val weekAgo = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -7) }.time
+        return when (filterMode) {
+            ChatFilter.ALL -> list
+            ChatFilter.PINNED -> list.filter { it.favorited }
+            ChatFilter.THIS_WEEK -> list.filter { it.updatedAt >= weekAgo }
+            ChatFilter.OLDER -> list.filter { it.updatedAt < weekAgo }
+        }
+    }
+
+    val pinned = filtered(conversations.filter { it.favorited })
+    val unpinned = filtered(conversations.filter { !it.favorited })
     val allRows = pinned + unpinned
 
     Scaffold(
@@ -74,48 +106,104 @@ fun SavedChatsScreen(onBack: () -> Unit, onSelectConversation: (String) -> Unit)
                         Icon(Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 },
+                actions = {
+                    Box {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Options")
+                        }
+                        DropdownMenu(expanded = showMenu, onDismissRequest = { showMenu = false }) {
+                            DropdownMenuItem(
+                                text = { Text("New Chat") },
+                                leadingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
+                                onClick = { showMenu = false; onNewChat() }
+                            )
+                            HorizontalDivider()
+                            ChatFilter.entries.forEach { mode ->
+                                DropdownMenuItem(
+                                    text = { Text(mode.label, fontWeight = if (filterMode == mode) FontWeight.Bold else FontWeight.Normal) },
+                                    onClick = { filterMode = mode; showMenu = false }
+                                )
+                            }
+                        }
+                    }
+                },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
                 )
             )
         }
     ) { padding ->
-        when {
-            isLoading && conversations.isEmpty() -> {
-                Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+        Column(modifier = Modifier.fillMaxSize().padding(padding)) {
+            if (filterMode != ChatFilter.ALL) {
+                Surface(
+                    onClick = { filterMode = ChatFilter.ALL },
+                    shape = RoundedCornerShape(50),
+                    color = Brand.copy(alpha = 0.1f),
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(filterMode.label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = Brand)
+                        Spacer(Modifier.width(6.dp))
+                        Icon(Icons.Default.Close, contentDescription = "Clear filter", tint = Brand, modifier = Modifier.size(13.dp))
+                    }
                 }
             }
-            conversations.isEmpty() -> {
-                Column(
-                    modifier = Modifier.fillMaxSize().padding(padding),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text("No saved chats", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                    Spacer(Modifier.height(8.dp))
-                    Text(
-                        stringResource(R.string.conversations_empty),
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+
+            when {
+                isLoading && conversations.isEmpty() -> {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator()
+                    }
                 }
-            }
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize().padding(padding),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)
-                ) {
-                    items(allRows, key = { it.id }) { conversation ->
-                        ConversationRow(
-                            conversation = conversation,
-                            onClick = {
-                                onSelectConversation(conversation.id)
-                                onBack()
-                            },
-                            onDelete = { scope.launch { ConversationStore.deleteConversation(conversation.id) } },
-                            onToggleFavorite = { scope.launch { ConversationStore.toggleFavorite(conversation.id) } }
+                conversations.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("No saved chats", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            stringResource(R.string.conversations_empty),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
+                    }
+                }
+                allRows.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text("No results", fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            "Try a different filter",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(vertical = 8.dp)
+                    ) {
+                        items(allRows, key = { it.id }) { conversation ->
+                            ConversationRow(
+                                conversation = conversation,
+                                onClick = {
+                                    onSelectConversation(conversation.id)
+                                    onBack()
+                                },
+                                onDelete = { scope.launch { ConversationStore.deleteConversation(conversation.id) } },
+                                onToggleFavorite = { scope.launch { ConversationStore.toggleFavorite(conversation.id) } }
+                            )
+                        }
                     }
                 }
             }

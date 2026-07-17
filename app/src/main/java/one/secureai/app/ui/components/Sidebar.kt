@@ -10,25 +10,19 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -55,12 +49,10 @@ import one.secureai.app.data.store.StoreManager
 import one.secureai.app.data.model.SubscriptionTier
 import kotlin.math.roundToInt
 
-private val DrawerWidth = 280.dp
+// Matches iOS SideMenu.sideBarWidth (140pt) — a narrow icon rail, not a full-width drawer.
+private val DrawerWidth = 140.dp
 private val UpgradeGold = Color(0xFFD9A621)
 private val AccentBlue = Color(0xFF2563EB)
-private val DrawerBg = Color(0xFF1C1C1E)
-private val DrawerText = Color.White
-private val DrawerTextSecondary = Color(0xFF8E8E93)
 
 data class SidebarCallbacks(
     val onChats: () -> Unit = {},
@@ -68,7 +60,6 @@ data class SidebarCallbacks(
     val onLibrary: () -> Unit = {},
     val onPhotos: () -> Unit = {},
     val onNotes: () -> Unit = {},
-    val onVoiceMemos: () -> Unit = {},
     val onApps: () -> Unit = {},
     val onProjects: () -> Unit = {},
     val onProfile: () -> Unit = {},
@@ -137,6 +128,8 @@ fun SideMenuLayout(
     }
 }
 
+// Matches iOS SideBar.swift: a narrow vertical rail of icon-over-label buttons,
+// centered, on the system background — not a full-width list of rows.
 @Composable
 private fun SidebarContent(
     callbacks: SidebarCallbacks,
@@ -147,247 +140,168 @@ private fun SidebarContent(
     val tier by StoreManager.currentTier.collectAsState()
     val profile by UserProfileManager.profile.collectAsState()
     val isSubscribed = tier != SubscriptionTier.FREE
+    val textColor = MaterialTheme.colorScheme.onBackground
+    val secondaryTextColor = textColor.copy(alpha = 0.6f)
 
     Column(
         modifier = Modifier
             .width(DrawerWidth)
             .fillMaxHeight()
-            .background(DrawerBg)
+            .background(MaterialTheme.colorScheme.background)
             .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .padding(top = 80.dp, bottom = 20.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(20.dp)
     ) {
-        // Header: logo + app name — tapping the logo opens the sidebar customize screen (matches iOS).
-        Row(
+        // Logo — tapping opens the sidebar customize screen (matches iOS).
+        Image(
+            painter = painterResource(R.drawable.logo_full),
+            contentDescription = null,
             modifier = Modifier
-                .fillMaxWidth()
+                .size(52.dp)
+                .clip(RoundedCornerShape(14.dp))
                 .clickable { callbacks.onApps(); onCollapse() }
-                .padding(horizontal = 20.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(R.drawable.logo_full),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(RoundedCornerShape(10.dp))
+        )
+
+        if (Prefs.showChats(context)) {
+            RailIconButton(
+                iconRes = R.drawable.ic_chat_bubbles,
+                label = stringResource(R.string.sidebar_chats),
+                textColor = textColor,
+                secondaryTextColor = secondaryTextColor,
+                onClick = { callbacks.onChats(); onCollapse() }
             )
-            Spacer(Modifier.width(10.dp))
+        }
+
+        if (Prefs.showProjects(context)) {
+            RailIconButton(
+                iconRes = R.drawable.ic_folder,
+                label = stringResource(R.string.sidebar_projects),
+                locked = isAnonymous,
+                textColor = textColor,
+                secondaryTextColor = secondaryTextColor,
+                onClick = {
+                    if (isAnonymous) callbacks.onSignIn("library")
+                    else callbacks.onProjects()
+                    onCollapse()
+                }
+            )
+        }
+
+        if (Prefs.showPhotos(context)) {
+            RailIconButton(
+                iconRes = R.drawable.ic_photos,
+                label = stringResource(R.string.sidebar_photos),
+                locked = isAnonymous,
+                textColor = textColor,
+                secondaryTextColor = secondaryTextColor,
+                onClick = {
+                    if (isAnonymous) callbacks.onSignIn("photos")
+                    else callbacks.onPhotos()
+                    onCollapse()
+                }
+            )
+        }
+
+        if (Prefs.showNotes(context)) {
+            RailIconButton(
+                iconRes = R.drawable.ic_document,
+                label = stringResource(R.string.sidebar_notes),
+                locked = isAnonymous,
+                textColor = textColor,
+                secondaryTextColor = secondaryTextColor,
+                onClick = {
+                    if (isAnonymous) callbacks.onSignIn("notes")
+                    else callbacks.onNotes()
+                    onCollapse()
+                }
+            )
+        }
+
+        if (!isSubscribed && !isAnonymous) {
+            RailIconButton(
+                iconRes = R.drawable.ic_crown,
+                label = stringResource(R.string.upgrade),
+                iconColor = UpgradeGold,
+                textColor = textColor,
+                secondaryTextColor = secondaryTextColor,
+                onClick = { callbacks.onUpgrade(); onCollapse() }
+            )
+        }
+
+        RailIconButton(
+            iconRes = R.drawable.ic_plus,
+            label = stringResource(R.string.sidebar_new_chat),
+            textColor = textColor,
+            secondaryTextColor = secondaryTextColor,
+            onClick = { callbacks.onNewChat(); onCollapse() }
+        )
+
+        // Profile avatar — rounded square, matches iOS.
+        Box(
+            modifier = Modifier
+                .size(52.dp)
+                .clip(RoundedCornerShape(14.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .clickable { callbacks.onProfile(); onCollapse() },
+            contentAlignment = Alignment.Center
+        ) {
             Text(
-                "Secure AI",
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = DrawerText
+                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Medium,
+                color = secondaryTextColor
             )
-        }
-
-        // Nav items (scrollable) — matches iOS: Apps + togglable items
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = 8.dp)
-        ) {
-            if (Prefs.showChats(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_chat_bubbles,
-                    label = stringResource(R.string.sidebar_chats),
-                    onClick = { callbacks.onChats(); onCollapse() }
-                )
-            }
-
-            if (Prefs.showProjects(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_folder,
-                    label = stringResource(R.string.sidebar_projects),
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("library")
-                        else callbacks.onLibrary()
-                        onCollapse()
-                    }
-                )
-            }
-
-            if (Prefs.showPhotos(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_photos,
-                    label = stringResource(R.string.sidebar_photos),
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("photos")
-                        else callbacks.onPhotos()
-                        onCollapse()
-                    }
-                )
-            }
-
-            if (Prefs.showNotes(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_document,
-                    label = stringResource(R.string.sidebar_notes),
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("notes")
-                        else callbacks.onNotes()
-                        onCollapse()
-                    }
-                )
-            }
-
-            if (Prefs.showVoiceMemos(context)) {
-                NavRow(
-                    iconRes = R.drawable.ic_mic,
-                    label = stringResource(R.string.sidebar_voice),
-                    locked = isAnonymous,
-                    onClick = {
-                        if (isAnonymous) callbacks.onSignIn("voice memos")
-                        else callbacks.onVoiceMemos()
-                        onCollapse()
-                    }
-                )
-            }
-        }
-
-        // Bottom bar
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .navigationBarsPadding()
-                .padding(horizontal = 16.dp)
-                .padding(top = 24.dp, bottom = 32.dp)
-        ) {
-            if (!isSubscribed && !isAnonymous) {
-                Surface(
-                    onClick = { callbacks.onUpgrade(); onCollapse() },
-                    shape = RoundedCornerShape(14.dp),
-                    color = UpgradeGold,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 18.dp, vertical = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_sparkle),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.upgrade),
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.White
-                        )
-                    }
-                }
-                Spacer(Modifier.height(12.dp))
-            }
-
-            // Avatar + New Chat row
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Surface(
-                    onClick = { callbacks.onProfile(); onCollapse() },
-                    shape = CircleShape,
-                    color = Color(0xFF3A3A3C),
-                    modifier = Modifier.size(50.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        if (profile?.profileImageURL != null) {
-                            // Profile photo loaded via Coil or similar would go here
-                            Text(
-                                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = DrawerText
-                            )
-                        } else {
-                            Text(
-                                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                                fontSize = 18.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = DrawerText
-                            )
-                        }
-                    }
-                }
-
-                Surface(
-                    onClick = { callbacks.onNewChat(); onCollapse() },
-                    shape = RoundedCornerShape(25.dp),
-                    color = AccentBlue,
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(50.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 20.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_plus),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            stringResource(R.string.sidebar_new_chat),
-                            fontSize = 15.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color.White
-                        )
-                    }
-                }
-            }
         }
     }
 }
 
 @Composable
-private fun NavRow(
+private fun RailIconButton(
     iconRes: Int,
     label: String,
     locked: Boolean = false,
-    isActive: Boolean = false,
+    iconColor: Color? = null,
+    textColor: Color,
+    secondaryTextColor: Color,
     onClick: () -> Unit
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 8.dp)
-            .padding(horizontal = 16.dp, vertical = 13.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        modifier = Modifier.clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Icon(
-            painter = painterResource(iconRes),
-            contentDescription = label,
-            tint = if (isActive) AccentBlue else DrawerText,
-            modifier = Modifier.size(23.dp)
-        )
-        Spacer(Modifier.width(14.dp))
+        Box(
+            modifier = Modifier.size(width = 52.dp, height = 44.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(iconRes),
+                contentDescription = label,
+                tint = iconColor ?: textColor,
+                modifier = Modifier.size(28.dp)
+            )
+            if (locked) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_lock),
+                        contentDescription = "Locked",
+                        tint = secondaryTextColor,
+                        modifier = Modifier
+                            .size(11.dp)
+                            .align(Alignment.TopEnd)
+                    )
+                }
+            }
+        }
         Text(
             text = label,
-            fontSize = 20.sp,
-            fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
-            color = if (isActive) AccentBlue else DrawerText,
-            modifier = Modifier.weight(1f)
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            color = secondaryTextColor,
+            maxLines = 1
         )
-        if (locked) {
-            Icon(
-                painter = painterResource(R.drawable.ic_lock),
-                contentDescription = "Locked",
-                tint = DrawerTextSecondary,
-                modifier = Modifier.size(14.dp)
-            )
-        }
     }
 }
 

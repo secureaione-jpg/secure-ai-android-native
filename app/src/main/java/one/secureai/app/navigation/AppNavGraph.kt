@@ -15,7 +15,6 @@ import one.secureai.app.ui.screens.SettingsScreen
 import one.secureai.app.ui.screens.LibraryScreen
 import one.secureai.app.ui.screens.AIPhotosScreen
 import one.secureai.app.ui.screens.NotesScreen
-import one.secureai.app.ui.screens.VoiceMemosScreen
 import one.secureai.app.ui.screens.PaywallScreen
 import one.secureai.app.ui.screens.SidebarCustomizeScreen
 import one.secureai.app.ui.screens.ProjectsScreen
@@ -35,7 +34,6 @@ sealed class Screen(val route: String) {
     object Library : Screen("library")
     object Photos : Screen("photos")
     object Notes : Screen("notes")
-    object VoiceMemos : Screen("voice_memos")
     object Paywall : Screen("paywall")
     object Profile : Screen("profile")
     object Apps : Screen("apps")
@@ -110,7 +108,6 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onOpenProfile = { navController.navigate(Screen.Profile.route) },
                 onOpenProjects = { navController.navigate(Screen.Projects.route) },
                 onOpenNotes = { navController.navigate(Screen.Notes.route) },
-                onOpenVoiceMemos = { navController.navigate(Screen.VoiceMemos.route) },
                 onOpenApps = { navController.navigate(Screen.Apps.route) },
             )
         }
@@ -132,10 +129,6 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
 
         composable(Screen.Notes.route) {
             NotesScreen(onBack = { navController.popBackStack() })
-        }
-
-        composable(Screen.VoiceMemos.route) {
-            VoiceMemosScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Screen.Paywall.route) {
@@ -187,6 +180,10 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onBack = { navController.popBackStack() },
                 onSelectConversation = { id ->
                     chatViewModel.loadConversation(id)
+                },
+                onNewChat = {
+                    chatViewModel.clearHistory()
+                    navController.popBackStack()
                 }
             )
         }

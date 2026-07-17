@@ -1,5 +1,10 @@
 package one.secureai.app.ui.screens
 
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +52,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,16 +64,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.startActivity
 import kotlinx.coroutines.launch
+import one.secureai.app.R
 import one.secureai.app.data.store.Note
 import one.secureai.app.data.store.NoteStore
 import one.secureai.app.network.AIFeatureService
 import one.secureai.app.ui.theme.Brand
 import java.text.DateFormat
+import java.util.Locale
 
 private enum class SortMode(val label: String) {
     NEWEST("Newest First"),
@@ -354,13 +363,68 @@ private fun NoteCard(note: Note, accentColor: Color, onTap: () -> Unit, onDelete
 @Composable
 private fun NoteEditor(note: Note, onDone: () -> Unit) {
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
     var title by remember { mutableStateOf(note.title) }
     var body by remember { mutableStateOf(note.body) }
     var isSummarizing by remember { mutableStateOf(false) }
+    var isDictating by remember { mutableStateOf(false) }
+    var speechRecognizer by remember { mutableStateOf<SpeechRecognizer?>(null) }
+    var dictationBase by remember { mutableStateOf("") }
 
     fun save() {
         if (title.trim().isEmpty() && body.trim().isEmpty()) return
         NoteStore.save(note.copy(title = title, body = body))
+    }
+
+    fun dictationIntent() = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+        putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+        putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+        putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1)
+    }
+
+    fun stopDictation() {
+        isDictating = false
+        speechRecognizer?.stopListening()
+        speechRecognizer?.destroy()
+        speechRecognizer = null
+    }
+
+    fun startDictation() {
+        if (!SpeechRecognizer.isRecognitionAvailable(context)) return
+        dictationBase = body
+        speechRecognizer?.destroy()
+        val sr = SpeechRecognizer.createSpeechRecognizer(context)
+        speechRecognizer = sr
+        sr.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) {}
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() {}
+            override fun onError(error: Int) { isDictating = false }
+            override fun onPartialResults(partialResults: Bundle?) {
+                val partial = partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
+                if (!partial.isNullOrBlank()) {
+                    body = if (dictationBase.isBlank()) partial else "$dictationBase $partial"
+                }
+            }
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+            override fun onResults(results: Bundle?) {
+                val text = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)?.firstOrNull()
+                if (!text.isNullOrBlank()) {
+                    dictationBase = if (dictationBase.isBlank()) text else "$dictationBase $text"
+                    body = dictationBase
+                }
+                if (isDictating) sr.startListening(dictationIntent())
+            }
+        })
+        sr.startListening(dictationIntent())
+        isDictating = true
+    }
+
+    DisposableEffect(Unit) {
+        onDispose { speechRecognizer?.destroy() }
     }
 
     Scaffold(
@@ -412,6 +476,29 @@ private fun NoteEditor(note: Note, onDone: () -> Unit) {
                     }
                 }
             )
+        },
+        bottomBar = {
+            Surface(color = MaterialTheme.colorScheme.surface) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { if (isDictating) stopDictation() else startDictation() }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_mic),
+                            contentDescription = if (isDictating) "Stop dictation" else "Dictate",
+                            tint = if (isDictating) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Spacer(Modifier.width(8.dp))
+                    Text(
+                        if (isDictating) "Listening…" else "Voice",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (isDictating) Color.Red else MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
         }
     ) { padding ->
         Column(modifier = Modifier.fillMaxSize().padding(padding)) {

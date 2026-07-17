@@ -25,7 +25,6 @@ object Prefs {
     private const val KEY_SHOW_PROJECTS = "sidebar_projects"
     private const val KEY_SHOW_PHOTOS = "sidebar_photos"
     private const val KEY_SHOW_NOTES = "sidebar_notes"
-    private const val KEY_SHOW_VOICE_MEMOS = "sidebar_voice_memos"
     private const val KEY_CHAT_BACKGROUND = "chat_background"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
@@ -122,8 +121,6 @@ object Prefs {
     fun setShowPhotos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PHOTOS, v) }
     fun showNotes(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_NOTES, true)
     fun setShowNotes(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_NOTES, v) }
-    fun showVoiceMemos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_VOICE_MEMOS, true)
-    fun setShowVoiceMemos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_VOICE_MEMOS, v) }
 
     fun chatBackground(ctx: Context): String = prefs(ctx).getString(KEY_CHAT_BACKGROUND, "system") ?: "system"
     fun setChatBackground(ctx: Context, v: String) = prefs(ctx).edit { putString(KEY_CHAT_BACKGROUND, v) }

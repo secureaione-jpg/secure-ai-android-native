@@ -27,17 +27,5 @@
             android:targetClass="one.secureai.app.MainActivity" />
     </shortcut>
 
-    <shortcut
-        android:shortcutId="voice_memos"
-        android:enabled="true"
-        android:icon="@drawable/ic_mic"
-        android:shortcutShortLabel="@string/shortcut_voice"
-        android:shortcutLongLabel="@string/shortcut_voice_long">
-        <intent
-            android:action="android.intent.action.VIEW"
-            android:data="https://secureai.one/voice"
-            android:targetPackage="one.secureai.app"
-            android:targetClass="one.secureai.app.MainActivity" />
-    </shortcut>
 
 </shortcuts>
