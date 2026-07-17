@@ -90,15 +90,19 @@ object StoreManager : PurchasesUpdatedListener {
 
     fun purchase(activity: Activity, productDetails: ProductDetails, offerToken: String) {
         _isPurchasing.value = true
-        val params = BillingFlowParams.newBuilder()
+        // Ties this purchase to the Firebase uid server-side, so the backend's
+        // Real-time Developer Notifications webhook can attribute the purchase
+        // without waiting on syncToFirestore's client-side write to land first.
+        val uid = FirebaseAuth.getInstance().currentUser?.uid
+        val paramsBuilder = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(listOf(
                 BillingFlowParams.ProductDetailsParams.newBuilder()
                     .setProductDetails(productDetails)
                     .setOfferToken(offerToken)
                     .build()
             ))
-            .build()
-        billingClient?.launchBillingFlow(activity, params)
+        if (uid != null) paramsBuilder.setObfuscatedAccountId(uid)
+        billingClient?.launchBillingFlow(activity, paramsBuilder.build())
     }
 
     override fun onPurchasesUpdated(result: BillingResult, purchases: MutableList<Purchase>?) {
@@ -135,7 +139,10 @@ object StoreManager : PurchasesUpdatedListener {
         val data = hashMapOf<String, Any>(
             "googlePlayOrderId" to (purchase.orderId ?: ""),
             "googlePlayProductId" to (purchase.products.firstOrNull() ?: ""),
-            "subscriptionTier" to _currentTier.value.wireValue,
+            // Fallback key the backend's RTDN webhook uses to resolve this purchase
+            // to a uid if it arrives before setObfuscatedAccountId's value is
+            // queryable via the Play Developer API (a race on first purchase).
+            "googlePlayPurchaseToken" to purchase.purchaseToken,
             "platform" to "android"
         )
         FirebaseFirestore.getInstance()

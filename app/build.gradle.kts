@@ -19,13 +19,13 @@ val appSecret: String = localProperties.getProperty("app.secret", "")
 
 android {
     namespace = "one.secureai.app"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "one.secureai.app"
-        minSdk = 26
-        targetSdk = 35
-        versionCode = 2
+        minSdk = 29
+        targetSdk = 36
+        versionCode = 9
         versionName = "1.0.0"
         buildConfigField("String", "APP_SECRET", "\"$appSecret\"")
         buildConfigField("String", "WORKER_URL", "\"https://secure-ai-worker.secureai-one.workers.dev\"")

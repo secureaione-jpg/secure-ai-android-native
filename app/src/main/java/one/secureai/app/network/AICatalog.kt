@@ -9,12 +9,13 @@ import one.secureai.app.data.model.SubscriptionTier
 import org.json.JSONObject
 import java.util.concurrent.TimeUnit
 
+// Projects and (where noted) images are unlimited server-side (Worker sends
+// null for those fields) — represented locally as Int.MAX_VALUE, the existing
+// convention for "no cap" in this non-nullable Int model.
 data class TierLimits(
-    val dailyMessages: Int = 25,
-    val dailyFrontier: Int = 0,
-    val dailyImages: Int = 0,
-    val projectLimit: Int = 0,
-    val memoryFactCap: Int = 10
+    val dailyMessages: Int = 10,
+    val dailyImages: Int = 3,
+    val projectLimit: Int = Int.MAX_VALUE
 )
 
 object AICatalog {
@@ -26,12 +27,14 @@ object AICatalog {
 
     private var cachedLimits = mapOf<SubscriptionTier, TierLimits>()
 
+    // Mirrors TIER_LIMITS in cloudflare-worker/worker.ts — kept in sync manually
+    // as the offline/first-launch fallback until fetchConfig() succeeds.
     private val defaultLimits = mapOf(
-        SubscriptionTier.FREE to TierLimits(25, 0, 0, 0, 10),
-        SubscriptionTier.PLUS to TierLimits(100, 10, 5, 3, 50),
-        SubscriptionTier.BUSINESS to TierLimits(200, 30, 10, 10, 100),
-        SubscriptionTier.PRO to TierLimits(500, 100, 25, 25, 500),
-        SubscriptionTier.ULTRA to TierLimits(Int.MAX_VALUE, Int.MAX_VALUE, 100, Int.MAX_VALUE, Int.MAX_VALUE),
+        SubscriptionTier.FREE to TierLimits(10, 3, Int.MAX_VALUE),
+        SubscriptionTier.PLUS to TierLimits(50, 10, Int.MAX_VALUE),
+        SubscriptionTier.BUSINESS to TierLimits(50, 10, Int.MAX_VALUE),
+        SubscriptionTier.PRO to TierLimits(150, 50, Int.MAX_VALUE),
+        SubscriptionTier.ULTRA to TierLimits(300, 100, Int.MAX_VALUE),
     )
 
     fun limits(tier: SubscriptionTier): TierLimits =
@@ -47,17 +50,17 @@ object AICatalog {
             client.newCall(request).execute().use { resp ->
                 if (resp.code != 200) return@withContext
                 val json = JSONObject(resp.body?.string() ?: return@withContext)
-                val tiers = json.optJSONObject("tiers") ?: return@withContext
+                // Worker's /config response key is "tierLimits", not "tiers".
+                val tierLimits = json.optJSONObject("tierLimits") ?: return@withContext
                 val map = mutableMapOf<SubscriptionTier, TierLimits>()
-                for (key in tiers.keys()) {
+                for (key in tierLimits.keys()) {
                     val tier = SubscriptionTier.entries.find { it.wireValue == key } ?: continue
-                    val obj = tiers.getJSONObject(key)
+                    val obj = tierLimits.getJSONObject(key)
                     map[tier] = TierLimits(
-                        dailyMessages = obj.optInt("dailyMessages", defaultLimits[tier]?.dailyMessages ?: 25),
-                        dailyFrontier = obj.optInt("dailyFrontier", 0),
-                        dailyImages = obj.optInt("dailyImages", 0),
-                        projectLimit = obj.optInt("projectLimit", 0),
-                        memoryFactCap = obj.optInt("memoryFactCap", 10)
+                        dailyMessages = obj.optInt("dailyMessages", defaultLimits[tier]?.dailyMessages ?: 10),
+                        // optInt falls back correctly when the field is JSON null (unlimited).
+                        dailyImages = obj.optInt("dailyImages", Int.MAX_VALUE),
+                        projectLimit = obj.optInt("projectLimit", Int.MAX_VALUE)
                     )
                 }
                 cachedLimits = map
