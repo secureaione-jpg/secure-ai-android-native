@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import one.secureai.app.data.model.AIModel
 import one.secureai.app.data.store.ConversationStore
+import one.secureai.app.data.store.MemoryStore
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.network.ImageService
 import one.secureai.app.network.RemoteAIService
@@ -41,6 +42,18 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _selectedModel.value = model
     }
 
+    /**
+     * Prepends a system message built from stored memories, mirroring iOS's
+     * ChatViewModel (`memoryCtx + systemParts.joined`) — same context, same
+     * position in the request, so responses stay consistent across
+     * platforms for a user who's used both.
+     */
+    private fun historyWithMemoryContext(base: List<ChatMessage>): List<ChatMessage> {
+        val memoryCtx = MemoryStore.buildContextString()
+        if (memoryCtx.isEmpty()) return base
+        return listOf(ChatMessage(role = ChatRole.SYSTEM, content = memoryCtx)) + base
+    }
+
     fun send(text: String) {
         val trimmed = text.trim()
         if (trimmed.isEmpty() || _isStreaming.value) return
@@ -60,7 +73,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         streamJob = viewModelScope.launch {
             try {
                 remote.sendMessageStreaming(
-                    history = _messages.value.dropLast(1),
+                    history = historyWithMemoryContext(_messages.value.dropLast(1)),
                     model = model.wireValue
                 ) { chunk ->
                     _messages.update { list ->
@@ -178,7 +191,7 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         streamJob = viewModelScope.launch {
             try {
                 remote.sendMessageStreaming(
-                    history = _messages.value.filter { !it.isStreaming },
+                    history = historyWithMemoryContext(_messages.value.filter { !it.isStreaming }),
                     model = _selectedModel.value.wireValue
                 ) { chunk ->
                     _messages.update { list ->

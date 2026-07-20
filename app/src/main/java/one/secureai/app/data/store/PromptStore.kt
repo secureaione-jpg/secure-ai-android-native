@@ -39,6 +39,12 @@ object PromptStore {
     private val _prompts = MutableStateFlow<List<UserPrompt>>(emptyList())
     val prompts: StateFlow<List<UserPrompt>> = _prompts.asStateFlow()
 
+    // Distinguishes "confirmed empty" from "haven't fetched yet" so the
+    // screen doesn't flash "No prompts yet" before the first Firestore
+    // round-trip completes.
+    private val _hasLoaded = MutableStateFlow(false)
+    val hasLoaded: StateFlow<Boolean> = _hasLoaded.asStateFlow()
+
     suspend fun load() {
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         try {
@@ -48,6 +54,7 @@ object PromptStore {
                 .get().await()
             _prompts.value = snap.documents.mapNotNull { UserPrompt.fromDoc(it.id, it.data ?: emptyMap()) }
         } catch (e: Exception) { e.printStackTrace() }
+        finally { _hasLoaded.value = true }
     }
 
     fun add(title: String, content: String, category: String = "") {

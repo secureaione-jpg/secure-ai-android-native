@@ -26,6 +26,7 @@ object Prefs {
     private const val KEY_SHOW_PHOTOS = "sidebar_photos"
     private const val KEY_SHOW_NOTES = "sidebar_notes"
     private const val KEY_CHAT_BACKGROUND = "chat_background"
+    private const val KEY_DISMISSED_NUDGE_DAY = "dismissed_nudge_day_key"
 
     private fun prefs(ctx: Context) = ctx.getSharedPreferences(FILE, Context.MODE_PRIVATE)
 
@@ -124,4 +125,10 @@ object Prefs {
 
     fun chatBackground(ctx: Context): String = prefs(ctx).getString(KEY_CHAT_BACKGROUND, "system") ?: "system"
     fun setChatBackground(ctx: Context, v: String) = prefs(ctx).edit { putString(KEY_CHAT_BACKGROUND, v) }
+
+    // Tracks whether today's memory nudge card has been dismissed, so it
+    // stays hidden for the rest of the day rather than reappearing on every
+    // launch — same behavior as iOS's NudgeDismissal.
+    fun isNudgeDismissed(ctx: Context, dayKey: String) = prefs(ctx).getString(KEY_DISMISSED_NUDGE_DAY, null) == dayKey
+    fun dismissNudge(ctx: Context, dayKey: String) = prefs(ctx).edit { putString(KEY_DISMISSED_NUDGE_DAY, dayKey) }
 }

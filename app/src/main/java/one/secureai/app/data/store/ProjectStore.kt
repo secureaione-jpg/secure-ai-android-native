@@ -49,6 +49,12 @@ object ProjectStore {
     private val _projects = MutableStateFlow<List<Project>>(emptyList())
     val projects: StateFlow<List<Project>> = _projects.asStateFlow()
 
+    // Distinguishes "confirmed empty" from "haven't fetched yet" so the
+    // screen doesn't flash "No projects yet" before the first Firestore
+    // round-trip completes.
+    private val _hasLoaded = MutableStateFlow(false)
+    val hasLoaded: StateFlow<Boolean> = _hasLoaded.asStateFlow()
+
     private val _activeProject = MutableStateFlow<Project?>(null)
     val activeProject: StateFlow<Project?> = _activeProject.asStateFlow()
 
@@ -62,6 +68,7 @@ object ProjectStore {
             val snap = col(u).orderBy("updatedAt", Query.Direction.DESCENDING).get().await()
             _projects.value = snap.documents.mapNotNull { Project.fromDoc(it.id, it.data ?: emptyMap()) }
         } catch (e: Exception) { e.printStackTrace() }
+        finally { _hasLoaded.value = true }
     }
 
     fun add(name: String, emoji: String, systemPrompt: String): Project {

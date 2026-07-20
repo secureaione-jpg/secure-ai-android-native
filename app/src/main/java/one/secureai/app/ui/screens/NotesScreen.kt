@@ -1,10 +1,15 @@
 package one.secureai.app.ui.screens
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -390,7 +395,7 @@ private fun NoteEditor(note: Note, onDone: () -> Unit) {
         speechRecognizer = null
     }
 
-    fun startDictation() {
+    fun startDictationInternal() {
         if (!SpeechRecognizer.isRecognitionAvailable(context)) return
         dictationBase = body
         speechRecognizer?.destroy()
@@ -421,6 +426,21 @@ private fun NoteEditor(note: Note, onDone: () -> Unit) {
         })
         sr.startListening(dictationIntent())
         isDictating = true
+    }
+
+    val micPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) startDictationInternal() }
+
+    fun startDictation() {
+        val hasPermission = ContextCompat.checkSelfPermission(
+            context, Manifest.permission.RECORD_AUDIO
+        ) == PackageManager.PERMISSION_GRANTED
+        if (!hasPermission) {
+            micPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+            return
+        }
+        startDictationInternal()
     }
 
     DisposableEffect(Unit) {

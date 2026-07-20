@@ -23,6 +23,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -138,8 +139,13 @@ fun LibraryScreen(onBack: () -> Unit, onOpenProjects: () -> Unit = {}) {
 @Composable
 private fun PromptsTab() {
     val prompts by PromptStore.prompts.collectAsState()
+    val hasLoaded by PromptStore.hasLoaded.collectAsState()
 
-    if (prompts.isEmpty()) {
+    if (!hasLoaded) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (prompts.isEmpty()) {
         EmptyTabContent(stringResource(R.string.no_prompts_yet), stringResource(R.string.prompts_empty_sub))
     } else {
         LazyColumn(
@@ -156,9 +162,14 @@ private fun PromptsTab() {
 @Composable
 private fun PhotosTab(onDelete: (LibraryItem) -> Unit) {
     val items by LibraryStore.items.collectAsState()
+    val hasLoaded by LibraryStore.hasLoaded.collectAsState()
     val photos = items.filter { it.isImage }
 
-    if (photos.isEmpty()) {
+    if (!hasLoaded) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (photos.isEmpty()) {
         EmptyTabContent(stringResource(R.string.no_photos_yet), stringResource(R.string.photos_empty_sub))
     } else {
         LazyVerticalGrid(
@@ -185,9 +196,14 @@ private fun PhotosTab(onDelete: (LibraryItem) -> Unit) {
 @Composable
 private fun DocumentsTab(onDelete: (LibraryItem) -> Unit) {
     val items by LibraryStore.items.collectAsState()
+    val hasLoaded by LibraryStore.hasLoaded.collectAsState()
     val docs = items.filter { !it.isImage }
 
-    if (docs.isEmpty()) {
+    if (!hasLoaded) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator()
+        }
+    } else if (docs.isEmpty()) {
         EmptyTabContent(stringResource(R.string.no_documents_yet), stringResource(R.string.documents_empty_sub))
     } else {
         LazyColumn(

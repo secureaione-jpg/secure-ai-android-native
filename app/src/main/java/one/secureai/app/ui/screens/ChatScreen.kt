@@ -15,6 +15,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -86,11 +88,15 @@ import one.secureai.app.chat.ChatRole
 import one.secureai.app.chat.ChatViewModel
 import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
+import one.secureai.app.data.store.Memory
+import one.secureai.app.data.store.MemoryStore
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.network.TTSPlayer
-import one.secureai.app.ui.components.SideMenuLayout
 import one.secureai.app.ui.components.SidebarCallbacks
+import one.secureai.app.ui.components.TopLeftDropdownMenu
 import one.secureai.app.ui.theme.Brand
+import one.secureai.app.data.store.StoreManager
+import one.secureai.app.data.model.SubscriptionTier
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Locale
@@ -120,7 +126,7 @@ fun ChatScreen(
     val listState = rememberLazyListState()
     var showSignIn by remember { mutableStateOf(false) }
     var signInFeature by remember { mutableStateOf("this") }
-    var showSidebar by remember { mutableStateOf(false) }
+    var menuExpanded by remember { mutableStateOf(false) }
     var showPlusMenu by remember { mutableStateOf(false) }
     val profile by UserProfileManager.profile.collectAsState()
     val authUser by AuthManager.user.collectAsState()
@@ -195,6 +201,7 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         AuthManager.signInAnonymouslyIfNeeded()
         UserProfileManager.load()
+        MemoryStore.load()
     }
 
     fun startVoiceInput() {
@@ -259,12 +266,7 @@ fun ChatScreen(
         },
     )
 
-    SideMenuLayout(
-        isExpanded = showSidebar,
-        onToggle = { showSidebar = it },
-        callbacks = sidebarCallbacks
-    ) {
-        Box(
+    Box(
             modifier = Modifier
                 .fillMaxSize()
                 .then(
@@ -281,12 +283,21 @@ fun ChatScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = { showSidebar = true }) {
-                        Box(
-                            modifier = Modifier
-                                .size(20.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surfaceVariant),
+                    // Top-left button opens a dropdown menu with the same
+                    // options the old side drawer had, instead of a drawer.
+                    Box {
+                        IconButton(onClick = { menuExpanded = true }) {
+                            Box(
+                                modifier = Modifier
+                                    .size(20.dp)
+                                    .clip(CircleShape)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                            )
+                        }
+                        TopLeftDropdownMenu(
+                            expanded = menuExpanded,
+                            onDismiss = { menuExpanded = false },
+                            callbacks = sidebarCallbacks
                         )
                     }
 
@@ -663,7 +674,6 @@ fun ChatScreen(
                 }
             }
         }
-    }
 
     if (showSignIn) {
         ModalBottomSheet(
@@ -684,6 +694,13 @@ fun ChatScreen(
 private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = false, onSuggestion: (String) -> Unit) {
     val profile by UserProfileManager.profile.collectAsState()
     val context = LocalContext.current
+    val memories by MemoryStore.memories.collectAsState()
+    var nudgeDismissed by remember { mutableStateOf(false) }
+    val dayKey = remember { MemoryStore.dayKey(java.util.Date()) }
+    val nudge = remember(memories, nudgeDismissed) {
+        if (nudgeDismissed) null
+        else MemoryStore.todaysNudge { key -> Prefs.isNudgeDismissed(context, key) }
+    }
     val greeting = remember {
         val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
         when {
@@ -732,7 +749,67 @@ private fun EmptyState(modifier: Modifier = Modifier, usesLightText: Boolean = f
             }
         }
 
+        if (nudge != null) {
+            Spacer(Modifier.height(12.dp))
+            NudgeCard(
+                text = nudgePhrasing(nudge, dayKey),
+                onTap = { onSuggestion(nudgePhrasing(nudge, dayKey)) },
+                onDismiss = {
+                    Prefs.dismissNudge(context, dayKey)
+                    nudgeDismissed = true
+                },
+                modifier = Modifier.padding(horizontal = 20.dp)
+            )
+        }
+
         Spacer(Modifier.weight(2f))
+    }
+}
+
+/** Turns a stored memory into something the assistant would say unprompted,
+ * rotating phrasing by day so it doesn't feel scripted. Mirrors iOS's
+ * `nudgePhrasing(for:)` template set exactly. */
+private fun nudgePhrasing(memory: Memory, dayKey: String): String {
+    val templates = listOf(
+        "You mentioned: “${memory.content}” — how's that going?",
+        "Following up on something you told me: ${memory.content}",
+        "Just checking in — ${memory.content}",
+    )
+    val index = kotlin.math.abs(dayKey.hashCode()) % templates.size
+    return templates[index]
+}
+
+/** A dismissible card surfacing a proactive nudge derived from memory — the
+ * assistant bringing something up unprompted, instead of only responding to
+ * what's typed. */
+@Composable
+private fun NudgeCard(text: String, onTap: () -> Unit, onDismiss: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onTap,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(14.dp),
+        color = Brand.copy(alpha = 0.1f)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                color = Brand,
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(Modifier.width(8.dp))
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = "Dismiss",
+                tint = Brand,
+                modifier = Modifier
+                    .size(18.dp)
+                    .clickable { onDismiss() }
+            )
+        }
     }
 }
 
@@ -756,14 +833,18 @@ private fun MessageBubble(
     val playingId by TTSPlayer.playingMessageId.collectAsState()
 
     if (message.imageBytes != null) {
+        val context = LocalContext.current
         val bitmap = remember(message.id) {
             BitmapFactory.decodeByteArray(message.imageBytes, 0, message.imageBytes.size)?.asImageBitmap()
         }
-        Row(
+        var showImageActions by remember { mutableStateOf(false) }
+        var showFullscreen by remember { mutableStateOf(false) }
+
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.Start
+            horizontalAlignment = Alignment.Start
         ) {
             if (bitmap != null) {
                 Image(
@@ -772,8 +853,46 @@ private fun MessageBubble(
                     modifier = Modifier
                         .widthIn(max = 280.dp)
                         .clip(RoundedCornerShape(18.dp))
+                        .combinedClickable(
+                            onClick = { showFullscreen = true },
+                            onLongClick = {
+                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                showImageActions = true
+                            }
+                        )
                 )
             }
+            if (showImageActions) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceVariant,
+                    shadowElevation = 4.dp,
+                    modifier = Modifier.padding(top = 4.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        ActionButton(stringResource(R.string.save_image), R.drawable.ic_photos) {
+                            saveImageToGallery(context, message.imageBytes)
+                            showImageActions = false
+                        }
+                        ActionButton(stringResource(R.string.share), R.drawable.ic_share) {
+                            shareImage(context, message.imageBytes)
+                            showImageActions = false
+                        }
+                    }
+                }
+            }
+        }
+
+        if (showFullscreen && bitmap != null) {
+            FullscreenImageDialog(
+                bitmap = bitmap,
+                onDismiss = { showFullscreen = false },
+                onSave = { saveImageToGallery(context, message.imageBytes) },
+                onShare = { shareImage(context, message.imageBytes) }
+            )
         }
         return
     }
@@ -871,6 +990,105 @@ private fun ActionButton(
             )
         } else {
             Text(label, fontSize = 16.sp, color = tint ?: MaterialTheme.colorScheme.onSurface)
+        }
+    }
+}
+
+private fun saveImageToGallery(context: Context, imageBytes: ByteArray?) {
+    imageBytes ?: return
+    val values = android.content.ContentValues().apply {
+        put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, "SecureAI_${System.currentTimeMillis()}.png")
+        put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+        put(android.provider.MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Secure AI")
+    }
+    val uri = context.contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
+    uri?.let {
+        context.contentResolver.openOutputStream(it)?.use { out -> out.write(imageBytes) }
+        android.widget.Toast.makeText(context, "Image saved to gallery", android.widget.Toast.LENGTH_SHORT).show()
+    }
+}
+
+private fun shareImage(context: Context, imageBytes: ByteArray?) {
+    imageBytes ?: return
+    val values = android.content.ContentValues().apply {
+        put(android.provider.MediaStore.Images.Media.DISPLAY_NAME, "SecureAI_share_${System.currentTimeMillis()}.png")
+        put(android.provider.MediaStore.Images.Media.MIME_TYPE, "image/png")
+        put(android.provider.MediaStore.Images.Media.RELATIVE_PATH, "Pictures/Secure AI")
+    }
+    val uri = context.contentResolver.insert(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values) ?: return
+    context.contentResolver.openOutputStream(uri)?.use { out -> out.write(imageBytes) }
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "image/png"
+        putExtra(Intent.EXTRA_STREAM, uri)
+        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    }
+    context.startActivity(Intent.createChooser(shareIntent, "Share image"))
+}
+
+@Composable
+private fun FullscreenImageDialog(
+    bitmap: androidx.compose.ui.graphics.ImageBitmap,
+    onDismiss: () -> Unit,
+    onSave: () -> Unit,
+    onShare: () -> Unit
+) {
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onDismiss,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black)
+                .clickable { onDismiss() }
+        ) {
+            Image(
+                bitmap = bitmap,
+                contentDescription = "Generated image fullscreen",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .clickable { }
+            )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 48.dp)
+                    .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(16.dp))
+                    .padding(horizontal = 24.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(32.dp)
+            ) {
+                IconButton(onClick = { onSave(); onDismiss() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_photos),
+                        contentDescription = "Save",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                IconButton(onClick = { onShare(); onDismiss() }) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_share),
+                        contentDescription = "Share",
+                        tint = Color.White,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+            IconButton(
+                onClick = onDismiss,
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .statusBarsPadding()
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close",
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
+            }
         }
     }
 }

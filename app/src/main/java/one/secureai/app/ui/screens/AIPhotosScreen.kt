@@ -100,6 +100,7 @@ fun AIPhotosScreen(onBack: () -> Unit) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allItems by LibraryStore.items.collectAsState()
+    val hasLoaded by LibraryStore.hasLoaded.collectAsState()
 
     var showMenu by remember { mutableStateOf(false) }
     var showCreateSheet by remember { mutableStateOf(false) }
@@ -216,7 +217,11 @@ fun AIPhotosScreen(onBack: () -> Unit) {
                 }
             }
 
-            if (photos.isEmpty()) {
+            if (!hasLoaded) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (photos.isEmpty()) {
                 EmptyPhotosState(onCreate = { showCreateSheet = true })
             } else {
                 LazyVerticalGrid(

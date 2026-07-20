@@ -47,6 +47,12 @@ object LibraryStore {
     private val _items = MutableStateFlow<List<LibraryItem>>(emptyList())
     val items: StateFlow<List<LibraryItem>> = _items.asStateFlow()
 
+    // Distinguishes "confirmed empty" from "haven't fetched yet" so screens
+    // don't flash an empty state (with a distracting Create/Upload CTA)
+    // before the first Firestore round-trip completes.
+    private val _hasLoaded = MutableStateFlow(false)
+    val hasLoaded: StateFlow<Boolean> = _hasLoaded.asStateFlow()
+
     private fun col(uid: String) = db.collection("secure_ai").document(uid).collection("library")
 
     suspend fun load() {
@@ -55,6 +61,7 @@ object LibraryStore {
             val snap = col(u).orderBy("createdAt", Query.Direction.DESCENDING).get().await()
             _items.value = snap.documents.mapNotNull { LibraryItem.fromDoc(it.id, it.data ?: emptyMap()) }
         } catch (e: Exception) { e.printStackTrace() }
+        finally { _hasLoaded.value = true }
     }
 
     suspend fun add(name: String, mimeType: String, data: ByteArray, tags: List<String> = emptyList()) {

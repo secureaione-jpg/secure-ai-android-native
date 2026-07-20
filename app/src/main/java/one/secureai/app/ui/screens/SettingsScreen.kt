@@ -2,7 +2,11 @@ package one.secureai.app.ui.screens
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.biometric.BiometricManager
+import coil.compose.AsyncImage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -74,7 +78,6 @@ private val SettingsSeparator = Color(0xFF38383A)
 fun SettingsScreen(
     onBack: () -> Unit,
     onOpenPaywall: () -> Unit = {},
-    onOpenNotifications: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -85,6 +88,22 @@ fun SettingsScreen(
     var chatBackground by remember { mutableStateOf(ChatBackground.fromKey(Prefs.chatBackground(context))) }
     var showDeleteConfirm by remember { mutableStateOf(false) }
     var showRedeemDialog by remember { mutableStateOf(false) }
+    var isUploadingPhoto by remember { mutableStateOf(false) }
+
+    val photoPickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri == null) return@rememberLauncherForActivityResult
+        scope.launch {
+            isUploadingPhoto = true
+            try {
+                val bytes = context.contentResolver.openInputStream(uri)?.use { it.readBytes() }
+                if (bytes != null) UserProfileManager.uploadProfileImage(bytes)
+            } finally {
+                isUploadingPhoto = false
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -131,7 +150,11 @@ fun SettingsScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /* open profile editor */ }
+                        .clickable {
+                            photoPickerLauncher.launch(
+                                PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                            )
+                        }
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -142,12 +165,26 @@ fun SettingsScreen(
                             .background(Color(0xFF3A3A3C)),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(
-                            text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = SettingsText
-                        )
+                        if (isUploadingPhoto) {
+                            androidx.compose.material3.CircularProgressIndicator(
+                                modifier = Modifier.size(22.dp),
+                                strokeWidth = 2.dp,
+                                color = SettingsText
+                            )
+                        } else if (!profile?.profileImageURL.isNullOrEmpty()) {
+                            AsyncImage(
+                                model = profile?.profileImageURL,
+                                contentDescription = "Profile photo",
+                                modifier = Modifier.size(56.dp).clip(CircleShape)
+                            )
+                        } else {
+                            Text(
+                                text = profile?.userInitials?.ifEmpty { "?" } ?: "?",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                color = SettingsText
+                            )
+                        }
                     }
                     Spacer(Modifier.width(14.dp))
                     Column(modifier = Modifier.weight(1f)) {
@@ -297,11 +334,19 @@ fun SettingsScreen(
 
             Spacer(Modifier.height(24.dp))
 
-            // Notifications — matches iOS
+            // Notifications — opens the system per-app notification settings
+            // screen, same as iOS's UIApplication.openSettingsURLString.
+            // (onOpenNotifications was never actually passed by either
+            // AppNavGraph call site, so this row silently did nothing.)
             DarkCard {
                 SettingsLinkRow(
                     label = stringResource(R.string.notifications),
-                    onClick = onOpenNotifications
+                    onClick = {
+                        val intent = Intent(android.provider.Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                            putExtra(android.provider.Settings.EXTRA_APP_PACKAGE, context.packageName)
+                        }
+                        context.startActivity(intent)
+                    }
                 )
             }
 

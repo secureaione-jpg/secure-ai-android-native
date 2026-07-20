@@ -119,6 +119,7 @@
 
     <!-- Share -->
     <string name="share">Share</string>
+    <string name="save_image">Save</string>
     <string name="share_conversation">Share conversation</string>
 
     <!-- Project detail -->

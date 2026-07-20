@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -83,6 +84,7 @@ fun ProjectsScreen(
     onSelectProject: (Project) -> Unit
 ) {
     val allProjects by ProjectStore.projects.collectAsState()
+    val hasLoaded by ProjectStore.hasLoaded.collectAsState()
     val scope = rememberCoroutineScope()
     var showSheet by remember { mutableStateOf(false) }
     var editingProject by remember { mutableStateOf<Project?>(null) }
@@ -188,7 +190,11 @@ fun ProjectsScreen(
                 }
             }
 
-            if (projects.isEmpty()) {
+            if (!hasLoaded) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (projects.isEmpty()) {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally,
