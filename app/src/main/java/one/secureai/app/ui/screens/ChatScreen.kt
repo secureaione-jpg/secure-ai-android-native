@@ -64,6 +64,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -208,14 +209,27 @@ fun ChatScreen(
         quickResultError = null
     }
 
+    val coroutineScope = rememberCoroutineScope()
+
     fun runQuickAction(action: one.secureai.app.ui.components.QuickAction) {
         val bmp = capturedBitmap ?: return
-        val stream = java.io.ByteArrayOutputStream()
-        bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
         showQuickResult = true
         quickResultLoading = true
         quickResultAnswer = null
         quickResultError = null
+
+        if (action.isScanCode) {
+            coroutineScope.launch {
+                val value = one.secureai.app.camera.BarcodeScanner.decode(bmp)
+                quickResultLoading = false
+                if (value != null) quickResultAnswer = value
+                else quickResultError = "No barcode or QR code found."
+            }
+            return
+        }
+
+        val stream = java.io.ByteArrayOutputStream()
+        bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
         viewModel.sendOneShotWithImage(action.prompt, stream.toByteArray(), "image/jpeg") { result ->
             quickResultLoading = false
             result.onSuccess { quickResultAnswer = it }
@@ -223,21 +237,32 @@ fun ChatScreen(
         }
     }
 
-    val quickCameraLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bitmap ->
-        if (bitmap != null) {
-            capturedBitmap = bitmap
-            showQuickResult = false
-            quickResultAnswer = null
-            quickResultError = null
+    var showCustomCamera by remember { mutableStateOf(false) }
+
+    // Library fallback from inside the custom camera screen — decodes the
+    // picked photo into the same post-capture flow as a fresh capture.
+    val quickLibraryPickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { uri ->
+        if (uri != null) {
+            try {
+                context.contentResolver.openInputStream(uri)?.use { stream ->
+                    val bitmap = android.graphics.BitmapFactory.decodeStream(stream)
+                    if (bitmap != null) {
+                        capturedBitmap = bitmap
+                        showQuickResult = false
+                        quickResultAnswer = null
+                        quickResultError = null
+                    }
+                }
+            } catch (_: Exception) {}
         }
     }
 
     val quickCameraPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) quickCameraLauncher.launch(null)
+        if (granted) showCustomCamera = true
     }
 
     // Tap-to-chat-context: a Note/Library item tapped elsewhere lands here as
@@ -742,6 +767,25 @@ fun ChatScreen(
             }
         }
 
+    // Custom CameraX viewfinder — brackets, flash, zoom stepper, shutter,
+    // flip, library fallback (Android equivalent of iOS's CustomCameraView).
+    if (showCustomCamera) {
+        one.secureai.app.ui.components.CustomCameraScreen(
+            onCaptured = { bitmap ->
+                showCustomCamera = false
+                capturedBitmap = bitmap
+                showQuickResult = false
+                quickResultAnswer = null
+                quickResultError = null
+            },
+            onPickFromLibrary = {
+                showCustomCamera = false
+                quickLibraryPickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+            onClose = { showCustomCamera = false }
+        )
+    }
+
     // Post-capture: photo preview + quick-action chips (Identify, Extract
     // Text, Scan Code, etc.) — shown before a chip is tapped.
     val pendingCapture = capturedBitmap
@@ -763,7 +807,7 @@ fun ChatScreen(
                         .padding(horizontal = 16.dp)
                 )
                 Text(
-                    "Point your camera at something to ask",
+                    "What do you want to know?",
                     color = Color.White,
                     fontSize = 14.sp,
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)
