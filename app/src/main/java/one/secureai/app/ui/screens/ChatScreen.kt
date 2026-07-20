@@ -116,7 +116,6 @@ fun ChatScreen(
     onOpenProfile: () -> Unit = {},
     onOpenProjects: () -> Unit = {},
     onOpenNotes: () -> Unit = {},
-    onOpenApps: () -> Unit = {},
 ) {
     val context = LocalContext.current
     val messages by viewModel.messages.collectAsState()
@@ -256,7 +255,6 @@ fun ChatScreen(
             if (AuthManager.isAnonymous) { signInFeature = "notes"; showSignIn = true }
             else onOpenNotes()
         },
-        onApps = onOpenApps,
         onProfile = onOpenProfile,
         onNewChat = { viewModel.clearHistory() },
         onUpgrade = onOpenPaywall,

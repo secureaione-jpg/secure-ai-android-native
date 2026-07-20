@@ -11,12 +11,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import one.secureai.app.R
 import one.secureai.app.auth.AuthManager
-import one.secureai.app.data.Prefs
 import one.secureai.app.data.store.StoreManager
 import one.secureai.app.data.model.SubscriptionTier
 
@@ -28,7 +26,6 @@ data class SidebarCallbacks(
     val onLibrary: () -> Unit = {},
     val onPhotos: () -> Unit = {},
     val onNotes: () -> Unit = {},
-    val onApps: () -> Unit = {},
     val onProjects: () -> Unit = {},
     val onProfile: () -> Unit = {},
     val onNewChat: () -> Unit = {},
@@ -45,7 +42,6 @@ fun TopLeftDropdownMenu(
     onDismiss: () -> Unit,
     callbacks: SidebarCallbacks
 ) {
-    val context = LocalContext.current
     val isAnonymous = AuthManager.isAnonymous
     val tier by StoreManager.currentTier.collectAsState()
     val isSubscribed = tier != SubscriptionTier.FREE
@@ -62,54 +58,41 @@ fun TopLeftDropdownMenu(
             onClick = { act(callbacks.onNewChat) }
         )
 
-        if (Prefs.showChats(context)) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.sidebar_chats)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_chat_bubbles), contentDescription = null) },
-                onClick = { act(callbacks.onChats) }
-            )
-        }
-        if (Prefs.showProjects(context)) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.sidebar_projects)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_folder), contentDescription = null) },
-                onClick = {
-                    act {
-                        if (isAnonymous) callbacks.onSignIn("library") else callbacks.onProjects()
-                    }
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.sidebar_chats)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_chat_bubbles), contentDescription = null) },
+            onClick = { act(callbacks.onChats) }
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.sidebar_projects)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_folder), contentDescription = null) },
+            onClick = {
+                act {
+                    if (isAnonymous) callbacks.onSignIn("library") else callbacks.onProjects()
                 }
-            )
-        }
-        if (Prefs.showPhotos(context)) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.sidebar_photos)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_photos), contentDescription = null) },
-                onClick = {
-                    act {
-                        if (isAnonymous) callbacks.onSignIn("photos") else callbacks.onPhotos()
-                    }
+            }
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.sidebar_photos)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_photos), contentDescription = null) },
+            onClick = {
+                act {
+                    if (isAnonymous) callbacks.onSignIn("photos") else callbacks.onPhotos()
                 }
-            )
-        }
-        if (Prefs.showNotes(context)) {
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.sidebar_notes)) },
-                leadingIcon = { Icon(painterResource(R.drawable.ic_document), contentDescription = null) },
-                onClick = {
-                    act {
-                        if (isAnonymous) callbacks.onSignIn("notes") else callbacks.onNotes()
-                    }
+            }
+        )
+        DropdownMenuItem(
+            text = { Text(stringResource(R.string.sidebar_notes)) },
+            leadingIcon = { Icon(painterResource(R.drawable.ic_document), contentDescription = null) },
+            onClick = {
+                act {
+                    if (isAnonymous) callbacks.onSignIn("notes") else callbacks.onNotes()
                 }
-            )
-        }
+            }
+        )
 
         HorizontalDivider()
 
-        DropdownMenuItem(
-            text = { Text(stringResource(R.string.sidebar_apps)) },
-            leadingIcon = { Icon(painterResource(R.drawable.ic_apps_grid), contentDescription = null) },
-            onClick = { act(callbacks.onApps) }
-        )
         DropdownMenuItem(
             text = { Text(stringResource(R.string.settings)) },
             leadingIcon = { Icon(Icons.Filled.Settings, contentDescription = null) },

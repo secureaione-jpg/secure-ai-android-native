@@ -21,10 +21,6 @@ object Prefs {
     private const val KEY_DAILY_IMAGE_COUNT = "daily_image_count"
     private const val KEY_DAILY_COUNT_DATE = "daily_count_date"
     private const val KEY_LIFETIME_MESSAGES = "lifetime_messages"
-    private const val KEY_SHOW_CHATS = "sidebar_chats"
-    private const val KEY_SHOW_PROJECTS = "sidebar_projects"
-    private const val KEY_SHOW_PHOTOS = "sidebar_photos"
-    private const val KEY_SHOW_NOTES = "sidebar_notes"
     private const val KEY_CHAT_BACKGROUND = "chat_background"
     private const val KEY_DISMISSED_NUDGE_DAY = "dismissed_nudge_day_key"
 
@@ -112,16 +108,6 @@ object Prefs {
     }
 
     fun getLifetimeMessages(ctx: Context) = prefs(ctx).getInt(KEY_LIFETIME_MESSAGES, 0)
-
-    // Sidebar item visibility — all default true, matching iOS SidebarCustomizeView.
-    fun showChats(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_CHATS, true)
-    fun setShowChats(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_CHATS, v) }
-    fun showProjects(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PROJECTS, true)
-    fun setShowProjects(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PROJECTS, v) }
-    fun showPhotos(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_PHOTOS, true)
-    fun setShowPhotos(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_PHOTOS, v) }
-    fun showNotes(ctx: Context) = prefs(ctx).getBoolean(KEY_SHOW_NOTES, true)
-    fun setShowNotes(ctx: Context, v: Boolean) = prefs(ctx).edit { putBoolean(KEY_SHOW_NOTES, v) }
 
     fun chatBackground(ctx: Context): String = prefs(ctx).getString(KEY_CHAT_BACKGROUND, "system") ?: "system"
     fun setChatBackground(ctx: Context, v: String) = prefs(ctx).edit { putString(KEY_CHAT_BACKGROUND, v) }

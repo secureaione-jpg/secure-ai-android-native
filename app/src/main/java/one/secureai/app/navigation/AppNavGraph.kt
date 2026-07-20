@@ -16,7 +16,6 @@ import one.secureai.app.ui.screens.LibraryScreen
 import one.secureai.app.ui.screens.AIPhotosScreen
 import one.secureai.app.ui.screens.NotesScreen
 import one.secureai.app.ui.screens.PaywallScreen
-import one.secureai.app.ui.screens.SidebarCustomizeScreen
 import one.secureai.app.ui.screens.ProjectsScreen
 import one.secureai.app.ui.screens.ProjectDetailScreen
 import one.secureai.app.data.store.ProjectStore
@@ -36,7 +35,6 @@ sealed class Screen(val route: String) {
     object Notes : Screen("notes")
     object Paywall : Screen("paywall")
     object Profile : Screen("profile")
-    object Apps : Screen("apps")
     object Projects : Screen("projects")
     object ProjectDetail : Screen("project_detail")
 }
@@ -108,12 +106,7 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
                 onOpenProfile = { navController.navigate(Screen.Profile.route) },
                 onOpenProjects = { navController.navigate(Screen.Projects.route) },
                 onOpenNotes = { navController.navigate(Screen.Notes.route) },
-                onOpenApps = { navController.navigate(Screen.Apps.route) },
             )
-        }
-
-        composable(Screen.Apps.route) {
-            SidebarCustomizeScreen(onBack = { navController.popBackStack() })
         }
 
         composable(Screen.Library.route) {

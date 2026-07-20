@@ -34,7 +34,6 @@
     <string name="share_app">Share %1$s</string>
 
     <!-- Sidebar -->
-    <string name="sidebar_apps">Apps</string>
     <string name="sidebar_chats">Chats</string>
     <string name="sidebar_projects">Projects</string>
     <string name="sidebar_photos">Photos</string>
