@@ -35,8 +35,17 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
 
     private var streamJob: Job? = null
     private var imageJob: Job? = null
+    private var oneShotJob: Job? = null
     private var currentConversationId: String? = null
     private val savedMessageIds = mutableSetOf<String>()
+    private var pendingContextPrompt: String? = null
+
+    /** Injects tap-to-chat-context (a Note/Library item) as extra system
+     * context for this conversation, mirroring iOS's activeNote/activeProject
+     * woven into the system prompt. */
+    fun setPendingContext(systemPrompt: String) {
+        pendingContextPrompt = systemPrompt
+    }
 
     fun selectModel(model: AIModel) {
         _selectedModel.value = model
@@ -50,8 +59,14 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
      */
     private fun historyWithMemoryContext(base: List<ChatMessage>): List<ChatMessage> {
         val memoryCtx = MemoryStore.buildContextString()
-        if (memoryCtx.isEmpty()) return base
-        return listOf(ChatMessage(role = ChatRole.SYSTEM, content = memoryCtx)) + base
+        val projectPrompt = ProjectStore.activeProject.value?.systemPrompt?.trim()
+        val parts = listOfNotNull(
+            memoryCtx.takeIf { it.isNotEmpty() },
+            projectPrompt?.takeIf { it.isNotEmpty() },
+            pendingContextPrompt?.takeIf { it.isNotEmpty() }
+        )
+        if (parts.isEmpty()) return base
+        return listOf(ChatMessage(role = ChatRole.SYSTEM, content = parts.joinToString("\n\n"))) + base
     }
 
     fun send(text: String) {
@@ -175,6 +190,27 @@ class ChatViewModel(application: Application) : AndroidViewModel(application) {
         _errorMessage.value = null
         currentConversationId = null
         savedMessageIds.clear()
+        pendingContextPrompt = null
+    }
+
+    /**
+     * One-shot vision request for the camera quick-capture flow (Identify,
+     * Extract Text, Scan Code, etc.) — doesn't touch [messages] or the chat
+     * thread at all; the caller shows the answer in an overlay card instead.
+     */
+    fun sendOneShotWithImage(
+        prompt: String,
+        imageBytes: ByteArray,
+        mimeType: String = "image/jpeg",
+        onResult: (Result<String>) -> Unit
+    ) {
+        oneShotJob?.cancel()
+        oneShotJob = viewModelScope.launch {
+            val result = runCatching {
+                remote.sendOneShotWithImage(prompt, imageBytes, mimeType, _selectedModel.value.wireValue)
+            }
+            onResult(result)
+        }
     }
 
     fun sendWithAttachment(text: String, data: ByteArray, mimeType: String) {

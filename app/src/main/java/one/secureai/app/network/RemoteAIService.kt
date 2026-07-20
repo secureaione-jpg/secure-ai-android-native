@@ -71,7 +71,7 @@ class RemoteAIService(context: Context) {
             trimmed.forEach { m ->
                 put(JSONObject().apply {
                     put("role", m.role.wireValue)
-                    put("content", m.content)
+                    put("content", contentJson(m))
                 })
             }
         }
@@ -143,6 +143,45 @@ class RemoteAIService(context: Context) {
             if (!completed) throw StreamError.Incomplete
 
             fullResponse
+        }
+    }
+
+    /**
+     * One-off vision request, no history, no message-list side effects — used
+     * by the camera quick-capture flow (Identify/Extract Text/etc. chips),
+     * which shows its answer in an overlay card instead of the chat thread.
+     * Reuses [sendMessageStreaming]'s SSE parsing, just discards the chunks
+     * and returns the accumulated text.
+     */
+    suspend fun sendOneShotWithImage(
+        prompt: String,
+        imageBytes: ByteArray,
+        mimeType: String,
+        model: String = "secureai-auto"
+    ): String {
+        val attachment = one.secureai.app.chat.ChatAttachment(mimeType = mimeType, data = imageBytes)
+        val message = ChatMessage(role = ChatRole.USER, content = prompt, attachments = listOf(attachment))
+        return sendMessageStreaming(history = listOf(message), model = model) { }
+    }
+
+    /** Wire format for a message's `content`: a plain string, or (when an
+     * image is attached) an array of OpenAI-style content parts the worker
+     * already understands (see worker.ts `sanitizeContent`/`ContentPart`). */
+    private fun contentJson(m: ChatMessage): Any {
+        val imageAttachment = m.attachments.firstOrNull { it.isImage && it.data != null }
+        val imageData = imageAttachment?.data ?: m.imageBytes
+        if (imageData == null) return m.content
+
+        val mime = imageAttachment?.mimeType?.takeIf { it.isNotBlank() } ?: "image/jpeg"
+        val b64 = android.util.Base64.encodeToString(imageData, android.util.Base64.NO_WRAP)
+        return JSONArray().apply {
+            if (m.content.isNotBlank()) {
+                put(JSONObject().apply { put("type", "text"); put("text", m.content) })
+            }
+            put(JSONObject().apply {
+                put("type", "image_url")
+                put("image_url", JSONObject().apply { put("url", "data:$mime;base64,$b64") })
+            })
         }
     }
 

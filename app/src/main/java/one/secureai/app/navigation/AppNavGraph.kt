@@ -112,7 +112,8 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         composable(Screen.Library.route) {
             LibraryScreen(
                 onBack = { navController.popBackStack() },
-                onOpenProjects = { navController.navigate(Screen.Projects.route) }
+                onOpenProjects = { navController.navigate(Screen.Projects.route) },
+                onAskAI = { navController.popBackStack(Screen.Chat.route, inclusive = false) }
             )
         }
 
@@ -121,7 +122,10 @@ fun AppNavGraph(deepLinkUrl: String? = null) {
         }
 
         composable(Screen.Notes.route) {
-            NotesScreen(onBack = { navController.popBackStack() })
+            NotesScreen(
+                onBack = { navController.popBackStack() },
+                onAskAI = { navController.popBackStack(Screen.Chat.route, inclusive = false) }
+            )
         }
 
         composable(Screen.Paywall.route) {

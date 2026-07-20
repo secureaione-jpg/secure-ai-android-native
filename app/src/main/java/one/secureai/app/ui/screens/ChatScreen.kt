@@ -88,12 +88,13 @@ import one.secureai.app.chat.ChatRole
 import one.secureai.app.chat.ChatViewModel
 import one.secureai.app.data.ChatBackground
 import one.secureai.app.data.Prefs
+import one.secureai.app.data.store.ChatContextStore
 import one.secureai.app.data.store.Memory
 import one.secureai.app.data.store.MemoryStore
 import one.secureai.app.data.store.ProjectStore
 import one.secureai.app.network.TTSPlayer
-import one.secureai.app.ui.components.SidebarCallbacks
-import one.secureai.app.ui.components.TopLeftDropdownMenu
+import one.secureai.app.ui.components.CameraResultOverlay
+import one.secureai.app.ui.components.QuickActionChipsRow
 import one.secureai.app.ui.theme.Brand
 import one.secureai.app.data.store.StoreManager
 import one.secureai.app.data.model.SubscriptionTier
@@ -125,13 +126,14 @@ fun ChatScreen(
     val listState = rememberLazyListState()
     var showSignIn by remember { mutableStateOf(false) }
     var signInFeature by remember { mutableStateOf("this") }
-    var menuExpanded by remember { mutableStateOf(false) }
     var showPlusMenu by remember { mutableStateOf(false) }
     val profile by UserProfileManager.profile.collectAsState()
     val authUser by AuthManager.user.collectAsState()
     val isAnon = authUser?.isAnonymous ?: true
     val isIncognito = Prefs.isIncognito(context)
     val activeProject by ProjectStore.activeProject.collectAsState()
+    val tier by StoreManager.currentTier.collectAsState()
+    val isSubscribed = tier != SubscriptionTier.FREE
     val activeBg = ChatBackground.fromKey(Prefs.chatBackground(context))
     val contentColor = if (activeBg.usesLightText) Color.White else MaterialTheme.colorScheme.onBackground
 
@@ -189,6 +191,61 @@ fun ChatScreen(
         if (granted) cameraLauncher.launch(null)
     }
 
+    // Quick-capture camera (top-left button) — separate from the attach-to-chat
+    // camera above: this feeds the post-capture quick-action chips + overlay
+    // result card instead of the chat thread.
+    var capturedBitmap by remember { mutableStateOf<android.graphics.Bitmap?>(null) }
+    var quickResultLoading by remember { mutableStateOf(false) }
+    var quickResultAnswer by remember { mutableStateOf<String?>(null) }
+    var quickResultError by remember { mutableStateOf<String?>(null) }
+    var showQuickResult by remember { mutableStateOf(false) }
+
+    fun resetQuickCapture() {
+        capturedBitmap = null
+        showQuickResult = false
+        quickResultLoading = false
+        quickResultAnswer = null
+        quickResultError = null
+    }
+
+    fun runQuickAction(action: one.secureai.app.ui.components.QuickAction) {
+        val bmp = capturedBitmap ?: return
+        val stream = java.io.ByteArrayOutputStream()
+        bmp.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
+        showQuickResult = true
+        quickResultLoading = true
+        quickResultAnswer = null
+        quickResultError = null
+        viewModel.sendOneShotWithImage(action.prompt, stream.toByteArray(), "image/jpeg") { result ->
+            quickResultLoading = false
+            result.onSuccess { quickResultAnswer = it }
+            result.onFailure { quickResultError = it.message ?: "Something went wrong. Try again." }
+        }
+    }
+
+    val quickCameraLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.TakePicturePreview()
+    ) { bitmap ->
+        if (bitmap != null) {
+            capturedBitmap = bitmap
+            showQuickResult = false
+            quickResultAnswer = null
+            quickResultError = null
+        }
+    }
+
+    val quickCameraPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) quickCameraLauncher.launch(null)
+    }
+
+    // Tap-to-chat-context: a Note/Library item tapped elsewhere lands here as
+    // a fresh chat pre-loaded with it as system context (consumed once).
+    LaunchedEffect(Unit) {
+        ChatContextStore.consume()?.let { viewModel.setPendingContext(it) }
+    }
+
     DisposableEffect(Unit) {
         onDispose { speechRecognizer?.destroy() }
     }
@@ -236,33 +293,9 @@ fun ChatScreen(
         isRecording = true
     }
 
-    val sidebarCallbacks = SidebarCallbacks(
-        onChats = onOpenSavedChats,
-        onHistory = onOpenSavedChats,
-        onLibrary = {
-            if (AuthManager.isAnonymous) { signInFeature = "library"; showSignIn = true }
-            else onOpenLibrary()
-        },
-        onProjects = {
-            if (AuthManager.isAnonymous) { signInFeature = "library"; showSignIn = true }
-            else onOpenProjects()
-        },
-        onPhotos = {
-            if (AuthManager.isAnonymous) { signInFeature = "photos"; showSignIn = true }
-            else onOpenPhotos()
-        },
-        onNotes = {
-            if (AuthManager.isAnonymous) { signInFeature = "notes"; showSignIn = true }
-            else onOpenNotes()
-        },
-        onProfile = onOpenProfile,
-        onNewChat = { viewModel.clearHistory() },
-        onUpgrade = onOpenPaywall,
-        onSignIn = { feature ->
-            signInFeature = feature
-            showSignIn = true
-        },
-    )
+    fun requireSignIn(feature: String, action: () -> Unit) {
+        if (AuthManager.isAnonymous) { signInFeature = feature; showSignIn = true } else action()
+    }
 
     Box(
             modifier = Modifier
@@ -281,21 +314,17 @@ fun ChatScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    // Top-left button opens a dropdown menu with the same
-                    // options the old side drawer had, instead of a drawer.
-                    Box {
-                        IconButton(onClick = { menuExpanded = true }) {
-                            Box(
-                                modifier = Modifier
-                                    .size(20.dp)
-                                    .clip(CircleShape)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                            )
-                        }
-                        TopLeftDropdownMenu(
-                            expanded = menuExpanded,
-                            onDismiss = { menuExpanded = false },
-                            callbacks = sidebarCallbacks
+                    // Top-left button is camera-first: opens the camera
+                    // immediately. Everything the old side-drawer/dropdown
+                    // menu had now lives in the "+" attach menu below.
+                    IconButton(onClick = {
+                        requireSignIn("camera") { quickCameraPermissionLauncher.launch(android.Manifest.permission.CAMERA) }
+                    }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_camera),
+                            contentDescription = "Camera",
+                            tint = contentColor,
+                            modifier = Modifier.size(22.dp)
                         )
                     }
 
@@ -563,6 +592,46 @@ fun ChatScreen(
                                     }
                                 }
                             )
+
+                            HorizontalDivider()
+
+                            // Folded in from the old top-left side-drawer/dropdown
+                            // menu now that the top-left button is camera-first.
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.sidebar_chats)) },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_chat_bubbles), null, modifier = Modifier.size(20.dp)) },
+                                onClick = { showPlusMenu = false; onOpenSavedChats() }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.sidebar_projects)) },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_folder), null, modifier = Modifier.size(20.dp)) },
+                                onClick = { showPlusMenu = false; requireSignIn("library", onOpenProjects) }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.sidebar_photos)) },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_photos), null, modifier = Modifier.size(20.dp)) },
+                                onClick = { showPlusMenu = false; requireSignIn("photos", onOpenPhotos) }
+                            )
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.sidebar_notes)) },
+                                leadingIcon = { Icon(painterResource(R.drawable.ic_document), null, modifier = Modifier.size(20.dp)) },
+                                onClick = { showPlusMenu = false; requireSignIn("notes", onOpenNotes) }
+                            )
+
+                            HorizontalDivider()
+
+                            DropdownMenuItem(
+                                text = { Text(stringResource(R.string.settings)) },
+                                leadingIcon = { Icon(Icons.Filled.Settings, null, modifier = Modifier.size(20.dp)) },
+                                onClick = { showPlusMenu = false; onOpenProfile() }
+                            )
+                            if (!isSubscribed && !isAnon) {
+                                DropdownMenuItem(
+                                    text = { Text(stringResource(R.string.upgrade)) },
+                                    leadingIcon = { Icon(painterResource(R.drawable.ic_crown), null, tint = Color(0xFFD9A621)) },
+                                    onClick = { showPlusMenu = false; onOpenPaywall() }
+                                )
+                            }
                         }
                     }
 
@@ -672,6 +741,65 @@ fun ChatScreen(
                 }
             }
         }
+
+    // Post-capture: photo preview + quick-action chips (Identify, Extract
+    // Text, Scan Code, etc.) — shown before a chip is tapped.
+    val pendingCapture = capturedBitmap
+    if (pendingCapture != null && !showQuickResult) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.9f))) {
+            Column(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxWidth().statusBarsPadding().padding(12.dp), contentAlignment = Alignment.CenterEnd) {
+                    IconButton(onClick = { resetQuickCapture() }) {
+                        Icon(Icons.Default.Close, contentDescription = "Close", tint = Color.White)
+                    }
+                }
+                Image(
+                    bitmap = pendingCapture.asImageBitmap(),
+                    contentDescription = "Captured photo",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .clip(RoundedCornerShape(16.dp))
+                        .padding(horizontal = 16.dp)
+                )
+                Text(
+                    "Point your camera at something to ask",
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp)
+                )
+                QuickActionChipsRow(
+                    modifier = Modifier.padding(bottom = 24.dp).navigationBarsPadding(),
+                    enabled = true,
+                    onSelect = { action -> runQuickAction(action) }
+                )
+            }
+        }
+    }
+
+    // Post-answer overlay: photo + compact answer card + Copy/Ask More,
+    // instead of opening the chat thread (matches iOS's polished result card).
+    if (showQuickResult && pendingCapture != null) {
+        CameraResultOverlay(
+            imageBitmap = pendingCapture,
+            isLoading = quickResultLoading,
+            answer = quickResultAnswer,
+            error = quickResultError,
+            onCopy = {
+                quickResultAnswer?.let {
+                    val clip = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    clip.setPrimaryClip(ClipData.newPlainText("answer", it))
+                }
+            },
+            onAskMore = {
+                val stream = java.io.ByteArrayOutputStream()
+                pendingCapture.compress(android.graphics.Bitmap.CompressFormat.JPEG, 85, stream)
+                viewModel.sendWithAttachment("Tell me more", stream.toByteArray(), "image/jpeg")
+                resetQuickCapture()
+            },
+            onDismiss = { resetQuickCapture() }
+        )
+    }
 
     if (showSignIn) {
         ModalBottomSheet(

@@ -29,6 +29,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
@@ -97,7 +98,7 @@ private val CardColors = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotesScreen(onBack: () -> Unit, projectId: String? = null) {
+fun NotesScreen(onBack: () -> Unit, projectId: String? = null, onAskAI: () -> Unit = {}) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allNotes by NoteStore.notes.collectAsState()
@@ -249,7 +250,14 @@ fun NotesScreen(onBack: () -> Unit, projectId: String? = null) {
                                     note = note,
                                     accentColor = CardColors[index % CardColors.size],
                                     onTap = { editingNote = note },
-                                    onDelete = { NoteStore.delete(note) }
+                                    onDelete = { NoteStore.delete(note) },
+                                    onAskAI = {
+                                        one.secureai.app.data.store.ChatContextStore.set(
+                                            "The user tapped on a note titled \"${note.title}\" to ask about it. " +
+                                                "Note content:\n${note.body}"
+                                        )
+                                        onAskAI()
+                                    }
                                 )
                             }
                         }
@@ -308,7 +316,7 @@ private fun EmptyNotesState(onWrite: () -> Unit) {
 }
 
 @Composable
-private fun NoteCard(note: Note, accentColor: Color, onTap: () -> Unit, onDelete: () -> Unit) {
+private fun NoteCard(note: Note, accentColor: Color, onTap: () -> Unit, onDelete: () -> Unit, onAskAI: () -> Unit = {}) {
     val context = LocalContext.current
     Surface(
         onClick = onTap,
@@ -354,6 +362,9 @@ private fun NoteCard(note: Note, accentColor: Color, onTap: () -> Unit, onDelete
                         startActivity(context, android.content.Intent.createChooser(shareIntent, null), null)
                     }, modifier = Modifier.size(28.dp)) {
                         Icon(Icons.Default.Share, contentDescription = "Share", modifier = Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    IconButton(onClick = onAskAI, modifier = Modifier.size(28.dp)) {
+                        Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = "Ask AI about this note", modifier = Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
                         Icon(Icons.Default.Delete, contentDescription = "Delete", modifier = Modifier.size(13.dp), tint = MaterialTheme.colorScheme.onSurfaceVariant)

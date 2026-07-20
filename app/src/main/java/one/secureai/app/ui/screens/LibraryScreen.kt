@@ -72,7 +72,7 @@ private val tabRes = listOf(R.string.sidebar_library, R.string.sidebar_photos, R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LibraryScreen(onBack: () -> Unit, onOpenProjects: () -> Unit = {}) {
+fun LibraryScreen(onBack: () -> Unit, onOpenProjects: () -> Unit = {}, onAskAI: () -> Unit = {}) {
     var selectedTab by remember { mutableIntStateOf(0) }
     val scope = rememberCoroutineScope()
 
@@ -129,7 +129,16 @@ fun LibraryScreen(onBack: () -> Unit, onOpenProjects: () -> Unit = {}) {
 
             when (selectedTab) {
                 0 -> PromptsTab()
-                1 -> PhotosTab(onDelete = { scope.launch { LibraryStore.delete(it) } })
+                1 -> PhotosTab(
+                    onDelete = { scope.launch { LibraryStore.delete(it) } },
+                    onAskAI = { photo ->
+                        one.secureai.app.data.store.ChatContextStore.set(
+                            "The user tapped a photo named \"${photo.name}\" in their library to ask about it." +
+                                (photo.downloadURL?.let { "\nImage URL: $it" } ?: "")
+                        )
+                        onAskAI()
+                    }
+                )
                 2 -> DocumentsTab(onDelete = { scope.launch { LibraryStore.delete(it) } })
             }
         }
@@ -160,7 +169,7 @@ private fun PromptsTab() {
 }
 
 @Composable
-private fun PhotosTab(onDelete: (LibraryItem) -> Unit) {
+private fun PhotosTab(onDelete: (LibraryItem) -> Unit, onAskAI: (LibraryItem) -> Unit = {}) {
     val items by LibraryStore.items.collectAsState()
     val hasLoaded by LibraryStore.hasLoaded.collectAsState()
     val photos = items.filter { it.isImage }
@@ -187,6 +196,7 @@ private fun PhotosTab(onDelete: (LibraryItem) -> Unit) {
                     modifier = Modifier
                         .aspectRatio(1f)
                         .clip(RoundedCornerShape(8.dp))
+                        .clickable { onAskAI(photo) }
                 )
             }
         }
